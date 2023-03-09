@@ -29,7 +29,7 @@
 #define VERTEX_SHADER_FILE      "src/shader/vertexShader.glsl"
 #define FRAGMENT_SHADER_FILE    "src/shader/fragmentShader.glsl"
 #define TEXTURE_PATH            "asset/texture"
-#define USE_IMGUI true
+#define USE_IMGUI false
 
 
 glm::vec3 g_cameraEye = glm::vec3(0.0, 5.0, 0.0f);
@@ -325,7 +325,7 @@ int main(void)
         //glViewport(0, 0, width, height);
         //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         setFBO2(pShaderManager, pVAOManager);
-        setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -15.f), glm::vec3(-2.5f,0.f,0.f));
+        setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f,1.f,0.f));
         //setFBOCubeMap(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(-12.f, 2.5f, 0.f));
         //g_cameraEye = glm::vec4(0.f);
         //g_cameraTarget = glm::vec4(200.f, 200.f, -100.f, 0.f);
@@ -726,7 +726,7 @@ void setFBOPortal(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOMa
     glUniform4f(eyeLocation_UniLoc, eye.x, eye.y, eye.z, 1.0f);
 
     float FBO_screenRatio = static_cast<float>(fbo->width) / fbo->height;
-    matProjection = glm::perspective(glm::radians(90.f), FBO_screenRatio, 0.1f, 10000.f);
+    matProjection = glm::perspective(glm::radians(fov), FBO_screenRatio, 0.1f, 10000.f);
     pShaderManager->setShaderUniformM4fv("mView", matView);
     pShaderManager->setShaderUniformM4fv("mProjection", matProjection);
 
