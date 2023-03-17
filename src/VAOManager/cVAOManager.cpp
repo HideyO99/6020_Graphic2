@@ -8,26 +8,26 @@ cVAOManager::~cVAOManager()
 {
 }
 
-bool cVAOManager::loadModelToVAO(std::string filename, cModelDrawInfo& drawInfo, unsigned int shaderProgramID)
+bool cVAOManager::loadModelToVAO(std::string filename, cModelDrawInfo* drawInfo, unsigned int shaderProgramID)
 {
 	GLenum error;
 	
-	drawInfo.meshName = filename;
+	drawInfo->meshName = filename;
 
-	drawInfo.CalculateExtents();
+	drawInfo->CalculateExtents();
 
-	glGenVertexArrays(1, &(drawInfo.VAO_ID));
-	glBindVertexArray(drawInfo.VAO_ID);
+	glGenVertexArrays(1, &(drawInfo->VAO_ID));
+	glBindVertexArray(drawInfo->VAO_ID);
 
 	//vertices
-	glGenBuffers(1, &(drawInfo.VertexBufferID));
-	glBindBuffer(GL_ARRAY_BUFFER, drawInfo.VertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(cModelDrawInfo::sVertex_RGBA_XYZ_N_UV_T_BiN_Bones) * drawInfo.numberOfVertices, (GLvoid*)drawInfo.pVertices, GL_STATIC_DRAW);
+	glGenBuffers(1, &(drawInfo->VertexBufferID));
+	glBindBuffer(GL_ARRAY_BUFFER, drawInfo->VertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cModelDrawInfo::sVertex_RGBA_XYZ_N_UV_T_BiN_Bones) * drawInfo->numberOfVertices, (GLvoid*)drawInfo->pVertices, GL_STATIC_DRAW);
 
 	//indices
-	glGenBuffers(1, &(drawInfo.IndexBufferID));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drawInfo.IndexBufferID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * drawInfo.numberOfIndices, (GLvoid*)drawInfo.pIndices, GL_STATIC_DRAW);
+	glGenBuffers(1, &(drawInfo->IndexBufferID));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drawInfo->IndexBufferID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * drawInfo->numberOfIndices, (GLvoid*)drawInfo->pIndices, GL_STATIC_DRAW);
 
 
 	//in vec4 vColor;
@@ -127,7 +127,7 @@ bool cVAOManager::loadModelToVAO(std::string filename, cModelDrawInfo& drawInfo,
 	glDisableVertexAttribArray(vBoneID_location);
 	glDisableVertexAttribArray(vBoneWeight_location);
 
-	this->mapModelNametoVAOID[drawInfo.meshName] = drawInfo;
+	this->mapModelNametoVAOID[drawInfo->meshName] = *drawInfo;
 
 	return true;
 }
@@ -147,23 +147,34 @@ bool cVAOManager::loadModelList(std::string filename, unsigned int shaderProgram
 
 	for (i_mapModel = modelListXML.mapModelNameAndPath.begin(); i_mapModel != modelListXML.mapModelNameAndPath.end(); i_mapModel++)
 	{
-		cModelDrawInfo modelDrawInfo;
-		//cMeshObj meshObj;
-		std::string error = "";
-		result = loadPLYFile(i_mapModel->second, modelDrawInfo, error);
-		if (!result)
+		std::string fileType = i_mapModel->second.substr(i_mapModel->second.find('.')+1,std::string::npos);
+		if (fileType == "ply")
 		{
-			std::cout << "cannot load " << i_mapModel->first << std::endl;
-			std::cout << "error " << error << std::endl;
-			return false;
-		}
-		result = loadModelToVAO(i_mapModel->first, modelDrawInfo, shaderProgramID);
-		if (!result)
-		{
-			std::cout << "cannot load " << i_mapModel->first << std::endl;
-			return false;
-		}
+			cModelDrawInfo modelDrawInfo;
+			//cMeshObj meshObj;
+			std::string error = "";
 
+			result = loadPLYFile(i_mapModel->second, modelDrawInfo, error);
+			if (!result)
+			{
+				std::cout << "cannot load " << i_mapModel->first << std::endl;
+				std::cout << "error " << error << std::endl;
+				return false;
+			}
+			result = loadModelToVAO(i_mapModel->first, &modelDrawInfo, shaderProgramID);
+			if (!result)
+			{
+				std::cout << "cannot load " << i_mapModel->first << std::endl;
+				return false;
+			}
+		}
+		if (fileType == "fbx")
+		{
+			cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
+			//cMeshObj meshObj;
+			
+			result = loadFBXFile(i_mapModel->second, modelDrawInfo, shaderProgramID);
+		}
 		//mapModelNametoMeshObj.emplace(i_mapModel->first, meshObj);
 		std::cout << i_mapModel->first << " is loaded" << std::endl;
 	}
@@ -184,6 +195,140 @@ bool cVAOManager::FindDrawInfo(std::string filename, cModelDrawInfo& drawInfo)
 
 	drawInfo = i_DrawInfo->second;
 
+	return true;
+}
+
+bool cVAOManager::loadFBXFile(std::string filename, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID)
+{
+	const aiScene* scene = m_Importer.ReadFile(filename, ASSIMP_LOAD_FLAGS);
+
+	aiNode* node = scene->mRootNode;
+	for (int i = 0; i < node->mNumChildren; i++)
+	{
+		aiNode* child = node->mChildren[i];
+
+		//Find channel data from our node name:
+		child->mName;
+	}
+
+	
+
+	if (scene == 0 || !scene->HasMeshes())
+	{
+		return false;
+	}
+
+	for (int i = 0; i < scene->mNumMeshes; i++)
+	{
+		cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
+		aiMesh* mesh = scene->mMeshes[i];
+		loadMesh(mesh, modelDrawInfo);
+		loadModelToVAO(mesh->mName.C_Str(), modelDrawInfo, shaderProgramID);
+	}
+
+
+	return true;
+}
+
+bool cVAOManager::loadMesh(const aiMesh* mesh, cModelDrawInfo* modelDrawInfo)
+{
+	modelDrawInfo->numberOfVertices = mesh->mNumVertices;
+	modelDrawInfo->numberOfIndices = mesh->mNumFaces * 3;
+	modelDrawInfo->numberOfTriangles = mesh->mNumFaces;
+	modelDrawInfo->pVertices = new cModelDrawInfo::sVertex_RGBA_XYZ_N_UV_T_BiN_Bones[modelDrawInfo->numberOfVertices];
+
+	for (int i_vertices = 0; i_vertices < modelDrawInfo->numberOfVertices; i_vertices++)
+	{
+		modelDrawInfo->pVertices[i_vertices].x = mesh->mVertices[i_vertices].x;
+		modelDrawInfo->pVertices[i_vertices].y = mesh->mVertices[i_vertices].y;
+		modelDrawInfo->pVertices[i_vertices].z = mesh->mVertices[i_vertices].z;
+
+		if (mesh->HasNormals())
+		{
+			modelDrawInfo->pVertices[i_vertices].nx = mesh->mNormals[i_vertices].x;
+			modelDrawInfo->pVertices[i_vertices].ny = mesh->mNormals[i_vertices].y;
+			modelDrawInfo->pVertices[i_vertices].nz = mesh->mNormals[i_vertices].z;
+		}
+		else
+		{
+			modelDrawInfo->pVertices[i_vertices].nx = 0;
+			modelDrawInfo->pVertices[i_vertices].ny = 0;
+			modelDrawInfo->pVertices[i_vertices].nz = 0;
+		}
+
+		if (mesh->HasVertexColors(i_vertices))
+		{
+			modelDrawInfo->pVertices[i_vertices].r = mesh->mColors[i_vertices]->r;
+			modelDrawInfo->pVertices[i_vertices].g = mesh->mColors[i_vertices]->g;
+			modelDrawInfo->pVertices[i_vertices].b = mesh->mColors[i_vertices]->b;
+			modelDrawInfo->pVertices[i_vertices].a = mesh->mColors[i_vertices]->a;
+		}
+		else
+		{
+			modelDrawInfo->pVertices[i_vertices].r = 0;
+			modelDrawInfo->pVertices[i_vertices].g = 0;
+			modelDrawInfo->pVertices[i_vertices].b = 0;
+			modelDrawInfo->pVertices[i_vertices].a = 1;
+		}
+
+		if (mesh->HasTextureCoords(0))
+		{
+			modelDrawInfo->pVertices[i_vertices].u0 = mesh->mTextureCoords[0][i_vertices].x;
+			modelDrawInfo->pVertices[i_vertices].v0 = mesh->mTextureCoords[0][i_vertices].y;
+		}
+		else
+		{
+			modelDrawInfo->pVertices[i_vertices].u0 = 0;
+			modelDrawInfo->pVertices[i_vertices].v0 = 0;
+		}
+
+		if (mesh->HasTextureCoords(1))
+		{
+			modelDrawInfo->pVertices[i_vertices].u1 = mesh->mTextureCoords[1][i_vertices].x;
+			modelDrawInfo->pVertices[i_vertices].v1 = mesh->mTextureCoords[1][i_vertices].y;
+		}
+		else
+		{
+			modelDrawInfo->pVertices[i_vertices].u1 = 0;
+			modelDrawInfo->pVertices[i_vertices].v1 = 0;
+		}
+
+		modelDrawInfo->pVertices[i_vertices].vBoneWeight[0] = 0;
+		modelDrawInfo->pVertices[i_vertices].vBoneWeight[1] = 0;
+		modelDrawInfo->pVertices[i_vertices].vBoneWeight[2] = 0;
+		modelDrawInfo->pVertices[i_vertices].vBoneWeight[3] = 0;
+		modelDrawInfo->pVertices[i_vertices].vBoneID[0] = 0;
+		modelDrawInfo->pVertices[i_vertices].vBoneID[1] = 0;
+		modelDrawInfo->pVertices[i_vertices].vBoneID[2] = 0;
+		modelDrawInfo->pVertices[i_vertices].vBoneID[3] = 0;
+	}
+
+	if (mesh->HasBones())
+	{
+		unsigned int numBone = mesh->mNumBones;
+		for (int i_bones = 0; i_bones < numBone; i_bones++)
+		{
+			const aiBone* bone = mesh->mBones[i_bones];
+			for (int i = 0; i < bone->mNumWeights; i++)
+			{
+				//const aiVertexWeight vw = bone->mWeights[i];
+				//modelDrawInfo->pVertices[vw.mVertexId];
+			}
+			//modelDrawInfo->pVertices[i_vertices].vBoneID[0] = mesh->mBones[i_bones]->mWeights[]
+			//modelDrawInfo->pVertices[i_vertices].vBoneWeight[0] = mesh->mBones[i_vertices]->mWeights[0].mWeight;
+		}
+
+	}
+
+	unsigned int vertex_element_index_index = 0;
+	modelDrawInfo->pIndices = new unsigned int[modelDrawInfo->numberOfIndices];
+	for (unsigned int i = 0; i != modelDrawInfo->numberOfTriangles; i++)
+	{
+		modelDrawInfo->pIndices[vertex_element_index_index + 0] = mesh->mFaces[i].mIndices[0];
+		modelDrawInfo->pIndices[vertex_element_index_index + 1] = mesh->mFaces[i].mIndices[1];
+		modelDrawInfo->pIndices[vertex_element_index_index + 2] = mesh->mFaces[i].mIndices[2];
+		vertex_element_index_index += 3;
+	}
 	return true;
 }
 

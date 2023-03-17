@@ -540,6 +540,11 @@
 	</model>
 	
 </PLYMODEL>
+<FBXMODEL>
+	<model name="Deadnought">asset/model/Dreadnought Redemption.fbx
+		<modelInstance>Deadnought1<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
+	</model>
+</FBXMODEL>
 <EYE_LOCATION>
 	<x>-3.5</x>
 	<y>5</y>
