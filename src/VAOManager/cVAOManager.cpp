@@ -173,7 +173,8 @@ bool cVAOManager::loadModelList(std::string filename, unsigned int shaderProgram
 			cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
 			//cMeshObj meshObj;
 			
-			result = loadFBXFile(i_mapModel->second, modelDrawInfo, shaderProgramID);
+			//result = loadFBXFile(i_mapModel->second, modelDrawInfo, shaderProgramID);
+			result = loadFBXFile(i_mapModel, modelDrawInfo, shaderProgramID);
 		}
 		//mapModelNametoMeshObj.emplace(i_mapModel->first, meshObj);
 		std::cout << i_mapModel->first << " is loaded" << std::endl;
@@ -198,9 +199,10 @@ bool cVAOManager::FindDrawInfo(std::string filename, cModelDrawInfo& drawInfo)
 	return true;
 }
 
-bool cVAOManager::loadFBXFile(std::string filename, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID)
+//bool cVAOManager::loadFBXFile(std::string filename, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID)
+bool cVAOManager::loadFBXFile(std::map<std::string, std::string>::iterator i_mapModel, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID)
 {
-	const aiScene* scene = m_Importer.ReadFile(filename, ASSIMP_LOAD_FLAGS);
+	const aiScene* scene = m_Importer.ReadFile(i_mapModel->second, ASSIMP_LOAD_FLAGS);
 
 	aiNode* node = scene->mRootNode;
 	for (int i = 0; i < node->mNumChildren; i++)
@@ -211,20 +213,29 @@ bool cVAOManager::loadFBXFile(std::string filename, cModelDrawInfo* modelDrawInf
 		child->mName;
 	}
 
-	
-
 	if (scene == 0 || !scene->HasMeshes())
 	{
 		return false;
 	}
+
+	std::vector<cModelDrawInfo*> vecModelDraw;
 
 	for (int i = 0; i < scene->mNumMeshes; i++)
 	{
 		cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
 		aiMesh* mesh = scene->mMeshes[i];
 		loadMesh(mesh, modelDrawInfo);
-		loadModelToVAO(mesh->mName.C_Str(), modelDrawInfo, shaderProgramID);
+		if(i==0)
+		{ 
+			loadModelToVAO(i_mapModel->first, modelDrawInfo, shaderProgramID);
+		}
+		else
+		{
+			loadModelToVAO(mesh->mName.C_Str(), modelDrawInfo, shaderProgramID);
+		}
+		vecModelDraw.push_back(modelDrawInfo);
 	}
+	mapModeltoMultiMesh.emplace(i_mapModel->first, vecModelDraw);
 
 
 	return true;

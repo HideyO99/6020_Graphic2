@@ -190,12 +190,32 @@ void drawObj(cMeshObj* pCurrentMeshObject, glm::mat4x4 mat_PARENT_Model, cShader
     cModelDrawInfo drawingInformation;
     if (pVAOManager->FindDrawInfo(pCurrentMeshObject->meshName, drawingInformation))
     {
-        glBindVertexArray(drawingInformation.VAO_ID);
+        std::map<std::string, std::vector<cModelDrawInfo*>>::iterator it = pVAOManager->mapModeltoMultiMesh.find(pCurrentMeshObject->meshName);
+        if (it == pVAOManager->mapModeltoMultiMesh.end())
+        {
+            glBindVertexArray(drawingInformation.VAO_ID);
 
-        glDrawElements(GL_TRIANGLES, drawingInformation.numberOfIndices, GL_UNSIGNED_INT, (void*)0);
+            glDrawElements(GL_TRIANGLES, drawingInformation.numberOfIndices, GL_UNSIGNED_INT, (void*)0);
 
-        glBindVertexArray(0);
+            glBindVertexArray(0);
 
+        }
+        else
+        {
+
+            for (size_t i = 0; i < it->second.size(); i++)
+            {
+
+
+                //glBindVertexArray(drawingInformation.VAO_ID);
+                glBindVertexArray(it->second[i]->VAO_ID);
+
+                //glDrawElements(GL_TRIANGLES, drawingInformation.numberOfIndices, GL_UNSIGNED_INT, (void*)0);
+                glDrawElements(GL_TRIANGLES, it->second[i]->numberOfIndices, GL_UNSIGNED_INT, (void*)0);
+
+                glBindVertexArray(0);
+            }
+        }
     }
     else
     {

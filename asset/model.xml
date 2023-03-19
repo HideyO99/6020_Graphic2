@@ -541,7 +541,7 @@
 	
 </PLYMODEL>
 <FBXMODEL>
-	<model name="Deadnought">asset/model/Dreadnought Redemption.fbx
+	<model name="Deadnought">asset/model/DreadnoughtRedemption.fbx
 		<modelInstance>Deadnought1<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
 	</model>
 </FBXMODEL>
