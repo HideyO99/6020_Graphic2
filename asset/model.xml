@@ -541,8 +541,8 @@
 	
 </PLYMODEL>
 <FBXMODEL>
-	<model name="Deadnought">asset/model/DreadnoughtRedemption.fbx
-		<modelInstance>Deadnought1<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
+	<model name="Deadnought">asset/model/man.fbx
+		<modelInstance>man1<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
 	</model>
 </FBXMODEL>
 <EYE_LOCATION>

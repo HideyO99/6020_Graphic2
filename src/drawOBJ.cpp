@@ -205,6 +205,11 @@ void drawObj(cMeshObj* pCurrentMeshObject, glm::mat4x4 mat_PARENT_Model, cShader
 
             for (size_t i = 0; i < it->second.size(); i++)
             {
+                GLuint texture_Number = ::g_pTextureManager->getTexttureID(it->second[i]->TextureFile);
+                GLuint texture_Unit = 0;
+                glActiveTexture(texture_Unit + GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, texture_Number);
+                pShaderManager->setShaderUniform1i("texture0", texture_Number);
                 //glBindVertexArray(drawingInformation.VAO_ID);
                 glBindVertexArray(it->second[i]->VAO_ID);
 

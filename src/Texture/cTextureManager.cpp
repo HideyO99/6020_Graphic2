@@ -150,14 +150,14 @@ bool cTextureManager::create2DTextureFromFreeImgLib(std::string textureFileName,
 	return true;
 }
 
-bool cTextureManager::isExistTexture(std::string texName)
+bool cTextureManager::isNotExistTexture(std::string texName)
 {
-	std::map< std::string, cTextureFromBMP* >::iterator it = m_map_TexNameToTexture.find(texName);
-	if (it == m_map_TexNameToTexture.end())
+	std::map< std::string, cTextureFromFile* >::iterator it = m_map_TexNameToTextureID.find(texName);
+	if (it == m_map_TexNameToTextureID.end())
 	{
-		return false;
+		return true;
 	}
-	return true;
+	return false;
 }
 
 void cTextureManager::m_appendErrorString(std::string nextErrorText)

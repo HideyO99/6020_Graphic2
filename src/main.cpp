@@ -201,6 +201,7 @@ int main(void)
 
     //load model
     cVAOManager* pVAOManager = new cVAOManager();
+    ::g_pTextureManager = new cTextureManager();
 
     result = pVAOManager->loadModelList(MODEL_LIST_XML, shaderID);
     if (!result)
@@ -223,7 +224,7 @@ int main(void)
 #endif
 
     //load texture
-    ::g_pTextureManager = new cTextureManager();
+    //::g_pTextureManager = new cTextureManager();
     ::g_pTextureManager->setBasePath(TEXTURE_PATH);
     //::g_pTextureManager->create2DTextureFromBMP("Dungeons_2_Texture_01_A.bmp");
     //::g_pTextureManager->create2DTextureFromBMP("lroc_color_poles_4k.bmp");
@@ -237,6 +238,7 @@ int main(void)
     ::g_pTextureManager->create2DTextureFromFreeImgLib("glowing-fire-flame_bw.bmp");
     ::g_pTextureManager->create2DTextureFromFreeImgLib("photos_2018_7_4_fst_water-blue.bmp");
     ::g_pTextureManager->create2DTextureFromFreeImgLib("Beholder_Base_color.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("man_Packed0_Diffuse.png");
 
     std::string load_texture_error = "";
     if (g_pTextureManager->createCubeTextureFromFreeImgLib("SpaceBox",
@@ -303,6 +305,9 @@ int main(void)
     result = pVAOManager->setTexture("barrel1", "Dungeons_2_Texture_01_A.bmp", 0);
     result = pVAOManager->setInstanceObjLighting("barrel1", false);
     //result = pVAOManager->setInstanceObjPosition("barrel1", glm::vec4(-12.5f, 2.5f, -15.f, 1.f));
+
+    result = pVAOManager->setInstanceObjScale("man1", 0.02);
+    result = pVAOManager->setTexture("man1", "man_Packed0_Diffuse.png", 0);
 
     result = pVAOManager->setInstanceObjPosition("boss", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
     //result = pVAOManager->set("boss", glm::vec4(-2.3f, 1.f, 0.f, 1.f));

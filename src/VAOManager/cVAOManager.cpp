@@ -1,4 +1,7 @@
 #include "cVAOManager.h"
+#include "../Texture/cTextureManager.h"
+
+extern cTextureManager* g_pTextureManager;
 
 cVAOManager::cVAOManager()
 {
@@ -231,7 +234,11 @@ bool cVAOManager::loadFBXFile(std::map<std::string, std::string>::iterator i_map
 				if (pMat->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL) == aiReturn_SUCCESS)
 				{
 					std::string tmp = path.data;
-					modelDrawInfo->TextureFile = tmp.substr(tmp.find_last_of("\\")+1,std::string::npos);
+					tmp = tmp.substr(tmp.find_last_of("/\\") + 1, std::string::npos);
+					if (::g_pTextureManager->isNotExistTexture(tmp))
+					{
+						::g_pTextureManager->create2DTextureFromFreeImgLib(tmp);
+					}
 				}
 			}
 		}
@@ -244,6 +251,8 @@ bool cVAOManager::loadFBXFile(std::map<std::string, std::string>::iterator i_map
 	{
 		cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
 		aiMesh* mesh = scene->mMeshes[i];
+		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+		aiString texturePath;
 		loadMesh(mesh, modelDrawInfo);
 		if(i==0)
 		{ 
@@ -252,6 +261,11 @@ bool cVAOManager::loadFBXFile(std::map<std::string, std::string>::iterator i_map
 		else
 		{
 			loadModelToVAO(mesh->mName.C_Str(), modelDrawInfo, shaderProgramID);
+		}
+		if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath, NULL, NULL, NULL, NULL, NULL) == aiReturn_SUCCESS)
+		{
+			std::string tmp = texturePath.data;
+			modelDrawInfo->TextureFile = tmp.substr(tmp.find_last_of("/\\") + 1, std::string::npos);
 		}
 		vecModelDraw.push_back(modelDrawInfo);
 	}

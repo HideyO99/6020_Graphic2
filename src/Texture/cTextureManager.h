@@ -33,7 +33,7 @@ public:
 	void setBasePath(std::string basePath);
 
 	bool create2DTextureFromFreeImgLib(std::string textureFileName, bool genMIPMap = true);
-	bool isExistTexture(std::string texName);
+	bool isNotExistTexture(std::string texName);
 
 private:
 	std::string m_basePath;
