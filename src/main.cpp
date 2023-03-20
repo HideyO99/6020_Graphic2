@@ -225,15 +225,21 @@ int main(void)
     //load texture
     ::g_pTextureManager = new cTextureManager();
     ::g_pTextureManager->setBasePath(TEXTURE_PATH);
-    ::g_pTextureManager->create2DTextureFromBMP("Dungeons_2_Texture_01_A.bmp");
-    ::g_pTextureManager->create2DTextureFromBMP("lroc_color_poles_4k.bmp");
-    ::g_pTextureManager->create2DTextureFromBMP("glowing-fire-flame.bmp");
-    ::g_pTextureManager->create2DTextureFromBMP("glowing-fire-flame_bw.bmp");
-    ::g_pTextureManager->create2DTextureFromBMP("photos_2018_7_4_fst_water-blue.bmp"); 
-    ::g_pTextureManager->create2DTextureFromBMP("Beholder_Base_color.bmp");
+    //::g_pTextureManager->create2DTextureFromBMP("Dungeons_2_Texture_01_A.bmp");
+    //::g_pTextureManager->create2DTextureFromBMP("lroc_color_poles_4k.bmp");
+    //::g_pTextureManager->create2DTextureFromBMP("glowing-fire-flame.bmp");
+    //::g_pTextureManager->create2DTextureFromBMP("glowing-fire-flame_bw.bmp");
+    //::g_pTextureManager->create2DTextureFromBMP("photos_2018_7_4_fst_water-blue.bmp"); 
+    //::g_pTextureManager->create2DTextureFromBMP("Beholder_Base_color.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("Dungeons_2_Texture_01_A.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("lroc_color_poles_4k.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("glowing-fire-flame.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("glowing-fire-flame_bw.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("photos_2018_7_4_fst_water-blue.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("Beholder_Base_color.bmp");
 
     std::string load_texture_error = "";
-    if (g_pTextureManager->createCubeTextureFromBMP("SpaceBox",
+    if (g_pTextureManager->createCubeTextureFromFreeImgLib("SpaceBox",
         "SpaceBox_right1_posX.bmp", /* positive X */
         "SpaceBox_left2_negX.bmp",  /* negative X */
         "SpaceBox_top3_posY.bmp",    /* positive Y */

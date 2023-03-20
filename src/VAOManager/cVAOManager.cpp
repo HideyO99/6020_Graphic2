@@ -218,6 +218,26 @@ bool cVAOManager::loadFBXFile(std::map<std::string, std::string>::iterator i_map
 		return false;
 	}
 
+	//get texture
+	std::string test;
+	if (scene->HasMaterials())
+	{
+		for (int i = 0; i < scene->mNumMaterials; i++)
+		{
+			const aiMaterial* pMat = scene->mMaterials[i];
+			if (pMat->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+			{
+				aiString path;
+				if (pMat->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL) == aiReturn_SUCCESS)
+				{
+					std::string tmp = path.data;
+					modelDrawInfo->TextureFile = tmp.substr(tmp.find_last_of("\\")+1,std::string::npos);
+				}
+			}
+		}
+	}
+
+
 	std::vector<cModelDrawInfo*> vecModelDraw;
 
 	for (int i = 0; i < scene->mNumMeshes; i++)

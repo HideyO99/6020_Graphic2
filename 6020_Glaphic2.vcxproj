@@ -116,7 +116,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;pugixml.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;pugixml.lib;assimp-vc143-mtd.lib;FreeImaged.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,7 +133,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;pugixml.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;pugixml.lib;assimp-vc143-mt.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -159,6 +159,7 @@
     <ClCompile Include="src\Shader\cShaderManager.cpp" />
     <ClCompile Include="src\Shader\cShaderProgram.cpp" />
     <ClCompile Include="src\Texture\C24BitBMPpixel.cpp" />
+    <ClCompile Include="src\Texture\cTextureFromFile.cpp" />
     <ClCompile Include="src\Texture\cTextureFromBMP.cpp" />
     <ClCompile Include="src\Texture\cTextureManager.cpp" />
     <ClCompile Include="src\VAOManager\cModelDrawInfo.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="src\MeshObj\cMeshObj.h" />
     <ClInclude Include="src\Shader\cShaderManager.h" />
     <ClInclude Include="src\Texture\C24BitBMPpixel.h" />
+    <ClInclude Include="src\Texture\cTextureFromFile.h" />
     <ClInclude Include="src\Texture\cTextureFromBMP.h" />
     <ClInclude Include="src\Texture\cTextureManager.h" />
     <ClInclude Include="src\VAOManager\cModelDrawInfo.h" />

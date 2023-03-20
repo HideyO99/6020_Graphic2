@@ -80,12 +80,50 @@ bool cTextureManager::createCubeTextureFromBMP(std::string cubeMapName, std::str
 	return true;
 }
 
+bool cTextureManager::createCubeTextureFromFreeImgLib(std::string cubeMapName, std::string posX_filename, std::string negX_filename, std::string posY_filename, std::string negY_filename, std::string posZ_filename, std::string negZ_filename, bool isSeamless, std::string& error)
+{
+	std::string posX_fileName_FullPath = this->m_basePath + "/" + posX_filename;
+	std::string negX_fileName_FullPath = this->m_basePath + "/" + negX_filename;
+	std::string posY_fileName_FullPath = this->m_basePath + "/" + posY_filename;
+	std::string negY_fileName_FullPath = this->m_basePath + "/" + negY_filename;
+	std::string posZ_fileName_FullPath = this->m_basePath + "/" + posZ_filename;
+	std::string negZ_fileName_FullPath = this->m_basePath + "/" + negZ_filename;
+
+	cTextureFromFile* pTempTexture = new cTextureFromFile();
+	bool result = pTempTexture->createNewCubeTextureFromBMPFiles(cubeMapName,
+		posX_fileName_FullPath, negX_fileName_FullPath,
+		posY_fileName_FullPath, negY_fileName_FullPath,
+		posZ_fileName_FullPath, negZ_fileName_FullPath,
+		isSeamless);
+
+	if (result)
+	{
+		this->m_map_TexNameToTextureID[cubeMapName] = pTempTexture;
+		return true;
+	}
+
+	return false;
+}
+
 GLuint cTextureManager::getTexttureID(std::string textureFileName)
 {
-	std::map< std::string, cTextureFromBMP* >::iterator itTexture
-		= this->m_map_TexNameToTexture.find(textureFileName);
+	std::map< std::string, cTextureFromFile* >::iterator itTexture
+		= this->m_map_TexNameToTextureID.find(textureFileName);
 	// Found it?
-	if (itTexture == this->m_map_TexNameToTexture.end())
+	if (itTexture == this->m_map_TexNameToTextureID.end())
+	{
+		return 0;
+	}
+	// Reutrn texture number (from OpenGL genTexture)
+	return itTexture->second->getTextureNumber();
+}
+
+GLuint cTextureManager::getTexttureID_BMP(std::string textureFileName)
+{
+	std::map< std::string, cTextureFromFile* >::iterator itTexture
+		= this->m_map_TexNameToTextureID.find(textureFileName);
+	// Found it?
+	if (itTexture == this->m_map_TexNameToTextureID.end())
 	{
 		return 0;
 	}
@@ -96,6 +134,30 @@ GLuint cTextureManager::getTexttureID(std::string textureFileName)
 void cTextureManager::setBasePath(std::string basePath)
 {
 	this->m_basePath = basePath;
+}
+
+bool cTextureManager::create2DTextureFromFreeImgLib(std::string textureFileName, bool genMIPMap)
+{
+	std::string fileToLoadFullPath = this->m_basePath + "/" + textureFileName;
+
+	cTextureFromFile* pTempTexture = new cTextureFromFile();
+	bool result = pTempTexture->createNewTextureFromFile(textureFileName, fileToLoadFullPath, genMIPMap);
+	if (result)
+	{
+		this->m_map_TexNameToTextureID[textureFileName] = pTempTexture;
+		return true;
+	}
+	return true;
+}
+
+bool cTextureManager::isExistTexture(std::string texName)
+{
+	std::map< std::string, cTextureFromBMP* >::iterator it = m_map_TexNameToTexture.find(texName);
+	if (it == m_map_TexNameToTexture.end())
+	{
+		return false;
+	}
+	return true;
 }
 
 void cTextureManager::m_appendErrorString(std::string nextErrorText)

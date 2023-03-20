@@ -205,8 +205,6 @@ void drawObj(cMeshObj* pCurrentMeshObject, glm::mat4x4 mat_PARENT_Model, cShader
 
             for (size_t i = 0; i < it->second.size(); i++)
             {
-
-
                 //glBindVertexArray(drawingInformation.VAO_ID);
                 glBindVertexArray(it->second[i]->VAO_ID);
 
