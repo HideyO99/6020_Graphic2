@@ -44,9 +44,6 @@ float pitch = 0.0f;
 float lastX = 1280.0f / 2.0;
 float lastY = 800.0 / 2.0;
 float fov = 45.0f;
-glm::vec3 g_cameraEye1 = glm::vec3(0.0, 100.0, 0.0f);
-glm::vec3 g_cameraTarget1 = g_cameraTarget_defualt;
-glm::vec3 g_cameraFront1 = glm::vec3(0.0f, 0.0f, -1.0f);
 
 bool toggleblur = false;
 
@@ -340,10 +337,9 @@ int main(void)
 
         //glViewport(0, 0, width, height);
         //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        g_cameraEye1 += glm::vec3(1, 0, 0);
         setFBO2(pShaderManager, pVAOManager);
         setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f,1.f,0.f));
-        setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget1);
+        setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget);
         //g_cameraEye = glm::vec4(0.f);
         //g_cameraTarget = glm::vec4(200.f, 200.f, -100.f, 0.f);
         //////////////////////////////////////////////////////////////
@@ -637,17 +633,8 @@ void setFBOtoTexture(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVA
     //bool result = pVAOManager->setInstanceObjScale("projecter1", 100.f);
     bool result = pVAOManager->setInstanceObjVisible(projector, true);
     pShaderManager->setShaderUniform1f("bMirror", true);
-    if (fbo = g_FBO_04)
-    {
-        pShaderManager->setShaderUniform1f("bRipple", true);
-    }
-    else
-    {
-        pShaderManager->setShaderUniform1f("bRipple", false);
-    }
     drawObj(scrOBJ, scrMAT, pShaderManager, pVAOManager);
     result = pVAOManager->setInstanceObjVisible(projector, false);
-    pShaderManager->setShaderUniform1f("bRipple", false);
     pShaderManager->setShaderUniform1f("bMirror", false);
     pShaderManager->setShaderUniform1f("bFullScreen", false);
 }
@@ -738,15 +725,11 @@ void setFBO2(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
     glViewport(0, 0, g_FBO_02->width, g_FBO_02->height);
     g_FBO_02->clearBuffer(true, true);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
     glm::vec3 eye = glm::vec3(-3.5f, 5.f, 11.f);
-    
-    
     //std::cout << "g_cameraEye" << g_cameraEye.x << " : " << g_cameraEye.y << " : " << g_cameraEye.z << std::endl;
     //if (!bIsWalkAround)
     //{
     matView = glm::lookAt(eye, g_cameraTarget, ::g_upVector);
-    //matView = glm::lookAt(eyeTemp, targetTemp, ::g_upVector);
     //}
     //else
     //{
