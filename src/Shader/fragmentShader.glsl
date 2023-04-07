@@ -93,6 +93,7 @@ vec3 GaussianBlurCalculation(int numElement);
 float gauss(float x, float sigma);
 vec4 LightContribute(vec3 vMaterialColor, vec3 vNormal, vec3 vWorldPos, vec4 vSpecular, vec4 refraction);
 vec4 LightCalculation(vec2 FragCoord);
+vec4 RippleEffect();
 
 void main()
 {
@@ -233,6 +234,7 @@ void main()
 	else
 	{
 		FBO_vertexNormal = vec4(fNormal.rgb, 1.f);
+		pixelOutputColor = vec4(materialColor.rgb, 1.f);
 
 	}
 	if(bIsIlandModel)
@@ -450,6 +452,20 @@ vec4 LightCalculation(vec2 FragCoord)
 		calPixel = LightContribute(pixelColor.rgb,pixelNormal.rgb,pixelWorldPos.rgb,pixelSpec,pixelrefract);
 	}
 	return calPixel;
+}
+
+vec4 RippleEffect(vec2 fragCoord)
+{
+	float screen_width = screen_width_height.x;
+	float screen_height = screen_width_height.y;
+	float resolution = screen_width * screen_height;
+    vec2 cp = -1.0 + 2.0 * fragCoord / resolution;
+    float cl = length(cp);
+    //vec2 uv = fragCoord / resolution + (cp / cl) * cos(cl * 12.0 - iTime * 4.0) * 0.02;
+    vec2 uv = fragCoord / resolution + (cp / cl) * cos(cl * 12.0 - 0 * 4.0) * 0.02;
+    vec3 col = texture(sampler_FBO_vertexMaterialColour, uv).xyz;
+
+	return vec4(col, 1.0);
 }
 
 //vec3 GaussianBlurCalculation(int numElement,sampler2D fboTexture)
