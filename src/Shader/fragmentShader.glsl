@@ -33,6 +33,7 @@ uniform float blurAmount;
 uniform vec3 focusPlane;
 const int MAX_KERNEL_1D_SIZE = 20;
 uniform bool bMirror;
+uniform bool bRipple;
 
 uniform vec4 debugColour;
 
