@@ -2,7 +2,9 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <vector>
+#include <map>
 //#include <glm/vec3.hpp>
+#include "../Animation/cAnimation.h"
 
 #define MOVINGTEXTURE true
 
@@ -16,7 +18,7 @@ public:
 	std::string instanceName;
 	glm::vec3 position;
 	glm::vec3 rotation;
-	float scale;
+	glm::vec3 scale;
 	bool isWireframe;
 	glm::vec4 color_RGBA;
 	bool bUse_RGBA_colour;
@@ -31,6 +33,16 @@ public:
 	float time;
 	bool isMovingTexture;
 #endif
+	bool hasBone;
+
+	std::vector<glm::mat4> BoneModelMatrices;
+	std::vector<glm::mat4> GlobalTransformations;
+	glm::mat4 BoneRotationMatrices[66];
+
+	cAnimation Animation;
+
+	std::vector<BoneInfo> boneInfoVec;
+	std::map<std::string, int> boneNameToIdMap;
 
 	std::vector<cMeshObj*> vecChildMesh;
 	

@@ -24,6 +24,7 @@
 #include "GUI/cGUI.h"
 #include "Texture/cTextureManager.h"
 #include "FBO/cFBO.h"
+#include "boneShader.h"
 
 #define MODEL_LIST_XML          "asset/model.xml"
 #define VERTEX_SHADER_FILE      "src/shader/vertexShader.glsl"
@@ -78,6 +79,8 @@ void setFBOtoTexture(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVA
 void setFBOCubeMap(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOManager, glm::vec3 eye);
 void setFBOtoTextureCubeMap(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOManager, std::string projector);
 void setFBO2(cShaderManager* pShaderManager, cVAOManager* pVAOManager);
+
+void setupBoneShaderLocation(cShaderManager* pShaderManager);
 
 int main(void)
 {
@@ -192,6 +195,7 @@ int main(void)
 
     
     ::g_pTheLightManager->loadLightUniformLocation(shaderID);
+    setupBoneShaderLocation(shaderID);
 #if USE_IMGUI
     for (size_t i = 0; i < MAX_LIGHT_SOURCE; i++)
     {
@@ -530,7 +534,11 @@ void updateInstanceObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
         {
             pShaderManager->setShaderUniform1f("bIsSkyboxObject", (GLfloat)GL_TRUE);
             pCurrentMeshObject->position = ::g_cameraEye;
-            pCurrentMeshObject->scale = 7500.f;
+            pCurrentMeshObject->scale = glm::vec3(7500.f);
+        }
+        if (pCurrentMeshObject->hasBone)
+        {
+            pShaderManager->setShaderUniform1f("hasBone", (GLfloat)GL_TRUE);
         }
         matModel = glm::mat4x4(1.0f);
 
@@ -554,6 +562,10 @@ void updateInstanceObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
         if (pCurrentMeshObject->isIslandModel)
         {
             pShaderManager->setShaderUniform1f("bIsIlandModel", (GLfloat)GL_FALSE);
+        }
+        if (pCurrentMeshObject->hasBone)
+        {
+            pShaderManager->setShaderUniform1f("hasBone", (GLfloat)GL_FALSE);
         }
     }
 #if MOVINGTEXTURE

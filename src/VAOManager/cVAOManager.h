@@ -33,8 +33,8 @@ public:
 	bool loadModelList(std::string filename, unsigned int shaderProgramID);
 	bool FindDrawInfo(std::string filename, cModelDrawInfo& drawInfo);
 	//bool loadFBXFile(std::string filename, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID);
-	bool loadFBXFile(std::map<std::string, std::string>::iterator i_mapModel, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID);
-	bool loadMesh(const aiMesh* mesh, cModelDrawInfo* modelDrawInfo);
+	bool loadFBXFile(std::map<std::string, std::string>::iterator i_instanceToModel, std::string meshName, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID);
+	bool loadMesh(const aiMesh* mesh, cModelDrawInfo* modelDrawInfo, cMeshObj* meshObj);
 	bool loadPLYFile(std::string filename, cModelDrawInfo& modelDrawInfo, std::string error);
 	bool setInstanceObjScale(std::string meshObjName, float value);
 	bool setInstanceObjWireframe(std::string meshObjName, bool value);
