@@ -138,6 +138,9 @@
     <ClCompile Include="src\boneShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GUI\cGUI.h">
@@ -219,6 +222,12 @@
       <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="src\boneShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\time.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BoneHierarchy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

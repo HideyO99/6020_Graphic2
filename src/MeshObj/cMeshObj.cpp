@@ -61,3 +61,10 @@ cMeshObj* cMeshObj::findMeshObjByName(std::string name, bool searchChild)
 
 	return nullptr;
 }
+
+int cMeshObj::findBoneIDfromName(std::string boneName)
+{
+	std::map<std::string, int>::iterator it = boneNameToIdMap.find(boneName);
+
+	return it->second;
+}
