@@ -132,6 +132,7 @@ void main()
 				else
 				{
 					pixelOutputColor = LightContribute(vertexColour.rgb, vertexNormal.xyz, vertexWorldPosition.xyz, vertexSpecular, vertexRefraction);
+					//pixelOutputColor = LightContribute(vertexColour.rgb, vertexNormal.xyz, vertexWorldPosition.xyz, vertexSpecular, vec4(0));
 				}
 			}
 			else
@@ -148,7 +149,7 @@ void main()
 //			pixelOutputColor.rgb += ambient;
 			pixelOutputColor.a = 1.f;
 		}
-//		pixelOutputColor = vertexWorldPosition;
+//		pixelOutputColor = vertexRefraction*vertexRefraction;
 		//
 		return;
 	}

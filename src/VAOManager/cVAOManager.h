@@ -46,6 +46,7 @@ public:
 	bool setInstanceObjBone(std::string meshObjName);
 
 	bool setInstanceObjPosition(std::string meshObjName, glm::vec4 value);
+	bool setInstanceObjRotation(std::string meshObjName, glm::vec4 value);
 
 	glm::vec4 getInstanceObjPosition(std::string meshObjName);
 

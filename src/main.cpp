@@ -32,7 +32,7 @@
 #define VERTEX_SHADER_FILE      "src/shader/vertexShader.glsl"
 #define FRAGMENT_SHADER_FILE    "src/shader/fragmentShader.glsl"
 #define TEXTURE_PATH            "asset/texture"
-#define USE_IMGUI false
+#define USE_IMGUI true
 #define SEC_UPDATE 5
 
 glm::vec3 g_cameraEye = glm::vec3(0.0, 5.0, 0.0f);
@@ -334,6 +334,36 @@ int main(void)
     g_MeshBoss = pVAOManager->findMeshObjAddr("boss");
     result = pVAOManager->setInstanceObjLighting("boss", false);
 
+    //result = pVAOManager->setInstanceObjLighting("TV1", true);
+    //result = pVAOManager->setInstanceObjLighting("TV2", true);
+    //result = pVAOManager->setInstanceObjLighting("TV3", true);
+    result = pVAOManager->setInstanceObjRotation("TV1", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
+    result = pVAOManager->setInstanceObjRotation("TV2", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
+    result = pVAOManager->setInstanceObjRotation("TV3", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
+    result = pVAOManager->setInstanceObjRGB("TV1", glm::vec4(1.f, 0.f, 0.f, 1.f));
+    result = pVAOManager->setInstanceObjRGB("TV2", glm::vec4(0.f, 1.f, 0.f, 1.f));
+    result = pVAOManager->setInstanceObjRGB("TV3", glm::vec4(0.f, 0.f, 1.f, 1.f));
+    result = pVAOManager->setInstanceObjScale("TV1", 0.3);
+    result = pVAOManager->setInstanceObjScale("TV2", 0.3);
+    result = pVAOManager->setInstanceObjScale("TV3", 0.3);
+
+    result = pVAOManager->setInstanceObjRotation("TVScreen1", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
+    result = pVAOManager->setInstanceObjRotation("TVScreen2", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
+    result = pVAOManager->setInstanceObjRotation("TVScreen3", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
+    //result = pVAOManager->setInstanceObjRGB("TVScreen1", glm::vec4(0.f, 1.f, 1.f, 1.f));
+    //result = pVAOManager->setInstanceObjRGB("TVScreen2", glm::vec4(0.f, 1.f, 1.f, 1.f));
+    //result = pVAOManager->setInstanceObjRGB("TVScreen3", glm::vec4(0.f, 1.f, 1.f, 1.f));
+    result = pVAOManager->setInstanceObjScale("TVScreen1", 0.3);
+    result = pVAOManager->setInstanceObjScale("TVScreen2", 0.3);
+    result = pVAOManager->setInstanceObjScale("TVScreen3", 0.3);
+    result = pVAOManager->setInstanceObjLighting("TVScreen1", false);
+    result = pVAOManager->setInstanceObjLighting("TVScreen2", false);
+    result = pVAOManager->setInstanceObjLighting("TVScreen3", false);
+    result = pVAOManager->setInstanceObjSpecularPower("TVScreen1", glm::vec4(1.f,1.f,1.f,2.f));
+    result = pVAOManager->setInstanceObjSpecularPower("TVScreen2", glm::vec4(1.f,1.f,1.f,2.f));
+    result = pVAOManager->setInstanceObjSpecularPower("TVScreen3", glm::vec4(1.f,1.f,1.f,2.f));
+
+
     light0Setup(); // Dir light
     light1Setup(pVAOManager);// torch
     light2Setup(pVAOManager); //beholder eye
@@ -538,7 +568,10 @@ void updateInstanceObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
 
         //pCurrentMeshObject->textureRatios[0] -= 0.001f;
         //pCurrentMeshObject->textureRatios[1] += 0.001f;
-
+        if (pCurrentMeshObject->meshName != "TV"&& pCurrentMeshObject->meshName != "TVScreen")
+        {
+            continue;
+        }
         if (!pCurrentMeshObject->isVisible)
         {
             // Skip the rest of the loop

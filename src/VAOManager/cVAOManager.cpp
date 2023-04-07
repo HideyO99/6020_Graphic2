@@ -619,6 +619,18 @@ bool cVAOManager::setInstanceObjPosition(std::string meshObjName, glm::vec4 valu
 
 	return true;
 }
+bool cVAOManager::setInstanceObjRotation(std::string meshObjName, glm::vec4 value)
+{
+	std::map<std::string, cMeshObj* >::iterator itCurrentMesh = mapInstanceNametoMeshObj.find(meshObjName);
+	if (itCurrentMesh == mapInstanceNametoMeshObj.end())
+	{
+		return false;
+	}
+	cMeshObj* pCurrentMeshObject = itCurrentMesh->second;
+	pCurrentMeshObject->rotation = value;
+
+	return true;
+}
 glm::vec4 cVAOManager::getInstanceObjPosition(std::string meshObjName)
 {
 	std::map<std::string, cMeshObj* >::iterator itCurrentMesh = mapInstanceNametoMeshObj.find(meshObjName);

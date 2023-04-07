@@ -36,7 +36,7 @@ void light1Setup(cVAOManager* pVAOManager)
     ::g_pTheLightManager->plight[1]->turnON = 1;
 
     ::g_pTheLightManager->plight[2]->type = cLight::LightType::LIGHT_POINT;
-    ::g_pTheLightManager->plight[2]->diffuse = diffuse;
+    ::g_pTheLightManager->plight[2]->diffuse = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
     ::g_pTheLightManager->plight[2]->position = pVAOManager->getInstanceObjPosition("debug_light2");
     ::g_pTheLightManager->plight[2]->attenuation = atten;
     ::g_pTheLightManager->plight[2]->turnON = 1;

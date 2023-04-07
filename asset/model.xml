@@ -504,7 +504,7 @@
 	
 	<model name="debug_light">asset/model/ISO_Shphere_flat_3div_xyz_n_rgba_uv.ply
 		<modelInstance>debug_light1<posX> -5.5</posX><posZ> 7.8</posZ><rotateY>0</rotateY></modelInstance>
-		<modelInstance>debug_light2<posX>-11.2</posX><posZ> 3.5</posZ><rotateY>0</rotateY></modelInstance>
+		<modelInstance>debug_light2<posX>    0</posX><posZ> 4.5</posZ><rotateY>0</rotateY></modelInstance>
 		<modelInstance>debug_light3<posX>  8.5</posX><posZ>-2.8</posZ><rotateY>0</rotateY></modelInstance>
 		<modelInstance>debug_light4<posX>-11.8</posX><posZ>-4.5</posZ><rotateY>0</rotateY></modelInstance>
 		<modelInstance>debug_light5<posX> -9.5</posX><posZ>11.2</posZ><rotateY>0</rotateY></modelInstance>
@@ -539,10 +539,20 @@
 		<modelInstance>barrel1<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
 	</model>
 	
+	<model name="TV">asset/model/RetroTV.edited.bodyonly.ply
+		<modelInstance>TV1<posX>-39</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
+		<modelInstance>TV2<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
+		<modelInstance>TV3<posX>39</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
+	</model>
+	<model name="TVScreen">asset/model/RetroTV.edited.screenonly.ply
+		<modelInstance>TVScreen1<posX>-39</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
+		<modelInstance>TVScreen2<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
+		<modelInstance>TVScreen3<posX>39</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
+	</model>
 </PLYMODEL>
 
 <EYE_LOCATION>
-	<x>-3.5</x>
+	<x>0</x>
 	<y>5</y>
-	<z>11</z>
+	<z>100</z>
 </EYE_LOCATION>
