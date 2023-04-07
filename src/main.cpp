@@ -25,13 +25,15 @@
 #include "Texture/cTextureManager.h"
 #include "FBO/cFBO.h"
 #include "boneShader.h"
+#include "time.h"
+#include "Animation/AnimationManager.h"
 
 #define MODEL_LIST_XML          "asset/model.xml"
 #define VERTEX_SHADER_FILE      "src/shader/vertexShader.glsl"
 #define FRAGMENT_SHADER_FILE    "src/shader/fragmentShader.glsl"
 #define TEXTURE_PATH            "asset/texture"
 #define USE_IMGUI true
-
+#define SEC_UPDATE 5
 
 glm::vec3 g_cameraEye = glm::vec3(0.0, 5.0, 0.0f);
 glm::vec3 g_cameraTarget_defualt = glm::vec3(-2.5f, 2.5f, -15.0f);
@@ -48,6 +50,16 @@ float fov = 45.0f;
 
 bool toggleblur = false;
 
+double g_LastCall;
+double g_LastCall5s;
+double g_CurrentTime;
+
+bool g_PlayAnimation = false;
+unsigned int g_AnimationSeq = 0;
+
+const int FRAMES_PER_SECOND = 30;
+const double FRAME_RATE = (double)1 / FRAMES_PER_SECOND;
+
 cLightManager* g_pTheLightManager = NULL;
 static GLFWwindow* window = nullptr;
 
@@ -58,6 +70,8 @@ cFBO* g_FBO_02 = NULL;
 cFBO* g_FBO_03 = NULL;
 cFBO* g_FBO_04 = NULL;
 cMeshObj* g_MeshBoss = NULL;
+
+AnimationManager* g_pAnimationManager = NULL;
 
 extern void error_callback(int error, const char* description);
 extern void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -80,7 +94,9 @@ void setFBOCubeMap(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOM
 void setFBOtoTextureCubeMap(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOManager, std::string projector);
 void setFBO2(cShaderManager* pShaderManager, cVAOManager* pVAOManager);
 
-void setupBoneShaderLocation(cShaderManager* pShaderManager);
+void createAnimation(cVAOManager* pVAOManager);
+
+void updateByFrameRate();
 
 int main(void)
 {
@@ -324,7 +340,10 @@ int main(void)
     //light3Setup();
     //light4Setup();
 
+    ::g_pAnimationManager = new AnimationManager();
+    //createAnimation(pVAOManager);
 
+    cTime::update();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -346,6 +365,9 @@ int main(void)
         setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget);
         //g_cameraEye = glm::vec4(0.f);
         //g_cameraTarget = glm::vec4(200.f, 200.f, -100.f, 0.f);
+        
+        updateByFrameRate();
+
         //////////////////////////////////////////////////////////////
         //FBO                                                       //
         //////////////////////////////////////////////////////////////
@@ -764,4 +786,87 @@ void setFBO2(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
     result = pVAOManager->setInstanceObjVisible("barrel1", false);
     
     //updateInstanceObj(pShaderManager, pVAOManager);
+}
+
+void createAnimation(cVAOManager* pVAOManager)
+{
+   // cMeshObj* meshObj = pVAOManager->findMeshObjAddr("man1");
+   // //AnimationData* animData = new AnimationData();
+   // //BoneAnimationData bone1 = 
+   //// meshObj->BoneAnimation
+   // meshObj->Animation.tag = "PosLerpNoEasing";
+   // meshObj->Animation.curSeq = 0;
+   // meshObj->Animation.Speed = 1.f;
+   // meshObj->Animation.IsLooping = true;
+   // meshObj->Animation.IsPlaying = false;
+   // meshObj->Animation.AnimationTime = 0.f;
+   // g_pAnimationManager->animationOBJList.push_back(meshObj);
+
+
+   // //Sequence 1
+   // AnimationData seq1_bone1;
+   // seq1_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(3.f, 1.f, 3.f), 0.f, None));
+   // seq1_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(0.f, 1.f, 0.f), 5.f, None));
+   // seq1_bone1.ScaleKeyFrames.push_back(ScaleKeyFrame(glm::vec3(1.f), 0.f, None));
+   // seq1_bone1.RotationKeyFrames.push_back(RotationKeyFrame(glm::quat(0.f, 0.f, 0.f, 0.f), 0.f, None));
+   // seq1_bone1.Duration = 5.f;
+   // g_pAnimationManager->AddBoneAnimation("UpperArm_L_seq1", seq1_bone1);
+   // meshObj->Animation.seq.push_back("PosLerpNoEasing");
+
+   // //sequence 2
+   // AnimationData seq2_bone1;
+   // seq2_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(0.f, 1.f, 0.f), 0.f, None));
+   // seq2_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(-25.f, 1.f, -25.f), 5.f, None));
+   // seq2_bone1.ScaleKeyFrames.push_back(ScaleKeyFrame(glm::vec3(1.f), 0.f, None));
+   // seq2_bone1.ScaleKeyFrames.push_back(ScaleKeyFrame(glm::vec3(10.f), 5.f, None));
+   // seq2_bone1.RotationKeyFrames.push_back(RotationKeyFrame(glm::quat(0.f, 0.f, 0.f, 0.f), 0.f, None));
+   // seq2_bone1.Duration = 5.f;
+   // g_pAnimationManager->AddBoneAnimation("UpperArm_L_seq2", seq2_bone1);
+   // meshObj->Animation.seq.push_back("ScaleLerpNoEasing");
+
+   // //sequence 3
+   // AnimationData seq3_bone1;
+   // seq3_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(-25.f, 1.f, -25.f), 0.f, None));
+   // seq3_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(-12.5f, 25.f, -12.5f), 2.5f, None));
+   // seq3_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(0.f, 1.f, 0.f), 5.f, None));
+   // seq3_bone1.ScaleKeyFrames.push_back(ScaleKeyFrame(glm::vec3(10.f), 0.f, None));
+   // seq3_bone1.ScaleKeyFrames.push_back(ScaleKeyFrame(glm::vec3(5.f), 5.f, None));
+   // seq3_bone1.RotationKeyFrames.push_back(RotationKeyFrame(glm::quat(1.f, 0.f, 0.f, 0.f), 0.f, None));
+   // seq3_bone1.RotationKeyFrames.push_back(RotationKeyFrame(glm::quat(0.f, 0.f, 0.f, 1.f), 2.5f, None));
+   // seq3_bone1.RotationKeyFrames.push_back(RotationKeyFrame(glm::quat(1.f, 0.f, 0.f, 0.f), 5.f, None));
+   // seq3_bone1.Duration = 5.f;
+   // g_pAnimationManager->AddAnimation("UpperArm_L_seq3", seq3_bone1);
+   // meshObj->Animation.seq.push_back("RotationSlerpNoEasing");
+}
+
+void updateByFrameRate()
+{
+    cTime::update();
+    double deltaTime = cTime::getDeltaTime();
+    g_CurrentTime += deltaTime;
+
+    if (g_CurrentTime >= g_LastCall + FRAME_RATE)
+    {
+        double elapsedTime = g_CurrentTime - g_LastCall;
+        g_LastCall = g_CurrentTime;
+
+        //std::map<std::string, cObject*>::iterator obj_it = g_physicSys.mapOBJ.find("Player");
+        //obj_it->second->position = ::g_cameraEye;
+
+        //cal player velocity
+        //obj_it->second->velocity.x = (obj_it->second->position.x - obj_it->second->prevPosition.x) / elapsedTime;
+        //obj_it->second->velocity.z = (obj_it->second->position.z - obj_it->second->prevPosition.z) / elapsedTime;
+
+        //obj_it->second->update();
+
+        g_pAnimationManager->AnimationUpdate(g_PlayAnimation, elapsedTime);
+        //g_physicSys.updateSystem(elapsedTime);
+    }
+    //if (g_CurrentTime >= g_LastCall5s + SEC_UPDATE)
+    //{
+    //    double elapsedTime = g_CurrentTime - g_LastCall5s;
+    //    g_LastCall5s = g_CurrentTime;
+
+    //    g_physicSys.gameUpdate();
+    //}
 }

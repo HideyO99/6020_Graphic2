@@ -4,6 +4,7 @@
 #include "MeshObj/cMeshObj.h"
 #include <iostream>
 #include "FBO/cFBO.h"
+#include "Animation/AnimationManager.h"
 
 extern cMeshObj* g_MeshBoss;
 extern glm::vec3 g_cameraEye;
@@ -18,6 +19,8 @@ extern float lastX;
 extern float lastY;
 extern float fov;
 extern cFBO* g_FBO_01;
+extern AnimationManager* g_pAnimationManager;
+extern bool g_PlayAnimation;
 
 void error_callback(int error, const char* description)
 {

@@ -40,6 +40,7 @@ public:
 	glm::mat4 BoneRotationMatrices[66];
 
 	cAnimation Animation;
+	//BoneAnimationData BoneAnimation;
 
 	std::vector<BoneInfo> boneInfoVec;
 	std::map<std::string, int> boneNameToIdMap;
@@ -47,6 +48,7 @@ public:
 	std::vector<cMeshObj*> vecChildMesh;
 	
 	cMeshObj* findMeshObjByName(std::string name, bool searchChild = true);
+	int findBoneIDfromName(std::string boneName);
 
 };
 
