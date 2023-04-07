@@ -348,18 +348,27 @@ vec4 LightContribute(vec3 vMaterialColor, vec3 vNormal, vec3 vWorldPos, vec4 vSp
 		finalObjectColor.rgb += (vMaterialColor.rgb * lightDiffuseContrib.rgb) + (vSpecular.rgb  * lightSpecularContrib.rgb );
 	}
 
-	// (index of refraction for diamond is 2.417 according to wikipedia)
-	// (index of refraction for water is 1.333 according to wikipedia)
-	vec3 STU_Vector = refract(refraction.xyz, vNormal.xyz, 1.0f/1.333f);
-	vec3 cubeMapColour = texture( skyboxTexture, STU_Vector.xyz ).rgb;
-	vec4 pixelOutput_tmp = vec4(0.f);
-	pixelOutput_tmp.rgb *=0.00001f;
-	pixelOutput_tmp.rgb += cubeMapColour.rgb;
-	vec3 ambient = vMaterialColor * 0.15;
-	finalObjectColor.rgb += ambient;
-	finalObjectColor.rgb += pixelOutput_tmp.rgb;
-	return vec4(finalObjectColor.rgb,1.f);
-	//finalObjectColor.a = 1.0f;
+	if(refraction!=vec4(0.f))
+	{
+		// (index of refraction for diamond is 2.417 according to wikipedia)
+		// (index of refraction for water is 1.333 according to wikipedia)
+		vec3 STU_Vector = refract(refraction.xyz, vNormal.xyz, 1.0f/1.333f);
+		vec3 cubeMapColour = texture( skyboxTexture, STU_Vector.xyz ).rgb;
+		vec4 pixelOutput_tmp = vec4(0.f);
+		pixelOutput_tmp.rgb *=0.00001f;
+		pixelOutput_tmp.rgb += cubeMapColour.rgb;
+		vec3 ambient = vMaterialColor * 0.15;
+		finalObjectColor.rgb += ambient;
+		finalObjectColor.rgb += pixelOutput_tmp.rgb;
+		
+		return vec4(finalObjectColor.rgb,1.f);
+	}else{
+		vec3 ambient = vMaterialColor * 0.15;
+		finalObjectColor.rgb += ambient;
+
+		return vec4(finalObjectColor.rgb,1.f);
+		//finalObjectColor.a = 1.0f;
+	}
 
 	return finalObjectColor;
 }
