@@ -34,6 +34,7 @@ uniform vec3 focusPlane;
 const int MAX_KERNEL_1D_SIZE = 20;
 uniform bool bMirror;
 uniform bool bRipple;
+uniform float iTime;
 
 uniform vec4 debugColour;
 
@@ -121,14 +122,21 @@ void main()
 
 		if(blurAmount == 0.f)
 		{
-			if(vertexNormal == vec4(1.f))
+			if(!bRipple)
 			{
-				pixelOutputColor = vertexColour;
-				//return;
+				if(vertexNormal == vec4(1.f))
+				{
+					pixelOutputColor = vertexColour;
+					//return;
+				}
+				else
+				{
+					pixelOutputColor = LightContribute(vertexColour.rgb, vertexNormal.xyz, vertexWorldPosition.xyz, vertexSpecular, vertexRefraction);
+				}
 			}
 			else
 			{
-				pixelOutputColor = LightContribute(vertexColour.rgb, vertexNormal.xyz, vertexWorldPosition.xyz, vertexSpecular, vertexRefraction);
+				pixelOutputColor = RippleEffect(textCoords);
 			}
 		}
 		if(blurAmount>0)
@@ -465,16 +473,17 @@ vec4 LightCalculation(vec2 FragCoord)
 
 vec4 RippleEffect(vec2 fragCoord)
 {
-	float screen_width = screen_width_height.x;
-	float screen_height = screen_width_height.y;
-	float resolution = screen_width * screen_height;
-    vec2 cp = -1.0 + 2.0 * fragCoord / resolution;
+    vec2 cp = -1.0 + 2.0 * fragCoord ;
     float cl = length(cp);
-    //vec2 uv = fragCoord / resolution + (cp / cl) * cos(cl * 12.0 - iTime * 4.0) * 0.02;
-    vec2 uv = fragCoord / resolution + (cp / cl) * cos(cl * 12.0 - 0 * 4.0) * 0.02;
+    vec2 uv = fragCoord  + (cp / cl) * cos(cl * 12.0 - iTime * 4.0) * 0.02;
+    //vec2 uv = fragCoord / resolution + (cp / cl) * cos(cl * 12.0 - 0 * 4.0) * 0.02;
     vec3 col = texture(sampler_FBO_vertexMaterialColour, uv).xyz;
-
-	return vec4(col, 1.0);
+	vec3 vertexNormal = texture( sampler_FBO_vertexNormal, uv ).xyz;
+	vec3 vertexWorldPosition = texture( sampler_FBO_vertexWorldPos, uv ).xyz;
+	vec4 vertexSpecular = texture( sampler_FBO_vertexSpecular, uv );
+	vec4 vertexRefraction = texture( sampler_FBO_vertexRefraction, uv );
+	vec4 calPixel = LightContribute(col, vertexNormal, vertexWorldPosition, vertexSpecular, vertexRefraction);
+	return calPixel;
 }
 
 //vec3 GaussianBlurCalculation(int numElement,sampler2D fboTexture)

@@ -49,7 +49,7 @@ float lastY = 800.0 / 2.0;
 float fov = 45.0f;
 
 bool toggleblur = false;
-
+bool toggleRipple = false;
 double g_LastCall;
 double g_LastCall5s;
 double g_CurrentTime;
@@ -482,12 +482,18 @@ int main(void)
         else
         {
             pShaderManager->setShaderUniform1f("blurAmount", 0.f);
+            if (toggleRipple)
+            {
+                pShaderManager->setShaderUniform1f("bRipple", (GLfloat)GL_TRUE);
+                pShaderManager->setShaderUniform1f("iTime", g_CurrentTime);
+            }
         }
         glm::mat4 scrMAT = glm::mat4(1.f);
         cMeshObj* scrOBJ = pVAOManager->findMeshObjAddr("projecter1");
         result = pVAOManager->setInstanceObjScale("projecter1", 100.f);
         result = pVAOManager->setInstanceObjVisible("projecter1", true);
         drawObj(scrOBJ, scrMAT, pShaderManager, pVAOManager);
+        pShaderManager->setShaderUniform1f("bRipple", (GLfloat)GL_FALSE);
         result = pVAOManager->setInstanceObjVisible("projecter1", false);
        //updateInstanceObj(pShaderManager, pVAOManager);
 #if USE_IMGUI
@@ -859,7 +865,7 @@ void updateByFrameRate()
 
         //obj_it->second->update();
 
-        g_pAnimationManager->AnimationUpdate(g_PlayAnimation, elapsedTime);
+        //g_pAnimationManager->AnimationUpdate(g_PlayAnimation, elapsedTime);
         //g_physicSys.updateSystem(elapsedTime);
     }
     //if (g_CurrentTime >= g_LastCall5s + SEC_UPDATE)
