@@ -6,7 +6,7 @@ cMeshObj::cMeshObj()
 
 	this->position = glm::vec3(0.f);
 	this->rotation = glm::vec3(0.0f);
-	this->scale = 1.f;
+	this->scale = glm::vec3(1.f);
 	this->isWireframe = false;
 
 	this->color_RGBA = glm::vec4(0.f, 0.f, 0.f, 1.f);
@@ -30,6 +30,8 @@ cMeshObj::cMeshObj()
 	this->time = 0;
 	this->isMovingTexture = false;
 #endif
+
+	this->hasBone = false;
 }
 
 cMeshObj::~cMeshObj()
@@ -58,4 +60,11 @@ cMeshObj* cMeshObj::findMeshObjByName(std::string name, bool searchChild)
 	}
 
 	return nullptr;
+}
+
+int cMeshObj::findBoneIDfromName(std::string boneName)
+{
+	std::map<std::string, int>::iterator it = boneNameToIdMap.find(boneName);
+
+	return it->second;
 }

@@ -4,6 +4,7 @@
 #include "MeshObj/cMeshObj.h"
 #include <iostream>
 #include "FBO/cFBO.h"
+#include "Animation/AnimationManager.h"
 
 extern cMeshObj* g_MeshBoss;
 extern glm::vec3 g_cameraEye;
@@ -18,6 +19,9 @@ extern float lastX;
 extern float lastY;
 extern float fov;
 extern cFBO* g_FBO_01;
+extern AnimationManager* g_pAnimationManager;
+extern bool g_PlayAnimation;
+extern bool toggleRipple;
 
 void error_callback(int error, const char* description)
 {
@@ -84,6 +88,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_1 && action == GLFW_RELEASE)
     {
         toggleblur = !toggleblur;
+        toggleRipple = false;
+    }
+    if (key == GLFW_KEY_2 && action == GLFW_RELEASE)
+    {
+        toggleRipple = !toggleRipple;
+        toggleblur = false;
     }
     if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
     {

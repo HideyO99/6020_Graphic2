@@ -33,6 +33,8 @@ uniform float blurAmount;
 uniform vec3 focusPlane;
 const int MAX_KERNEL_1D_SIZE = 20;
 uniform bool bMirror;
+uniform bool bRipple;
+uniform float iTime;
 
 uniform vec4 debugColour;
 
@@ -92,6 +94,7 @@ vec3 GaussianBlurCalculation(int numElement);
 float gauss(float x, float sigma);
 vec4 LightContribute(vec3 vMaterialColor, vec3 vNormal, vec3 vWorldPos, vec4 vSpecular, vec4 refraction);
 vec4 LightCalculation(vec2 FragCoord);
+vec4 RippleEffect(vec2 fragCoord);
 
 void main()
 {
@@ -119,14 +122,21 @@ void main()
 
 		if(blurAmount == 0.f)
 		{
-			if(vertexNormal == vec4(1.f))
+			if(!bRipple)
 			{
-				pixelOutputColor = vertexColour;
-				//return;
+				if(vertexNormal == vec4(1.f))
+				{
+					pixelOutputColor = vertexColour;
+					//return;
+				}
+				else
+				{
+					pixelOutputColor = LightContribute(vertexColour.rgb, vertexNormal.xyz, vertexWorldPosition.xyz, vertexSpecular, vertexRefraction);
+				}
 			}
 			else
 			{
-				pixelOutputColor = LightContribute(vertexColour.rgb, vertexNormal.xyz, vertexWorldPosition.xyz, vertexSpecular, vertexRefraction);
+				pixelOutputColor = RippleEffect(textCoords);
 			}
 		}
 		if(blurAmount>0)
@@ -232,6 +242,7 @@ void main()
 	else
 	{
 		FBO_vertexNormal = vec4(fNormal.rgb, 1.f);
+		pixelOutputColor = vec4(materialColor.rgb, 1.f);
 
 	}
 	if(bIsIlandModel)
@@ -345,18 +356,27 @@ vec4 LightContribute(vec3 vMaterialColor, vec3 vNormal, vec3 vWorldPos, vec4 vSp
 		finalObjectColor.rgb += (vMaterialColor.rgb * lightDiffuseContrib.rgb) + (vSpecular.rgb  * lightSpecularContrib.rgb );
 	}
 
-	// (index of refraction for diamond is 2.417 according to wikipedia)
-	// (index of refraction for water is 1.333 according to wikipedia)
-	vec3 STU_Vector = refract(refraction.xyz, vNormal.xyz, 1.0f/1.333f);
-	vec3 cubeMapColour = texture( skyboxTexture, STU_Vector.xyz ).rgb;
-	vec4 pixelOutput_tmp = vec4(0.f);
-	pixelOutput_tmp.rgb *=0.00001f;
-	pixelOutput_tmp.rgb += cubeMapColour.rgb;
-	vec3 ambient = vMaterialColor * 0.15;
-	finalObjectColor.rgb += ambient;
-	finalObjectColor.rgb += pixelOutput_tmp.rgb;
-	return vec4(finalObjectColor.rgb,1.f);
-	//finalObjectColor.a = 1.0f;
+	if(refraction!=vec4(0.f))
+	{
+		// (index of refraction for diamond is 2.417 according to wikipedia)
+		// (index of refraction for water is 1.333 according to wikipedia)
+		vec3 STU_Vector = refract(refraction.xyz, vNormal.xyz, 1.0f/1.333f);
+		vec3 cubeMapColour = texture( skyboxTexture, STU_Vector.xyz ).rgb;
+		vec4 pixelOutput_tmp = vec4(0.f);
+		pixelOutput_tmp.rgb *=0.00001f;
+		pixelOutput_tmp.rgb += cubeMapColour.rgb;
+		vec3 ambient = vMaterialColor * 0.15;
+		finalObjectColor.rgb += ambient;
+		finalObjectColor.rgb += pixelOutput_tmp.rgb;
+		
+		return vec4(finalObjectColor.rgb,1.f);
+	}else{
+		vec3 ambient = vMaterialColor * 0.15;
+		finalObjectColor.rgb += ambient;
+
+		return vec4(finalObjectColor.rgb,1.f);
+		//finalObjectColor.a = 1.0f;
+	}
 
 	return finalObjectColor;
 }
@@ -448,6 +468,21 @@ vec4 LightCalculation(vec2 FragCoord)
 	{
 		calPixel = LightContribute(pixelColor.rgb,pixelNormal.rgb,pixelWorldPos.rgb,pixelSpec,pixelrefract);
 	}
+	return calPixel;
+}
+
+vec4 RippleEffect(vec2 fragCoord)
+{
+    vec2 cp = -1.0 + 2.0 * fragCoord ;
+    float cl = length(cp);
+    vec2 uv = fragCoord  + (cp / cl) * cos(cl * 12.0 - iTime * 4.0) * 0.02;
+    //vec2 uv = fragCoord / resolution + (cp / cl) * cos(cl * 12.0 - 0 * 4.0) * 0.02;
+    vec3 col = texture(sampler_FBO_vertexMaterialColour, uv).xyz;
+	vec3 vertexNormal = texture( sampler_FBO_vertexNormal, uv ).xyz;
+	vec3 vertexWorldPosition = texture( sampler_FBO_vertexWorldPos, uv ).xyz;
+	vec4 vertexSpecular = texture( sampler_FBO_vertexSpecular, uv );
+	vec4 vertexRefraction = texture( sampler_FBO_vertexRefraction, uv );
+	vec4 calPixel = LightContribute(col, vertexNormal, vertexWorldPosition, vertexSpecular, vertexRefraction);
 	return calPixel;
 }
 

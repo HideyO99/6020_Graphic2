@@ -6,8 +6,18 @@
 #include <map>
 #include <fstream>
 #include "../MeshObj/cMeshObj.h"
+#include "../BoneHierarchy.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #define MODEL_LOAD_BUFFER 10000
+#define ASSIMP_LOAD_FLAGS	(aiProcess_Triangulate | \
+							 aiProcess_GenSmoothNormals | \
+							 aiProcess_PopulateArmatureData | \
+							 aiProcess_FixInfacingNormals | \
+							 aiProcess_LimitBoneWeights)
+
 class cVAOManager
 {
 public:
@@ -20,9 +30,12 @@ public:
 		unsigned int vertexIndices[3];
 	};
 
-	bool loadModelToVAO(std::string filename, cModelDrawInfo& drawInfo, unsigned int shaderProgramID);
+	bool loadModelToVAO(std::string filename, cModelDrawInfo* drawInfo, unsigned int shaderProgramID);
 	bool loadModelList(std::string filename, unsigned int shaderProgramID);
 	bool FindDrawInfo(std::string filename, cModelDrawInfo& drawInfo);
+	//bool loadFBXFile(std::string filename, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID);
+	bool loadFBXFile(std::map<std::string, std::string>::iterator i_instanceToModel, std::string meshName, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID);
+	bool loadMesh(const aiMesh* mesh, cModelDrawInfo* modelDrawInfo, cMeshObj* meshObj);
 	bool loadPLYFile(std::string filename, cModelDrawInfo& modelDrawInfo, std::string error);
 	bool setInstanceObjScale(std::string meshObjName, float value);
 	bool setInstanceObjWireframe(std::string meshObjName, bool value);
@@ -30,6 +43,7 @@ public:
 	bool setInstanceObjVisible(std::string meshObjName, bool value);
 	bool setInstanceObjLighting(std::string meshObjName, bool value);
 	bool setInstanceObjSpecularPower(std::string meshObjName, glm::vec4 value);
+	bool setInstanceObjBone(std::string meshObjName);
 
 	bool setInstanceObjPosition(std::string meshObjName, glm::vec4 value);
 
@@ -54,10 +68,13 @@ public:
 	bool setTorchTexture(std::string meshObjName, std::string textureFile, std::string markTextureFile);
 
 	std::map<std::string, cMeshObj*> mapInstanceNametoMeshObj;
+	std::map<std::string, std::vector<cModelDrawInfo*>> mapModeltoMultiMesh;
 	std::vector<cMeshObj*> pVecInstanceMeshObj;
 	glm::vec3 cameraEyeFromXML;
 
 private:
 	std::map<std::string, cModelDrawInfo> mapModelNametoVAOID;
+	aiScene* m_AssimpScene;
+	Assimp::Importer m_Importer;
 };
 

@@ -19,6 +19,7 @@ public:
 	};
 
 	std::string meshName;
+	std::string TextureFile;
 
 	unsigned int VAO_ID;
 

@@ -24,13 +24,16 @@
 #include "GUI/cGUI.h"
 #include "Texture/cTextureManager.h"
 #include "FBO/cFBO.h"
+#include "boneShader.h"
+#include "time.h"
+#include "Animation/AnimationManager.h"
 
 #define MODEL_LIST_XML          "asset/model.xml"
 #define VERTEX_SHADER_FILE      "src/shader/vertexShader.glsl"
 #define FRAGMENT_SHADER_FILE    "src/shader/fragmentShader.glsl"
 #define TEXTURE_PATH            "asset/texture"
-#define USE_IMGUI false
-
+#define USE_IMGUI true
+#define SEC_UPDATE 5
 
 glm::vec3 g_cameraEye = glm::vec3(0.0, 5.0, 0.0f);
 glm::vec3 g_cameraTarget_defualt = glm::vec3(-2.5f, 2.5f, -15.0f);
@@ -46,6 +49,16 @@ float lastY = 800.0 / 2.0;
 float fov = 45.0f;
 
 bool toggleblur = false;
+bool toggleRipple = false;
+double g_LastCall;
+double g_LastCall5s;
+double g_CurrentTime;
+
+bool g_PlayAnimation = false;
+unsigned int g_AnimationSeq = 0;
+
+const int FRAMES_PER_SECOND = 30;
+const double FRAME_RATE = (double)1 / FRAMES_PER_SECOND;
 
 cLightManager* g_pTheLightManager = NULL;
 static GLFWwindow* window = nullptr;
@@ -57,6 +70,8 @@ cFBO* g_FBO_02 = NULL;
 cFBO* g_FBO_03 = NULL;
 cFBO* g_FBO_04 = NULL;
 cMeshObj* g_MeshBoss = NULL;
+
+AnimationManager* g_pAnimationManager = NULL;
 
 extern void error_callback(int error, const char* description);
 extern void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -78,6 +93,10 @@ void setFBOtoTexture(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVA
 void setFBOCubeMap(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOManager, glm::vec3 eye);
 void setFBOtoTextureCubeMap(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOManager, std::string projector);
 void setFBO2(cShaderManager* pShaderManager, cVAOManager* pVAOManager);
+
+void createAnimation(cVAOManager* pVAOManager);
+
+void updateByFrameRate();
 
 int main(void)
 {
@@ -192,6 +211,7 @@ int main(void)
 
     
     ::g_pTheLightManager->loadLightUniformLocation(shaderID);
+    setupBoneShaderLocation(shaderID);
 #if USE_IMGUI
     for (size_t i = 0; i < MAX_LIGHT_SOURCE; i++)
     {
@@ -201,6 +221,7 @@ int main(void)
 
     //load model
     cVAOManager* pVAOManager = new cVAOManager();
+    ::g_pTextureManager = new cTextureManager();
 
     result = pVAOManager->loadModelList(MODEL_LIST_XML, shaderID);
     if (!result)
@@ -223,17 +244,24 @@ int main(void)
 #endif
 
     //load texture
-    ::g_pTextureManager = new cTextureManager();
+    //::g_pTextureManager = new cTextureManager();
     ::g_pTextureManager->setBasePath(TEXTURE_PATH);
-    ::g_pTextureManager->create2DTextureFromBMP("Dungeons_2_Texture_01_A.bmp");
-    ::g_pTextureManager->create2DTextureFromBMP("lroc_color_poles_4k.bmp");
-    ::g_pTextureManager->create2DTextureFromBMP("glowing-fire-flame.bmp");
-    ::g_pTextureManager->create2DTextureFromBMP("glowing-fire-flame_bw.bmp");
-    ::g_pTextureManager->create2DTextureFromBMP("photos_2018_7_4_fst_water-blue.bmp"); 
-    ::g_pTextureManager->create2DTextureFromBMP("Beholder_Base_color.bmp");
+    //::g_pTextureManager->create2DTextureFromBMP("Dungeons_2_Texture_01_A.bmp");
+    //::g_pTextureManager->create2DTextureFromBMP("lroc_color_poles_4k.bmp");
+    //::g_pTextureManager->create2DTextureFromBMP("glowing-fire-flame.bmp");
+    //::g_pTextureManager->create2DTextureFromBMP("glowing-fire-flame_bw.bmp");
+    //::g_pTextureManager->create2DTextureFromBMP("photos_2018_7_4_fst_water-blue.bmp"); 
+    //::g_pTextureManager->create2DTextureFromBMP("Beholder_Base_color.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("Dungeons_2_Texture_01_A.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("lroc_color_poles_4k.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("glowing-fire-flame.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("glowing-fire-flame_bw.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("photos_2018_7_4_fst_water-blue.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("Beholder_Base_color.bmp");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("man_Packed0_Diffuse.png");
 
     std::string load_texture_error = "";
-    if (g_pTextureManager->createCubeTextureFromBMP("SpaceBox",
+    if (g_pTextureManager->createCubeTextureFromFreeImgLib("SpaceBox",
         "SpaceBox_right1_posX.bmp", /* positive X */
         "SpaceBox_left2_negX.bmp",  /* negative X */
         "SpaceBox_top3_posY.bmp",    /* positive Y */
@@ -298,16 +326,24 @@ int main(void)
     result = pVAOManager->setInstanceObjLighting("barrel1", false);
     //result = pVAOManager->setInstanceObjPosition("barrel1", glm::vec4(-12.5f, 2.5f, -15.f, 1.f));
 
+    result = pVAOManager->setInstanceObjScale("man1", 0.02);
+    result = pVAOManager->setTexture("man1", "man_Packed0_Diffuse.png", 0);
+
     result = pVAOManager->setInstanceObjPosition("boss", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
     //result = pVAOManager->set("boss", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
     g_MeshBoss = pVAOManager->findMeshObjAddr("boss");
+    result = pVAOManager->setInstanceObjLighting("boss", false);
+
     light0Setup(); // Dir light
     light1Setup(pVAOManager);// torch
     light2Setup(pVAOManager); //beholder eye
     //light3Setup();
     //light4Setup();
 
+    ::g_pAnimationManager = new AnimationManager();
+    //createAnimation(pVAOManager);
 
+    cTime::update();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -326,9 +362,12 @@ int main(void)
         //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         setFBO2(pShaderManager, pVAOManager);
         setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f,1.f,0.f));
-        //setFBOCubeMap(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(-12.f, 2.5f, 0.f));
+        setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget);
         //g_cameraEye = glm::vec4(0.f);
         //g_cameraTarget = glm::vec4(200.f, 200.f, -100.f, 0.f);
+        
+        updateByFrameRate();
+
         //////////////////////////////////////////////////////////////
         //FBO                                                       //
         //////////////////////////////////////////////////////////////
@@ -367,8 +406,8 @@ int main(void)
        
         setFBOtoTexture(g_FBO_02, pShaderManager, pVAOManager, "projecter2");
         setFBOtoTexture(g_FBO_03, pShaderManager, pVAOManager, "projecter3");
+        setFBOtoTexture(g_FBO_04, pShaderManager, pVAOManager, "projecter4");
         updateInstanceObj(pShaderManager, pVAOManager);
-        //setFBOtoTexture(g_FBO_04, pShaderManager, pVAOManager, "projecter4");
 
         //////////////////////////////////////////////////////////////
         //main buffer                                               //
@@ -443,12 +482,18 @@ int main(void)
         else
         {
             pShaderManager->setShaderUniform1f("blurAmount", 0.f);
+            if (toggleRipple)
+            {
+                pShaderManager->setShaderUniform1f("bRipple", (GLfloat)GL_TRUE);
+                pShaderManager->setShaderUniform1f("iTime", g_CurrentTime);
+            }
         }
         glm::mat4 scrMAT = glm::mat4(1.f);
         cMeshObj* scrOBJ = pVAOManager->findMeshObjAddr("projecter1");
         result = pVAOManager->setInstanceObjScale("projecter1", 100.f);
         result = pVAOManager->setInstanceObjVisible("projecter1", true);
         drawObj(scrOBJ, scrMAT, pShaderManager, pVAOManager);
+        pShaderManager->setShaderUniform1f("bRipple", (GLfloat)GL_FALSE);
         result = pVAOManager->setInstanceObjVisible("projecter1", false);
        //updateInstanceObj(pShaderManager, pVAOManager);
 #if USE_IMGUI
@@ -517,7 +562,11 @@ void updateInstanceObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
         {
             pShaderManager->setShaderUniform1f("bIsSkyboxObject", (GLfloat)GL_TRUE);
             pCurrentMeshObject->position = ::g_cameraEye;
-            pCurrentMeshObject->scale = 7500.f;
+            pCurrentMeshObject->scale = glm::vec3(7500.f);
+        }
+        if (pCurrentMeshObject->hasBone)
+        {
+            pShaderManager->setShaderUniform1f("hasBone", (GLfloat)GL_TRUE);
         }
         matModel = glm::mat4x4(1.0f);
 
@@ -542,160 +591,15 @@ void updateInstanceObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
         {
             pShaderManager->setShaderUniform1f("bIsIlandModel", (GLfloat)GL_FALSE);
         }
+        if (pCurrentMeshObject->hasBone)
+        {
+            pShaderManager->setShaderUniform1f("hasBone", (GLfloat)GL_FALSE);
+        }
     }
 #if MOVINGTEXTURE
     pShaderManager->setShaderUniform1f("bMovingTexture", (GLfloat)GL_FALSE);
 #endif
 }
-
-//void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//{
-//    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-//        glfwSetWindowShouldClose(window, GLFW_TRUE);
-//
-//    //move camera
-//    // AWSD AD-Left, Right
-//    //      WS-Forward, Back
-//    const float CAMERA_MOVE_SPEED = 5.f;
-//    if (key == GLFW_KEY_LEFT)
-//    {
-//        //::g_cameraEye.x -= CAMERA_MOVE_SPEED;
-//        //::g_cameraEye += (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
-//        g_MeshBoss->position.x -= 0.1;
-//    }
-//    if (key == GLFW_KEY_RIGHT)
-//    {
-//        //::g_cameraEye.x += CAMERA_MOVE_SPEED;
-//        //::g_cameraEye -= (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
-//        g_MeshBoss->position.x += 0.1;
-//    }
-//    if (key == GLFW_KEY_UP)
-//    {
-//        //::g_cameraEye.z -= CAMERA_MOVE_SPEED;
-//        //::g_cameraEye += ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
-//        g_MeshBoss->position.z -= 0.1;
-//    }
-//    if (key == GLFW_KEY_DOWN)
-//    {
-//        //::g_cameraEye.z += CAMERA_MOVE_SPEED;
-//        //::g_cameraEye -= ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
-//        g_MeshBoss->position.z += 0.1;
-//    }
-//    if (key == GLFW_KEY_A)
-//    {
-//        ::g_cameraEye += (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
-//    }
-//    if (key == GLFW_KEY_D)
-//    {
-//        ::g_cameraEye -= (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
-//    }
-//    if (key == GLFW_KEY_W)
-//    {
-//        ::g_cameraEye += ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
-//    }
-//    if (key == GLFW_KEY_S)
-//    {
-//        ::g_cameraEye -= ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
-//    }
-//    if (key == GLFW_KEY_Q)
-//    {
-//        ::g_cameraEye.y -= CAMERA_MOVE_SPEED;
-//    }
-//    if (key == GLFW_KEY_E)
-//    {
-//        ::g_cameraEye.y += CAMERA_MOVE_SPEED;
-//    }
-//    if (key == GLFW_KEY_1 && action == GLFW_RELEASE)
-//    {
-//        toggleblur = !toggleblur;
-//    }
-//    if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
-//    {
-//        //::g_cameraEye = glm::vec3(-5.5f, -3.4f, 15.0f);
-//        //::g_cameraEye = glm::vec3(0.0, 100.0, 300.0f);
-//        //::g_cameraTarget = glm::vec3(5.0f, 0.0f, 0.0f);
-//        bIsWalkAround = !bIsWalkAround;
-//
-//    }
-//}
-//
-//void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
-//{
-//    float xpos = static_cast<float>(xposIn);
-//    float ypos = static_cast<float>(yposIn);
-//
-//    if (firstMouse)
-//    {
-//        lastX = xpos;
-//        lastY = ypos;
-//        firstMouse = false;
-//    }
-//    if (bIsWalkAround)
-//    {
-//
-//
-//        float xoffset = xpos - lastX;
-//        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-//        lastX = xpos;
-//        lastY = ypos;
-//
-//        float sensitivity = 0.1f; // change this value to your liking
-//        xoffset *= sensitivity;
-//        yoffset *= sensitivity;
-//
-//        yaw += xoffset;
-//        pitch += yoffset;
-//
-//        // make sure that when pitch is out of bounds, screen doesn't get flipped
-//        if (pitch > 89.0f)
-//            pitch = 89.0f;
-//        if (pitch < -89.0f)
-//            pitch = -89.0f;
-//
-//        glm::vec3 front;
-//        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-//        front.y = sin(glm::radians(pitch));
-//        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-//        ::g_cameraFront = glm::normalize(front);
-//    }
-//    else
-//    {
-//        ::g_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-//    }
-//}
-//
-//void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
-//{
-//    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-//    {
-//        std::cout << "R click" << std::endl;
-//    }
-//    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-//    {
-//        std::cout << "L click" << std::endl;
-//    }
-//
-//}
-//
-//void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-//{
-//    fov -= (float)yoffset;
-//    if (fov < 1.0f)
-//        fov = 1.0f;
-//    if (fov > 45.0f)
-//        fov = 45.0f;
-//}
-//
-//void window_size_callback(GLFWwindow* window, int width, int height)
-//{
-//    std::string error = "";
-//    bool result = ::g_FBO_01->reset(width, height, error);
-//    
-//    if (!result)
-//    {
-//        std::cout << "Error: FBO cannot reset: " << error << std::endl;
-//    }
-//}
 
 void setFBOPortal(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOManager, glm::vec3 eye, glm::vec3 target)
 {
@@ -888,4 +792,87 @@ void setFBO2(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
     result = pVAOManager->setInstanceObjVisible("barrel1", false);
     
     //updateInstanceObj(pShaderManager, pVAOManager);
+}
+
+void createAnimation(cVAOManager* pVAOManager)
+{
+   // cMeshObj* meshObj = pVAOManager->findMeshObjAddr("man1");
+   // //AnimationData* animData = new AnimationData();
+   // //BoneAnimationData bone1 = 
+   //// meshObj->BoneAnimation
+   // meshObj->Animation.tag = "PosLerpNoEasing";
+   // meshObj->Animation.curSeq = 0;
+   // meshObj->Animation.Speed = 1.f;
+   // meshObj->Animation.IsLooping = true;
+   // meshObj->Animation.IsPlaying = false;
+   // meshObj->Animation.AnimationTime = 0.f;
+   // g_pAnimationManager->animationOBJList.push_back(meshObj);
+
+
+   // //Sequence 1
+   // AnimationData seq1_bone1;
+   // seq1_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(3.f, 1.f, 3.f), 0.f, None));
+   // seq1_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(0.f, 1.f, 0.f), 5.f, None));
+   // seq1_bone1.ScaleKeyFrames.push_back(ScaleKeyFrame(glm::vec3(1.f), 0.f, None));
+   // seq1_bone1.RotationKeyFrames.push_back(RotationKeyFrame(glm::quat(0.f, 0.f, 0.f, 0.f), 0.f, None));
+   // seq1_bone1.Duration = 5.f;
+   // g_pAnimationManager->AddBoneAnimation("UpperArm_L_seq1", seq1_bone1);
+   // meshObj->Animation.seq.push_back("PosLerpNoEasing");
+
+   // //sequence 2
+   // AnimationData seq2_bone1;
+   // seq2_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(0.f, 1.f, 0.f), 0.f, None));
+   // seq2_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(-25.f, 1.f, -25.f), 5.f, None));
+   // seq2_bone1.ScaleKeyFrames.push_back(ScaleKeyFrame(glm::vec3(1.f), 0.f, None));
+   // seq2_bone1.ScaleKeyFrames.push_back(ScaleKeyFrame(glm::vec3(10.f), 5.f, None));
+   // seq2_bone1.RotationKeyFrames.push_back(RotationKeyFrame(glm::quat(0.f, 0.f, 0.f, 0.f), 0.f, None));
+   // seq2_bone1.Duration = 5.f;
+   // g_pAnimationManager->AddBoneAnimation("UpperArm_L_seq2", seq2_bone1);
+   // meshObj->Animation.seq.push_back("ScaleLerpNoEasing");
+
+   // //sequence 3
+   // AnimationData seq3_bone1;
+   // seq3_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(-25.f, 1.f, -25.f), 0.f, None));
+   // seq3_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(-12.5f, 25.f, -12.5f), 2.5f, None));
+   // seq3_bone1.PositionKeyFrames.push_back(PositionKeyFrame(glm::vec3(0.f, 1.f, 0.f), 5.f, None));
+   // seq3_bone1.ScaleKeyFrames.push_back(ScaleKeyFrame(glm::vec3(10.f), 0.f, None));
+   // seq3_bone1.ScaleKeyFrames.push_back(ScaleKeyFrame(glm::vec3(5.f), 5.f, None));
+   // seq3_bone1.RotationKeyFrames.push_back(RotationKeyFrame(glm::quat(1.f, 0.f, 0.f, 0.f), 0.f, None));
+   // seq3_bone1.RotationKeyFrames.push_back(RotationKeyFrame(glm::quat(0.f, 0.f, 0.f, 1.f), 2.5f, None));
+   // seq3_bone1.RotationKeyFrames.push_back(RotationKeyFrame(glm::quat(1.f, 0.f, 0.f, 0.f), 5.f, None));
+   // seq3_bone1.Duration = 5.f;
+   // g_pAnimationManager->AddAnimation("UpperArm_L_seq3", seq3_bone1);
+   // meshObj->Animation.seq.push_back("RotationSlerpNoEasing");
+}
+
+void updateByFrameRate()
+{
+    cTime::update();
+    double deltaTime = cTime::getDeltaTime();
+    g_CurrentTime += deltaTime;
+
+    if (g_CurrentTime >= g_LastCall + FRAME_RATE)
+    {
+        double elapsedTime = g_CurrentTime - g_LastCall;
+        g_LastCall = g_CurrentTime;
+
+        //std::map<std::string, cObject*>::iterator obj_it = g_physicSys.mapOBJ.find("Player");
+        //obj_it->second->position = ::g_cameraEye;
+
+        //cal player velocity
+        //obj_it->second->velocity.x = (obj_it->second->position.x - obj_it->second->prevPosition.x) / elapsedTime;
+        //obj_it->second->velocity.z = (obj_it->second->position.z - obj_it->second->prevPosition.z) / elapsedTime;
+
+        //obj_it->second->update();
+
+        //g_pAnimationManager->AnimationUpdate(g_PlayAnimation, elapsedTime);
+        //g_physicSys.updateSystem(elapsedTime);
+    }
+    //if (g_CurrentTime >= g_LastCall5s + SEC_UPDATE)
+    //{
+    //    double elapsedTime = g_CurrentTime - g_LastCall5s;
+    //    g_LastCall5s = g_CurrentTime;
+
+    //    g_physicSys.gameUpdate();
+    //}
 }

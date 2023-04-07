@@ -20,11 +20,51 @@ bool cXML::loadModelFromXML(std::string filename, std::map<std::string, cMeshObj
 		return false;
 	}
 	std::cout << "Loading Model from XML" << std::endl;
-	pugi::xml_object_range<pugi::xml_node_iterator> modelList = modelList_xml.child("PLYMODEL").children();
-	if (modelList.empty())
+	
+	load(modelList_xml, mapInstancetoMeshOBJ, pVecInstanceMeshObj, "PLYMODEL");
+	load(modelList_xml, mapInstancetoMeshOBJ, pVecInstanceMeshObj, "FBXMODEL");
+
+	//camera
+	pugi::xml_object_range<pugi::xml_node_iterator> loadCameraEye = modelList_xml.child("EYE_LOCATION").children();
+	if (loadCameraEye.empty())
 	{
 		std::cout << "There are no entries" << std::endl;
 		return false;
+	}
+	pugi::xml_node_iterator i_loadCameraEye;
+	std::vector<std::string> tempXYZ;
+	for (i_loadCameraEye = loadCameraEye.begin(); i_loadCameraEye != loadCameraEye.end(); i_loadCameraEye++)
+	{
+		pugi::xml_node CameraEye = *i_loadCameraEye;
+		std::string check = CameraEye.child_value();
+		tempXYZ.push_back(CameraEye.child_value());
+	}
+	
+	cameraEyeFromXML.x = std::stof(tempXYZ[0]);
+	cameraEyeFromXML.y = std::stof(tempXYZ[1]);
+	cameraEyeFromXML.z = std::stof(tempXYZ[2]);
+	
+}
+
+bool cXML::findPathFromModelName(std::string modelName, std::string& modelPath)
+{
+	std::map<std::string, std::string>::iterator i_model = mapModelNameAndPath.find(modelName);
+	if (i_model == mapModelNameAndPath.end())
+	{
+		return false;
+	}
+	modelPath = i_model->second;
+
+	return true;
+}
+
+void cXML::load(pugi::xml_document& modelList_xml, std::map<std::string, cMeshObj*>& mapInstancetoMeshOBJ, std::vector<cMeshObj*>& pVecInstanceMeshObj,const pugi::char_t* type)
+{
+	pugi::xml_object_range<pugi::xml_node_iterator> modelList = modelList_xml.child(type).children();
+	if (modelList.empty())
+	{
+		std::cout << "There are no "<< type << " entries" << std::endl;
+		return;
 	}
 	pugi::xml_node_iterator i_modelList;
 	for (i_modelList = modelList.begin(); i_modelList != modelList.end(); i_modelList++)
@@ -77,37 +117,4 @@ bool cXML::loadModelFromXML(std::string filename, std::map<std::string, cMeshObj
 			mapInstanceAndModelName.emplace(instance, modelName);
 		}
 	}
-
-	pugi::xml_object_range<pugi::xml_node_iterator> loadCameraEye = modelList_xml.child("EYE_LOCATION").children();
-	if (loadCameraEye.empty())
-	{
-		std::cout << "There are no entries" << std::endl;
-		return false;
-	}
-	pugi::xml_node_iterator i_loadCameraEye;
-	std::vector<std::string> tempXYZ;
-	for (i_loadCameraEye = loadCameraEye.begin(); i_loadCameraEye != loadCameraEye.end(); i_loadCameraEye++)
-	{
-		pugi::xml_node CameraEye = *i_loadCameraEye;
-		std::string check = CameraEye.child_value();
-		tempXYZ.push_back(CameraEye.child_value());
-	}
-	
-	cameraEyeFromXML.x = std::stof(tempXYZ[0]);
-	cameraEyeFromXML.y = std::stof(tempXYZ[1]);
-	cameraEyeFromXML.z = std::stof(tempXYZ[2]);
-	
-	return true;
-}
-
-bool cXML::findPathFromModelName(std::string modelName, std::string& modelPath)
-{
-	std::map<std::string, std::string>::iterator i_model = mapModelNameAndPath.find(modelName);
-	if (i_model == mapModelNameAndPath.end())
-	{
-		return false;
-	}
-	modelPath = i_model->second;
-
-	return true;
 }
