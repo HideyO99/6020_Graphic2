@@ -93,7 +93,7 @@ vec3 GaussianBlurCalculation(int numElement);
 float gauss(float x, float sigma);
 vec4 LightContribute(vec3 vMaterialColor, vec3 vNormal, vec3 vWorldPos, vec4 vSpecular, vec4 refraction);
 vec4 LightCalculation(vec2 FragCoord);
-vec4 RippleEffect();
+vec4 RippleEffect(vec2 fragCoord);
 
 void main()
 {
