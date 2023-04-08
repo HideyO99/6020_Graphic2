@@ -27,10 +27,12 @@
 #include "boneShader.h"
 #include "time.h"
 #include "Animation/AnimationManager.h"
+#include "TV.h"
 
 #define MODEL_LIST_XML          "asset/model.xml"
 #define VERTEX_SHADER_FILE      "src/shader/vertexShader.glsl"
 #define FRAGMENT_SHADER_FILE    "src/shader/fragmentShader.glsl"
+#define FRAGMENT_NOISE_FILE     "src/shader/fragmentShader_noise.glsl"
 #define TEXTURE_PATH            "asset/texture"
 #define USE_IMGUI true
 #define SEC_UPDATE 5
@@ -71,6 +73,10 @@ cFBO* g_FBO_03 = NULL;
 cFBO* g_FBO_04 = NULL;
 cMeshObj* g_MeshBoss = NULL;
 
+TV* g_TV1 = NULL;
+TV* g_TV2 = NULL;
+TV* g_TV3 = NULL;
+
 AnimationManager* g_pAnimationManager = NULL;
 
 extern void error_callback(int error, const char* description);
@@ -107,6 +113,7 @@ int main(void)
     GLuint vertex_buffer, vertex_shader, fragment_shader, program;
     //GLint mvp_location, vpos_location, vcol_location;
     GLuint shaderID = 0;
+    GLuint shaderID2 = 0;
 
     glfwSetErrorCallback(error_callback);
 
@@ -185,6 +192,7 @@ int main(void)
 
     vertexShader.fileName = VERTEX_SHADER_FILE;
     fragmentShader.fileName = FRAGMENT_SHADER_FILE;
+    
     result = pShaderManager->createShaderProgram("Shader01", vertexShader, fragmentShader);
     if (!result)
     {
@@ -204,6 +212,32 @@ int main(void)
     pShaderManager->useShaderPRogram("Shader01");
     shaderID = pShaderManager->getIDfromName("Shader01");
     glUseProgram(shaderID);
+
+    //cShaderManager* pShaderManagerStatic = new cShaderManager();
+    //cShaderManager::cShader vertexShaderStatic;
+    cShaderManager::cShader fragmentShaderStatic;
+    //vertexShaderStatic.fileName = VERTEX_SHADER_FILE;
+    fragmentShaderStatic.fileName = FRAGMENT_NOISE_FILE;
+
+    result = pShaderManager->createShaderProgram("Shader02", vertexShader, fragmentShaderStatic);
+    if (!result)
+    {
+        std::cout << "error: Shader compilation fail" << std::endl;
+
+        glfwDestroyWindow(window);
+
+        delete pShaderManager;
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        std::cout << "shader2 compilation OK" << std::endl;
+    }
+    pShaderManager->useShaderPRogram("Shader02");
+    shaderID2 = pShaderManager->getIDfromName("Shader02");
+    glUseProgram(shaderID);
+    pShaderManager->useShaderPRogram("Shader01");
 
     //todo lighting
     ::g_pTheLightManager = new cLightManager();
@@ -334,36 +368,17 @@ int main(void)
     g_MeshBoss = pVAOManager->findMeshObjAddr("boss");
     result = pVAOManager->setInstanceObjLighting("boss", false);
 
-    //result = pVAOManager->setInstanceObjLighting("TV1", true);
-    //result = pVAOManager->setInstanceObjLighting("TV2", true);
-    //result = pVAOManager->setInstanceObjLighting("TV3", true);
-    result = pVAOManager->setInstanceObjRotation("TV1", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
-    result = pVAOManager->setInstanceObjRotation("TV2", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
-    result = pVAOManager->setInstanceObjRotation("TV3", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
-    result = pVAOManager->setInstanceObjRGB("TV1", glm::vec4(1.f, 0.f, 0.f, 1.f));
-    result = pVAOManager->setInstanceObjRGB("TV2", glm::vec4(0.f, 1.f, 0.f, 1.f));
-    result = pVAOManager->setInstanceObjRGB("TV3", glm::vec4(0.f, 0.f, 1.f, 1.f));
-    result = pVAOManager->setInstanceObjScale("TV1", 0.3);
-    result = pVAOManager->setInstanceObjScale("TV2", 0.3);
-    result = pVAOManager->setInstanceObjScale("TV3", 0.3);
 
-    result = pVAOManager->setInstanceObjRotation("TVScreen1", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
-    result = pVAOManager->setInstanceObjRotation("TVScreen2", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
-    result = pVAOManager->setInstanceObjRotation("TVScreen3", glm::vec4(-1.5f, 0.f, 0.f, 1.f));
-    //result = pVAOManager->setInstanceObjRGB("TVScreen1", glm::vec4(0.f, 1.f, 1.f, 1.f));
-    //result = pVAOManager->setInstanceObjRGB("TVScreen2", glm::vec4(0.f, 1.f, 1.f, 1.f));
-    //result = pVAOManager->setInstanceObjRGB("TVScreen3", glm::vec4(0.f, 1.f, 1.f, 1.f));
-    result = pVAOManager->setInstanceObjScale("TVScreen1", 0.3);
-    result = pVAOManager->setInstanceObjScale("TVScreen2", 0.3);
-    result = pVAOManager->setInstanceObjScale("TVScreen3", 0.3);
-    result = pVAOManager->setInstanceObjLighting("TVScreen1", false);
-    result = pVAOManager->setInstanceObjLighting("TVScreen2", false);
-    result = pVAOManager->setInstanceObjLighting("TVScreen3", false);
-    result = pVAOManager->setInstanceObjSpecularPower("TVScreen1", glm::vec4(1.f,1.f,1.f,2.f));
-    result = pVAOManager->setInstanceObjSpecularPower("TVScreen2", glm::vec4(1.f,1.f,1.f,2.f));
-    result = pVAOManager->setInstanceObjSpecularPower("TVScreen3", glm::vec4(1.f,1.f,1.f,2.f));
+    g_TV1 = new TV();
+    g_TV1->setup(glm::vec4(1.f, 0.f, 0.f, 1.f), pVAOManager->findMeshObjAddr("TV1"), pVAOManager->findMeshObjAddr("TVScreen1"));
 
+    g_TV2 = new TV();
+    g_TV2->setup(glm::vec4(0.f, 1.f, 0.f, 1.f), pVAOManager->findMeshObjAddr("TV2"), pVAOManager->findMeshObjAddr("TVScreen2"));
 
+    g_TV3 = new TV();
+    g_TV3->setup(glm::vec4(0.f, 0.f, 1.f, 1.f), pVAOManager->findMeshObjAddr("TV3"), pVAOManager->findMeshObjAddr("TVScreen3"));
+
+        
     light0Setup(); // Dir light
     light1Setup(pVAOManager);// torch
     light2Setup(pVAOManager); //beholder eye
@@ -390,12 +405,14 @@ int main(void)
 
         //glViewport(0, 0, width, height);
         //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        setFBO2(pShaderManager, pVAOManager);
+        //setFBO2(pShaderManager, pVAOManager);
+        pShaderManager->useShaderPRogram("Shader02");
+        setFBOPortal(::g_FBO_02, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f, 1.f, 0.f));
         setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f,1.f,0.f));
         setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget);
         //g_cameraEye = glm::vec4(0.f);
         //g_cameraTarget = glm::vec4(200.f, 200.f, -100.f, 0.f);
-        
+        pShaderManager->useShaderPRogram("Shader01");
         updateByFrameRate();
 
         //////////////////////////////////////////////////////////////
@@ -434,9 +451,11 @@ int main(void)
         pShaderManager->setShaderUniformM4fv("mView", matView);
         pShaderManager->setShaderUniformM4fv("mProjection", matProjection);
        
+        //pShaderManager->useShaderPRogram("Shader02");
         setFBOtoTexture(g_FBO_02, pShaderManager, pVAOManager, "projecter2");
         setFBOtoTexture(g_FBO_03, pShaderManager, pVAOManager, "projecter3");
         setFBOtoTexture(g_FBO_04, pShaderManager, pVAOManager, "projecter4");
+        //pShaderManager->useShaderPRogram("Shader01");
         updateInstanceObj(pShaderManager, pVAOManager);
 
         //////////////////////////////////////////////////////////////
@@ -639,7 +658,8 @@ void setFBOPortal(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOMa
     glm::mat4x4 matProjection;
     glm::mat4x4 matView;
 
-    GLuint shaderID = pShaderManager->getIDfromName("Shader01");
+    //GLuint shaderID = pShaderManager->getIDfromName("Shader01"); 
+    GLuint shaderID = pShaderManager->getCurrentShaderID();
 
     //FBO
     glBindFramebuffer(GL_FRAMEBUFFER, fbo->ID);

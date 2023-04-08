@@ -60,7 +60,7 @@ public:
 	void setShaderUniform4f(std::string name,const float value1, const float value2, const float value3, const float value4);
 
 	void setShaderUniform1i(std::string name, int value);
-
+	GLuint getCurrentShaderID();
 
 	//cShaderProgram* pGetShaderProgramFromName(std::string callSign);
 

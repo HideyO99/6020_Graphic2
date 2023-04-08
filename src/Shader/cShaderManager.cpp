@@ -140,6 +140,11 @@ void cShaderManager::setShaderUniform1i(std::string name, int value)
 	glUniform1i(lo, value);
 }
 
+GLuint cShaderManager::getCurrentShaderID()
+{
+	return this->shaderID;
+}
+
 
 bool cShaderManager::cLoadShaderSourceCode(cShader& shader)
 {

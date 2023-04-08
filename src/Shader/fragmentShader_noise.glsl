@@ -88,9 +88,8 @@ uniform bool bIsSkyboxObject;
 // HACK: colour the island
 uniform bool bIsIlandModel;
 
-uniform bool bStaticScreen;
-
 //function
+//vec3 GaussianBlurCalculation(int numElement,sampler2D fboTexture);
 vec3 GaussianBlurCalculation(int numElement);
 float gauss(float x, float sigma);
 vec4 LightContribute(vec3 vMaterialColor, vec3 vNormal, vec3 vWorldPos, vec4 vSpecular, vec4 refraction);
@@ -100,188 +99,124 @@ vec4 noise(vec2 fragCoord);
 
 void main()
 {
-	//////////////////////////////////////////////////////////////////////////
-	//	2nd pass															//
-	//////////////////////////////////////////////////////////////////////////
-	if(bFullScreen)
-	{
-		float screen_width = screen_width_height.x;
-		float screen_height = screen_width_height.y;
-		vec2 textCoords;
-		if(bMirror)
-		{
-			textCoords = vec2( -gl_FragCoord.x / screen_width, gl_FragCoord.y  / screen_height );
-		}
-		else
-		{
-			textCoords = vec2( gl_FragCoord.x / screen_width, gl_FragCoord.y  / screen_height );
-		}
-		vec4 vertexColour = texture( sampler_FBO_vertexMaterialColour, textCoords );
-		vec4 vertexNormal = texture( sampler_FBO_vertexNormal, textCoords );
-		vec4 vertexWorldPosition = texture( sampler_FBO_vertexWorldPos, textCoords );
-		vec4 vertexSpecular = texture( sampler_FBO_vertexSpecular, textCoords );
-		vec4 vertexRefraction = texture( sampler_FBO_vertexRefraction, textCoords );
-
-		if(blurAmount == 0.f)
-		{
-			if(!bRipple)
-			{
-				if(vertexNormal == vec4(1.f))
-				{
-					pixelOutputColor = vertexColour;
-					//return;
-				}
-				else
-				{
-					pixelOutputColor = LightContribute(vertexColour.rgb, vertexNormal.xyz, vertexWorldPosition.xyz, vertexSpecular, vertexRefraction);
-					//pixelOutputColor = LightContribute(vertexColour.rgb, vertexNormal.xyz, vertexWorldPosition.xyz, vertexSpecular, vec4(0));
-				}
-			}
-			else
-			{
-				pixelOutputColor = RippleEffect(textCoords);
-			}
-		}
-		if(blurAmount>0)
-		{
-			int GaussianElementNum = int(blurAmount * float(MAX_KERNEL_1D_SIZE));
-			GaussianElementNum = clamp(GaussianElementNum, 0, MAX_KERNEL_1D_SIZE);
-			pixelOutputColor.rgb = GaussianBlurCalculation(GaussianElementNum);
-//			vec3 ambient = 0.15* pixelOutputColor.rgb;
-//			pixelOutputColor.rgb += ambient;
-			pixelOutputColor.a = 1.f;
-		}
-
-		if(bStaticScreen)
-		{
-			pixelOutputColor = noise(textCoords);
-			pixelOutputColor.a = 1.f;
-		}
-		
-
-//		pixelOutputColor = vertexRefraction*vertexRefraction;
-		//
-		return;
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-	//	1st pass															//
-	//////////////////////////////////////////////////////////////////////////
-	pixelOutputColor = vec4(0.0f);
+	vec2 texcoord = vec2((gl_FragCoord.x ) , (gl_FragCoord.y));
+	pixelOutputColor = noise(texcoord);
+//	pixelOutputColor = vec4(0.0f);
 	FBO_vertexNormal = vec4(0.0f);
 	FBO_vertexWorldPos = vec4(0.0f);
 	FBO_vertexSpecular = vec4(0.0f);
-
-
-
-	if (bIsSkyboxObject)
-	{
-		vec3 cubeMapColor = texture( skyboxTexture, fNormal.xyz ).rgb;
-		pixelOutputColor.rgb = cubeMapColor.rgb;
-		pixelOutputColor.a = 1.0f;
-
-		FBO_vertexNormal = vec4(1.f);
-		
-		return;
-	}
-	
-	if (bIsFlameObject)
-	{
-		// DON'T light. Apply the texture. Use colour as alpha
-		vec3 flameColor = texture( texture0, fUVx2.st ).rgb;	
-		
-		pixelOutputColor.rgb = flameColor;
-		
-		// Set the alpha transparency based on the colour.
-		float RGBcolorSum = pixelOutputColor.r + pixelOutputColor.g + pixelOutputColor.b;
-		pixelOutputColor.a = max( ((RGBcolorSum - 0.1f) / 3.0f), 0.0f);
-	
-		FBO_vertexNormal = vec4(fNormal.rgb, 0.f);
-		// Exit early so bypasses lighting
-		return;
-	}
-
-	if ( bUseDiscardTexture )
-	{	
-		// Compare the colour in the texture07 black and white texture
-		// If it's 'black enough' then don't draw the pixel
-		// NOTE: I'm only sampling from the red 
-		// (since it's black and white, all channels would be the same)
-		float greyscalevalue = texture( texture7, fUVx2.st ).r;
-		
-		// Here, 0.5 is "black enough" 
-		if ( greyscalevalue < 0.5f )
-		{
-			discard;
-		}
-	}
-
-	vec3 materialColor = vec3(0.f);
-	float alphaTransparency = RGBA_Color.w;
-	if(bUseRGBA_Color)
-	{
-		pixelOutputColor = RGBA_Color;
-		//pixelOutputColor = vec4(materialColor.rgb,alphaTransparency);
-		FBO_vertexNormal = vec4(fNormal.xyz,1.f);
-//		FBO_vertexWorldPos = vec4(fVertWorldLocation.xyz, 1.f);
-		return;
-	}
-	else
-	{
-		vec3 textColour0 = texture( texture0, fUVx2.st ).rgb;		
-		vec3 textColour1 = texture( texture1, fUVx2.st ).rgb;	
-		vec3 textColour2 = texture( texture2, fUVx2.st ).rgb;	
-		vec3 textColour3 = texture( texture3, fUVx2.st ).rgb;	
-			
-			
-		materialColor =  (textColour0.rgb * texRatio_0_3.x) 
-						+ (textColour2.rgb * texRatio_0_3.z) 
-						+ (textColour1.rgb * texRatio_0_3.y) 
-						+ (textColour3.rgb * texRatio_0_3.w);
-	}
-	pixelOutputColor = vec4(materialColor.rgb,alphaTransparency);
-
-
-	FBO_vertexWorldPos = vec4(fVertWorldLocation.xyz, 1.f);
-	if ( bDoNotLight )
-	{
-		pixelOutputColor = vec4(materialColor.rgb, 1.f);
-		FBO_vertexNormal = vec4(1.f);
-
-		return;
-	}
-	else
-	{
-		FBO_vertexNormal = vec4(fNormal.rgb, 1.f);
-		pixelOutputColor = vec4(materialColor.rgb, 1.f);
-
-	}
-	if(bIsIlandModel)
-	{
-			vec4 pixelOutput_tmp = vec4(0.f);
-
-				// Make the objects 'refractive' (like a see through glass or water or diamond...)
-				vec3 R_eyeVector = normalize(eyeLocation.xyz - fVertWorldLocation.xyz);
-				// genType reflect(	genType IncidentVector, genType Normal);
-				// (index of refraction for diamond is 2.417 according to wikipedia)
-				// (index of refraction for water is 1.333 according to wikipedia)
-				vec3 STU_Vector = refract(R_eyeVector, fNormal.xyz, 1.0f/2.417f);
-				//vec3 STU_Vector = refract(R_eyeVector, vertexNormal.xyz, 1.0f/1.333f);
-
-				vec3 cubeMapColour = texture( skyboxTexture, STU_Vector.xyz ).rgb;
-				//pixelOutputColor.rgb *= 0.00001f;
-				//pixelOutputColor.rgb += cubeMapColour.rgb;
-				pixelOutput_tmp.rgb *=0.00001f;
-				pixelOutput_tmp.rgb += cubeMapColour.rgb;
-				FBO_vertexRefraction = vec4(R_eyeVector,1.f);
-	}
-	else
-	{
-		FBO_vertexRefraction = vec4(0.f);
-	}
-
-	FBO_vertexSpecular = specularColour;
-	
+	pixelOutputColor.w = 1.f;
+//
+//
+//
+//	if (bIsSkyboxObject)
+//	{
+//		vec3 cubeMapColor = texture( skyboxTexture, fNormal.xyz ).rgb;
+//		pixelOutputColor.rgb = cubeMapColor.rgb;
+//		pixelOutputColor.a = 1.0f;
+//
+//		FBO_vertexNormal = vec4(1.f);
+//		
+//		return;
+//	}
+//	
+//	if (bIsFlameObject)
+//	{
+//		// DON'T light. Apply the texture. Use colour as alpha
+//		vec3 flameColor = texture( texture0, fUVx2.st ).rgb;	
+//		
+//		pixelOutputColor.rgb = flameColor;
+//		
+//		// Set the alpha transparency based on the colour.
+//		float RGBcolorSum = pixelOutputColor.r + pixelOutputColor.g + pixelOutputColor.b;
+//		pixelOutputColor.a = max( ((RGBcolorSum - 0.1f) / 3.0f), 0.0f);
+//	
+//		FBO_vertexNormal = vec4(fNormal.rgb, 0.f);
+//		// Exit early so bypasses lighting
+//		return;
+//	}
+//
+//	if ( bUseDiscardTexture )
+//	{	
+//		// Compare the colour in the texture07 black and white texture
+//		// If it's 'black enough' then don't draw the pixel
+//		// NOTE: I'm only sampling from the red 
+//		// (since it's black and white, all channels would be the same)
+//		float greyscalevalue = texture( texture7, fUVx2.st ).r;
+//		
+//		// Here, 0.5 is "black enough" 
+//		if ( greyscalevalue < 0.5f )
+//		{
+//			discard;
+//		}
+//	}
+//
+//	vec3 materialColor = vec3(0.f);
+//	float alphaTransparency = RGBA_Color.w;
+//	if(bUseRGBA_Color)
+//	{
+//		pixelOutputColor = RGBA_Color;
+//		//pixelOutputColor = vec4(materialColor.rgb,alphaTransparency);
+//		FBO_vertexNormal = vec4(fNormal.xyz,1.f);
+////		FBO_vertexWorldPos = vec4(fVertWorldLocation.xyz, 1.f);
+//		return;
+//	}
+//	else
+//	{
+//		vec3 textColour0 = texture( texture0, fUVx2.st ).rgb;		
+//		vec3 textColour1 = texture( texture1, fUVx2.st ).rgb;	
+//		vec3 textColour2 = texture( texture2, fUVx2.st ).rgb;	
+//		vec3 textColour3 = texture( texture3, fUVx2.st ).rgb;	
+//			
+//			
+//		materialColor =  (textColour0.rgb * texRatio_0_3.x) 
+//						+ (textColour2.rgb * texRatio_0_3.z) 
+//						+ (textColour1.rgb * texRatio_0_3.y) 
+//						+ (textColour3.rgb * texRatio_0_3.w);
+//	}
+//	pixelOutputColor = vec4(materialColor.rgb,alphaTransparency);
+//
+//
+//	FBO_vertexWorldPos = vec4(fVertWorldLocation.xyz, 1.f);
+//	if ( bDoNotLight )
+//	{
+//		pixelOutputColor = vec4(materialColor.rgb, 1.f);
+//		FBO_vertexNormal = vec4(1.f);
+//
+//		return;
+//	}
+//	else
+//	{
+//		FBO_vertexNormal = vec4(fNormal.rgb, 1.f);
+//		pixelOutputColor = vec4(materialColor.rgb, 1.f);
+//
+//	}
+//	if(bIsIlandModel)
+//	{
+//			vec4 pixelOutput_tmp = vec4(0.f);
+//
+//				// Make the objects 'refractive' (like a see through glass or water or diamond...)
+//				vec3 R_eyeVector = normalize(eyeLocation.xyz - fVertWorldLocation.xyz);
+//				// genType reflect(	genType IncidentVector, genType Normal);
+//				// (index of refraction for diamond is 2.417 according to wikipedia)
+//				// (index of refraction for water is 1.333 according to wikipedia)
+//				vec3 STU_Vector = refract(R_eyeVector, fNormal.xyz, 1.0f/2.417f);
+//				//vec3 STU_Vector = refract(R_eyeVector, vertexNormal.xyz, 1.0f/1.333f);
+//
+//				vec3 cubeMapColour = texture( skyboxTexture, STU_Vector.xyz ).rgb;
+//				//pixelOutputColor.rgb *= 0.00001f;
+//				//pixelOutputColor.rgb += cubeMapColour.rgb;
+//				pixelOutput_tmp.rgb *=0.00001f;
+//				pixelOutput_tmp.rgb += cubeMapColour.rgb;
+//				FBO_vertexRefraction = vec4(R_eyeVector,1.f);
+//	}
+//	else
+//	{
+//		FBO_vertexRefraction = vec4(0.f);
+//	}
+//
+//	FBO_vertexSpecular = specularColour;
+//	
 }
 
 

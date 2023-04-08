@@ -34,6 +34,7 @@ public:
 	bool isMovingTexture;
 #endif
 	bool hasBone;
+	bool isStaticScreen;
 
 	std::vector<glm::mat4> BoneModelMatrices;
 	std::vector<glm::mat4> GlobalTransformations;

@@ -141,6 +141,9 @@
     <ClCompile Include="src\time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TV.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GUI\cGUI.h">
@@ -230,12 +233,18 @@
     <ClInclude Include="src\BoneHierarchy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\TV.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shader\fragmentShader.glsl">
       <Filter>Shaders</Filter>
     </None>
     <None Include="src\Shader\vertexShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="src\Shader\fragmentShader_noise.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
