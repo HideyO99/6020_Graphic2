@@ -17,7 +17,7 @@ const double FRAME_RATE = (double)1 / FRAMES_PER_SECOND;
 
 TV::TV()
 {
-	this->m_currentChannel = 1;
+	this->m_currentChannel = 2;
 	this->isPwrOn = false;
 	this->meshBody = nullptr;
 	this->meshScreen = nullptr;
