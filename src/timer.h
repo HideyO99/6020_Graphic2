@@ -1,18 +1,16 @@
 #pragma once
 #include <chrono>
 
-class cTime
+class Timer
 {
-public:
-	static void update();
-	static double getDeltaTime();
+public: 
+	Timer();
+	~Timer();
 
-	static cTime* instance;
-	static cTime* getInstance();
+	void update();
+	double getDeltaTime();
 
 	std::chrono::steady_clock::time_point LastUpdate;
 	std::chrono::steady_clock::time_point CurrentUpdate;
 };
-
-
 

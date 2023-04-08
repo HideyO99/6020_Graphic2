@@ -144,6 +144,9 @@
     <ClCompile Include="src\TV.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GUI\cGUI.h">
@@ -234,6 +237,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\TV.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

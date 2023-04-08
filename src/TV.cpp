@@ -12,6 +12,9 @@ extern cFBO* g_FBO_03;
 extern cFBO* g_FBO_04;
 extern cFBO* g_FBO_05;
 
+const int FRAMES_PER_SECOND = 30;
+const double FRAME_RATE = (double)1 / FRAMES_PER_SECOND;
+
 TV::TV()
 {
 	this->m_currentChannel = 7;
@@ -19,24 +22,19 @@ TV::TV()
 	this->meshBody = nullptr;
 	this->meshScreen = nullptr;
 	this->lastTurnOn = 0;
-}
-
-TV::TV(int id)
-{
-    this->id = id;
-    this->m_currentChannel = 7;
-    this->isPwrOn = false;
-    this->meshBody = nullptr;
-    this->meshScreen = nullptr;
-    this->lastTurnOn = 0;
+    this->m_CurrentTime = 0;
+    this->m_lastCall = 0;
+    this->m_timer = new Timer();
 }
 
 TV::~TV()
 {
+
 }
 
 void TV::TurnOn()
 {
+
     this->isPwrOn = true;
 }
 
@@ -53,7 +51,7 @@ void TV::decCHN()
 {
 }
 
-void TV::render(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
+void TV::render()
 {
 
     pShaderManager->setShaderUniform1f("bFullScreen", true);
@@ -72,7 +70,7 @@ void TV::render(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
             break;
         default:
             pShaderManager->setShaderUniform1f("bStaticScreen", true);
-            pShaderManager->setShaderUniform1f("iTime", g_CurrentTime);
+            pShaderManager->setShaderUniform1f("iTime", m_CurrentTime);
             break;
         }
     }
@@ -189,17 +187,37 @@ void TV::setupFBO2Texture(cFBO* fbo, cShaderManager* pShaderManager)
     pShaderManager->setShaderUniform1i("sampler_FBO_vertexRefraction", texture25_Unit);
 }
 
-void TV::setup(glm::vec4 color, cMeshObj* body, cMeshObj* screen)
+void TV::setup(glm::vec4 color, cShaderManager* shader, cVAOManager* VAO, int ID)
 {
-	meshBody = body;
+    this->ID = ID;
+    pVAOManager = VAO;
+    pShaderManager = shader;
+
+    std::string tv = "TV" + std::to_string(ID);
+    meshBody = pVAOManager->findMeshObjAddr(tv.c_str());
 	meshBody->bUse_RGBA_colour = true;
 	meshBody->color_RGBA = color;
 	meshBody->rotation = glm::vec4(-1.5f, 0.f, 0.f, 1.f);
 	meshBody->scale = glm::vec3(0.3);
 
-	meshScreen = screen;
+    std::string tvScr = "TVScreen" + std::to_string(ID);
+	meshScreen = pVAOManager->findMeshObjAddr(tvScr.c_str());
 	meshScreen->rotation = glm::vec4(-1.5f, 0.f, 0.f, 1.f);
 	meshScreen->scale = glm::vec3(0.3);
 	meshScreen->isVisible = false;
 	meshScreen->isStaticScreen = true;
+}
+
+void TV::update()
+{
+    m_timer->update();
+    double deltaTime = m_timer->getDeltaTime();
+    m_CurrentTime += deltaTime;
+
+    if (m_CurrentTime >= m_lastCall + FRAME_RATE)
+    {
+        double elapsedTime = m_CurrentTime - m_lastCall;
+        m_lastCall = m_CurrentTime;
+        render();
+    }
 }

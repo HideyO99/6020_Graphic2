@@ -22,3 +22,4 @@ cTime* cTime::getInstance()
 	}
 	return instance;
 }
+

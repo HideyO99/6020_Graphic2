@@ -166,6 +166,7 @@
     <ClCompile Include="src\Texture\cTextureFromBMP.cpp" />
     <ClCompile Include="src\Texture\cTextureManager.cpp" />
     <ClCompile Include="src\time.cpp" />
+    <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\TV.cpp" />
     <ClCompile Include="src\VAOManager\cModelDrawInfo.cpp" />
     <ClCompile Include="src\VAOManager\cVAOManager.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="src\Texture\cTextureFromBMP.h" />
     <ClInclude Include="src\Texture\cTextureManager.h" />
     <ClInclude Include="src\time.h" />
+    <ClInclude Include="src\timer.h" />
     <ClInclude Include="src\TV.h" />
     <ClInclude Include="src\VAOManager\cModelDrawInfo.h" />
     <ClInclude Include="src\VAOManager\cVAOManager.h" />
