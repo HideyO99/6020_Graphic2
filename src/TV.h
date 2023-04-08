@@ -29,6 +29,7 @@ public:
 	cVAOManager* pVAOManager;
 
 	double lastTurnOn;
+	double lastTurnOff;
 
 	unsigned int m_currentChannel;
 private:

@@ -22,6 +22,7 @@ TV::TV()
 	this->meshBody = nullptr;
 	this->meshScreen = nullptr;
 	this->lastTurnOn = 0;
+    this->lastTurnOff = 0;
     this->m_CurrentTime = 0;
     this->m_lastCall = 0;
     this->m_timer = new Timer();
@@ -34,13 +35,17 @@ TV::~TV()
 
 void TV::TurnOn()
 {
-
+    update();
+    this->lastTurnOn = m_CurrentTime;
     this->isPwrOn = true;
 }
 
 void TV::TurnOff()
 {
+    update();
+    this->lastTurnOff = m_CurrentTime;
     this->isPwrOn = false;
+    
 }
 
 void TV::incCHN()
@@ -55,8 +60,11 @@ void TV::render()
 {
 
     pShaderManager->setShaderUniform1f("bFullScreen", true);
+    pShaderManager->setShaderUniform1f("bTV", true);
     if (this->isPwrOn)
     {
+        pShaderManager->setShaderUniform1f("bTurnOn", true);
+    }
         switch (m_currentChannel)
         {
         case 3:
@@ -70,20 +78,24 @@ void TV::render()
             break;
         default:
             pShaderManager->setShaderUniform1f("bStaticScreen", true);
-            pShaderManager->setShaderUniform1f("iTime", m_CurrentTime);
+            //pShaderManager->setShaderUniform1f("iTime", m_CurrentTime);
             break;
         }
-    }
-    else
+        pShaderManager->setShaderUniform1f("iTime", m_CurrentTime);
+        pShaderManager->setShaderUniform1f("lastTurnOn", lastTurnOn);
+        pShaderManager->setShaderUniform1f("lastTurnOff", lastTurnOff);
+    //}
+    //else
     {
-        setupFBO2Texture(g_FBO_05, pShaderManager);
+       // setupFBO2Texture(g_FBO_05, pShaderManager);
     }
     glm::mat4 scrMAT = glm::mat4(1.f);
 
     drawObj(this->meshScreen, scrMAT, pShaderManager, pVAOManager);
 
     pShaderManager->setShaderUniform1f("bStaticScreen", false);
-
+    pShaderManager->setShaderUniform1f("bTurnOn", false);
+    pShaderManager->setShaderUniform1f("bTV", false);
     pShaderManager->setShaderUniform1f("bFullScreen", false);
 }
 

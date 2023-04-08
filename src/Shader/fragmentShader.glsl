@@ -35,6 +35,10 @@ const int MAX_KERNEL_1D_SIZE = 20;
 uniform bool bMirror;
 uniform bool bRipple;
 uniform float iTime;
+uniform float lastTurnOn;
+uniform float lastTurnOff;
+uniform bool bTV;
+uniform bool bTurnOn;
 
 uniform vec4 debugColour;
 
@@ -95,6 +99,7 @@ vec4 LightContribute(vec3 vMaterialColor, vec3 vNormal, vec3 vWorldPos, vec4 vSp
 vec4 LightCalculation(vec2 FragCoord);
 vec4 RippleEffect(vec2 fragCoord);
 vec4 noise(vec2 fragCoord);
+float WarmUpTimer();
 
 void main()
 {
@@ -155,9 +160,12 @@ void main()
 			pixelOutputColor = noise(textCoords);
 			pixelOutputColor.a = 1.f;
 		}
-		
-
-//		pixelOutputColor = vertexRefraction*vertexRefraction;
+		if(bTV)
+		{
+			pixelOutputColor.a = WarmUpTimer();
+			
+		}
+		//pixelOutputColor = vec4(0);//vertexRefraction*vertexRefraction;
 		//
 		return;
 	}
@@ -502,4 +510,26 @@ vec4 noise(vec2 fragCoord)
     float cy  = fragCoord.y*G;
 	vec3 color = vec3(fract(23.0*fract(2.0/fract(fract(cx*2.4/cy*23.0+pow(abs(cy/22.4),3.3))*fract(cx*iTime/pow(abs(cy),0.050))))));
 	return vec4(color,1.f);
+}
+
+float WarmUpTimer()
+{
+	if(bTurnOn)
+	{
+		float timer = 5;
+		float diff = iTime-lastTurnOn;
+		//float result = mix(0,timer,diff) / timer;
+		float result = diff / timer;
+		result = clamp(result,0,1);
+		return result;
+	}
+	else
+	{
+		float timer = 0.5;
+		float diff = iTime-lastTurnOff;
+		//float result = mix(0,timer,diff) / timer;
+		float result = diff / timer;
+		result = 1 - clamp(result,0,1);
+		return result;
+	}
 }
