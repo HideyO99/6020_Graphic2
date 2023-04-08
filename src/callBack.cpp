@@ -65,29 +65,29 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         //::g_cameraEye -= ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
         g_MeshBoss->position.z += 0.1;
     }
-    if (key == GLFW_KEY_A)
+    if (key == GLFW_KEY_Q && action == GLFW_RELEASE)
     {
-        ::g_cameraEye += (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
+        g_TV1->incCHN();
     }
-    if (key == GLFW_KEY_D)
+    if (key == GLFW_KEY_A && action == GLFW_RELEASE)
     {
-        ::g_cameraEye -= (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
+        g_TV1->decCHN();
     }
-    if (key == GLFW_KEY_W)
+    if (key == GLFW_KEY_W && action == GLFW_RELEASE)
     {
-        ::g_cameraEye += ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
+        g_TV2->incCHN();
     }
-    if (key == GLFW_KEY_S)
+    if (key == GLFW_KEY_S && action == GLFW_RELEASE)
     {
-        ::g_cameraEye -= ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
+        g_TV2->decCHN();
     }
-    if (key == GLFW_KEY_Q)
+    if (key == GLFW_KEY_E && action == GLFW_RELEASE)
     {
-        ::g_cameraEye.y -= CAMERA_MOVE_SPEED;
+        g_TV3->incCHN();
     }
-    if (key == GLFW_KEY_E)
+    if (key == GLFW_KEY_D && action == GLFW_RELEASE)
     {
-        ::g_cameraEye.y += CAMERA_MOVE_SPEED;
+        g_TV3->decCHN();
     }
     if (key == GLFW_KEY_1 && action == GLFW_RELEASE)
     {
@@ -133,7 +133,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         //::g_cameraEye = glm::vec3(-5.5f, -3.4f, 15.0f);
         //::g_cameraEye = glm::vec3(0.0, 100.0, 300.0f);
         //::g_cameraTarget = glm::vec3(5.0f, 0.0f, 0.0f);
-        bIsWalkAround = !bIsWalkAround;
+        //bIsWalkAround = !bIsWalkAround;
 
     }
 }

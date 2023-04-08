@@ -5,6 +5,7 @@
 #include "VAOManager/cVAOManager.h"
 #include "timer.h"
 
+#define NUMCHN 13
 class TV
 {
 public:

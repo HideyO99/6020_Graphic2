@@ -50,10 +50,20 @@ void TV::TurnOff()
 
 void TV::incCHN()
 {
+    m_currentChannel++;
+    if (m_currentChannel > 13)
+    {
+        m_currentChannel = 2;
+    }
 }
 
 void TV::decCHN()
 {
+    m_currentChannel--;
+    if (m_currentChannel > 2)
+    {
+        m_currentChannel = 13;
+    }
 }
 
 void TV::render()
