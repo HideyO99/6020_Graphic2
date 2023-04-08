@@ -368,15 +368,21 @@ int main(void)
     g_MeshBoss = pVAOManager->findMeshObjAddr("boss");
     result = pVAOManager->setInstanceObjLighting("boss", false);
 
-
+    //TV setup
     g_TV1 = new TV();
     g_TV1->setup(glm::vec4(1.f, 0.f, 0.f, 1.f), pVAOManager->findMeshObjAddr("TV1"), pVAOManager->findMeshObjAddr("TVScreen1"));
+    pVAOManager->mapInstanceNametoMeshObj.erase("TV1");
+    pVAOManager->mapInstanceNametoMeshObj.erase("TVScreen1");
 
     g_TV2 = new TV();
     g_TV2->setup(glm::vec4(0.f, 1.f, 0.f, 1.f), pVAOManager->findMeshObjAddr("TV2"), pVAOManager->findMeshObjAddr("TVScreen2"));
+    pVAOManager->mapInstanceNametoMeshObj.erase("TV2");
+    pVAOManager->mapInstanceNametoMeshObj.erase("TVScreen2");
 
     g_TV3 = new TV();
     g_TV3->setup(glm::vec4(0.f, 0.f, 1.f, 1.f), pVAOManager->findMeshObjAddr("TV3"), pVAOManager->findMeshObjAddr("TVScreen3"));
+    pVAOManager->mapInstanceNametoMeshObj.erase("TV3");
+    pVAOManager->mapInstanceNametoMeshObj.erase("TVScreen3");
 
         
     light0Setup(); // Dir light
@@ -407,13 +413,14 @@ int main(void)
         //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //setFBO2(pShaderManager, pVAOManager);
         //pShaderManager->useShaderPRogram("Shader02");
+        updateByFrameRate();
+
         setFBOPortal(::g_FBO_02, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f, 1.f, 0.f));
         setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f,1.f,0.f));
         setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget);
         //g_cameraEye = glm::vec4(0.f);
         //g_cameraTarget = glm::vec4(200.f, 200.f, -100.f, 0.f);
         //pShaderManager->useShaderPRogram("Shader01");
-        updateByFrameRate();
 
         //////////////////////////////////////////////////////////////
         //FBO                                                       //
@@ -452,11 +459,17 @@ int main(void)
         pShaderManager->setShaderUniformM4fv("mProjection", matProjection);
        
         //pShaderManager->useShaderPRogram("Shader02");
-        setFBOtoTexture(g_FBO_02, pShaderManager, pVAOManager, "projecter2");
-        setFBOtoTexture(g_FBO_03, pShaderManager, pVAOManager, "projecter3");
-        setFBOtoTexture(g_FBO_04, pShaderManager, pVAOManager, "projecter4");
+        //setFBOtoTexture(g_FBO_02, pShaderManager, pVAOManager, "projecter2");
+        //setFBOtoTexture(g_FBO_03, pShaderManager, pVAOManager, "projecter3");
+        //setFBOtoTexture(g_FBO_04, pShaderManager, pVAOManager, "projecter4");
         //pShaderManager->useShaderPRogram("Shader01");
-        updateInstanceObj(pShaderManager, pVAOManager);
+        drawObj(g_TV1->meshBody, glm::mat4(1.f), pShaderManager, pVAOManager);
+        drawObj(g_TV2->meshBody, glm::mat4(1.f), pShaderManager, pVAOManager);
+        drawObj(g_TV3->meshBody, glm::mat4(1.f), pShaderManager, pVAOManager);
+        g_TV1->render(g_FBO_02, pShaderManager, pVAOManager);
+        g_TV2->render(g_FBO_03, pShaderManager, pVAOManager);
+        g_TV3->render(g_FBO_04, pShaderManager, pVAOManager);
+        //updateInstanceObj(pShaderManager, pVAOManager);
 
         //////////////////////////////////////////////////////////////
         //main buffer                                               //
@@ -687,7 +700,7 @@ void setFBOPortal(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOMa
     pShaderManager->setShaderUniformM4fv("mView", matView);
     pShaderManager->setShaderUniformM4fv("mProjection", matProjection);
 
-    updateInstanceObj(pShaderManager, pVAOManager);
+    //updateInstanceObj(pShaderManager, pVAOManager);
 
 }
 

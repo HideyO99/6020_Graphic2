@@ -38,8 +38,6 @@ uniform float iTime;
 
 uniform vec4 debugColour;
 
-const float e = 2.7182818284590452353602874713527;
-
 struct sLight
 {
 	vec4 position;			
@@ -499,7 +497,9 @@ vec4 RippleEffect(vec2 fragCoord)
 
 vec4 noise(vec2 fragCoord)
 {
-    float G = e + (iTime * 0.1);
-    vec2 r = (G * sin(G * fragCoord));
-    return vec4(fract(r.x * r.y * (1.0 + fragCoord.x)));
+	float G = fract((iTime*0.01));
+	float cx  = fragCoord.x*G;
+    float cy  = fragCoord.y*G;
+	vec3 color = vec3(fract(23.0*fract(2.0/fract(fract(cx*2.4/cy*23.0+pow(abs(cy/22.4),3.3))*fract(cx*iTime/pow(abs(cy),0.050))))));
+	return vec4(color,1.f);
 }
