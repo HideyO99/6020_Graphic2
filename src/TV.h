@@ -16,7 +16,8 @@ public:
 	void TurnOff();
 	void incCHN();
 	void decCHN();
-	void render(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOManager);
+	void render(cShaderManager* pShaderManager, cVAOManager* pVAOManager);
+	void recieveSignal(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOManager, glm::vec3 eye, glm::vec3 target);
 	bool isPwrOn;
 	cMeshObj* meshBody;
 	cMeshObj* meshScreen;
@@ -26,5 +27,6 @@ public:
 private:
 	unsigned int m_currentChannel;
 	bool isStaticCHN();
+	void setupFBO2Texture(cFBO* fbo, cShaderManager* pShaderManager);
 };
 

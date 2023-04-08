@@ -418,6 +418,10 @@ int main(void)
         setFBOPortal(::g_FBO_02, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f, 1.f, 0.f));
         setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f,1.f,0.f));
         setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget);
+        //g_TV1->recieveSignal(::g_FBO_02, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f, 1.f, 0.f));
+        //g_TV2->recieveSignal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f, 1.f, 0.f));
+        //g_TV3->recieveSignal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124, 100, 0), -g_cameraTarget);
+       
         //g_cameraEye = glm::vec4(0.f);
         //g_cameraTarget = glm::vec4(200.f, 200.f, -100.f, 0.f);
         //pShaderManager->useShaderPRogram("Shader01");
@@ -466,9 +470,9 @@ int main(void)
         drawObj(g_TV1->meshBody, glm::mat4(1.f), pShaderManager, pVAOManager);
         drawObj(g_TV2->meshBody, glm::mat4(1.f), pShaderManager, pVAOManager);
         drawObj(g_TV3->meshBody, glm::mat4(1.f), pShaderManager, pVAOManager);
-        g_TV1->render(g_FBO_02, pShaderManager, pVAOManager);
-        g_TV2->render(g_FBO_03, pShaderManager, pVAOManager);
-        g_TV3->render(g_FBO_04, pShaderManager, pVAOManager);
+        g_TV1->render(pShaderManager, pVAOManager);
+        g_TV2->render(pShaderManager, pVAOManager);
+        g_TV3->render(pShaderManager, pVAOManager);
         //updateInstanceObj(pShaderManager, pVAOManager);
 
         //////////////////////////////////////////////////////////////
@@ -600,10 +604,7 @@ void updateInstanceObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
 
         //pCurrentMeshObject->textureRatios[0] -= 0.001f;
         //pCurrentMeshObject->textureRatios[1] += 0.001f;
-        if (pCurrentMeshObject->meshName != "TV"&& pCurrentMeshObject->meshName != "TVScreen")
-        {
-            continue;
-        }
+
         if (!pCurrentMeshObject->isVisible)
         {
             // Skip the rest of the loop
@@ -700,7 +701,7 @@ void setFBOPortal(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOMa
     pShaderManager->setShaderUniformM4fv("mView", matView);
     pShaderManager->setShaderUniformM4fv("mProjection", matProjection);
 
-    //updateInstanceObj(pShaderManager, pVAOManager);
+    updateInstanceObj(pShaderManager, pVAOManager);
 
 }
 

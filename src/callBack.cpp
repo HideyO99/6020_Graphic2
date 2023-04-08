@@ -5,6 +5,7 @@
 #include <iostream>
 #include "FBO/cFBO.h"
 #include "Animation/AnimationManager.h"
+#include "TV.h"
 
 extern cMeshObj* g_MeshBoss;
 extern glm::vec3 g_cameraEye;
@@ -22,6 +23,9 @@ extern cFBO* g_FBO_01;
 extern AnimationManager* g_pAnimationManager;
 extern bool g_PlayAnimation;
 extern bool toggleRipple;
+extern TV* g_TV1;
+extern TV* g_TV2;
+extern TV* g_TV3;
 
 void error_callback(int error, const char* description)
 {
@@ -87,13 +91,42 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
     if (key == GLFW_KEY_1 && action == GLFW_RELEASE)
     {
-        toggleblur = !toggleblur;
-        toggleRipple = false;
+        //toggleblur = !toggleblur;
+        //toggleRipple = false;
+        if (g_TV1->isPwrOn)
+        {
+            g_TV1->TurnOff();
+        }
+        else
+        {
+            g_TV1->TurnOn();
+        }
     }
     if (key == GLFW_KEY_2 && action == GLFW_RELEASE)
     {
-        toggleRipple = !toggleRipple;
-        toggleblur = false;
+        //toggleRipple = !toggleRipple;
+        //toggleblur = false;
+        if (g_TV2->isPwrOn)
+        {
+            g_TV2->TurnOff();
+        }
+        else
+        {
+            g_TV2->TurnOn();
+        }
+    }
+    if (key == GLFW_KEY_3 && action == GLFW_RELEASE)
+    {
+        //toggleRipple = !toggleRipple;
+        //toggleblur = false;
+        if (g_TV3->isPwrOn)
+        {
+            g_TV3->TurnOff();
+        }
+        else
+        {
+            g_TV3->TurnOn();
+        }
     }
     if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
     {
