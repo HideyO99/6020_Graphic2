@@ -514,9 +514,18 @@ vec4 noise(vec2 fragCoord)
 
 float WarmUpTimer()
 {
+
 	if(bTurnOn)
 	{
-		float timer = 5;
+		float timer;
+		if(lastTurnOn-lastTurnOff >120)
+		{
+			timer = 5;
+		}
+		else
+		{
+			timer = 2.5;
+		}
 		float diff = iTime-lastTurnOn;
 		//float result = mix(0,timer,diff) / timer;
 		float result = diff / timer;
