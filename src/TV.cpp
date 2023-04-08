@@ -17,7 +17,7 @@ const double FRAME_RATE = (double)1 / FRAMES_PER_SECOND;
 
 TV::TV()
 {
-	this->m_currentChannel = 7;
+	this->m_currentChannel = 1;
 	this->isPwrOn = false;
 	this->meshBody = nullptr;
 	this->meshScreen = nullptr;
@@ -64,31 +64,28 @@ void TV::render()
     if (this->isPwrOn)
     {
         pShaderManager->setShaderUniform1f("bTurnOn", true);
+
     }
-        switch (m_currentChannel)
-        {
-        case 3:
-            setupFBO2Texture(g_FBO_02, pShaderManager);
-            break;
-        case 7:
-            setupFBO2Texture(g_FBO_03, pShaderManager);
-            break;
-        case 11:
-            setupFBO2Texture(g_FBO_04, pShaderManager);
-            break;
-        default:
-            pShaderManager->setShaderUniform1f("bStaticScreen", true);
-            //pShaderManager->setShaderUniform1f("iTime", m_CurrentTime);
-            break;
-        }
-        pShaderManager->setShaderUniform1f("iTime", m_CurrentTime);
-        pShaderManager->setShaderUniform1f("lastTurnOn", lastTurnOn);
-        pShaderManager->setShaderUniform1f("lastTurnOff", lastTurnOff);
-    //}
-    //else
+    switch (m_currentChannel)
     {
-       // setupFBO2Texture(g_FBO_05, pShaderManager);
+    case 3:
+        setupFBO2Texture(g_FBO_02, pShaderManager);
+        break;
+    case 7:
+        setupFBO2Texture(g_FBO_03, pShaderManager);
+        break;
+    case 11:
+        setupFBO2Texture(g_FBO_04, pShaderManager);
+        break;
+    default:
+        pShaderManager->setShaderUniform1f("bStaticScreen", true);
+        //pShaderManager->setShaderUniform1f("iTime", m_CurrentTime);
+        break;
     }
+    pShaderManager->setShaderUniform1f("iTime", m_CurrentTime);
+    pShaderManager->setShaderUniform1f("lastTurnOn", lastTurnOn);
+    pShaderManager->setShaderUniform1f("lastTurnOff", lastTurnOff);
+
     glm::mat4 scrMAT = glm::mat4(1.f);
 
     drawObj(this->meshScreen, scrMAT, pShaderManager, pVAOManager);

@@ -119,6 +119,10 @@ void main()
 		{
 			textCoords = vec2( gl_FragCoord.x / screen_width, gl_FragCoord.y  / screen_height );
 		}
+		if(bTV)
+		{
+			textCoords = fUVx2.xy;
+		}
 		vec4 vertexColour = texture( sampler_FBO_vertexMaterialColour, textCoords );
 		vec4 vertexNormal = texture( sampler_FBO_vertexNormal, textCoords );
 		vec4 vertexWorldPosition = texture( sampler_FBO_vertexWorldPos, textCoords );

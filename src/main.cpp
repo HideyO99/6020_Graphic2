@@ -387,7 +387,9 @@ int main(void)
     pVAOManager->mapInstanceNametoMeshObj.erase("TV3");
     pVAOManager->mapInstanceNametoMeshObj.erase("TVScreen3");
 
-    g_TV3->m_currentChannel = 1;
+    g_TV1->m_currentChannel = 3;
+    g_TV2->m_currentChannel = 7;
+    g_TV3->m_currentChannel = 11;
         
     light0Setup(); // Dir light
     light1Setup(pVAOManager);// torch
@@ -419,9 +421,9 @@ int main(void)
         //pShaderManager->useShaderPRogram("Shader02");
         //updateByFrameRate();
 
-        setFBOPortal(::g_FBO_02, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f, 1.f, 0.f));
-        setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f,1.f,0.f));
-        setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget);
+        setFBOPortal(::g_FBO_02, pShaderManager, pVAOManager, glm::vec3(224.f, 100.f, 0.f), glm::vec3(200.f, 200.f, -100.f));
+        setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f, 1.f, 0.f));
+        setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), g_cameraTarget);
         //g_TV1->recieveSignal(::g_FBO_02, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f, 1.f, 0.f));
         //g_TV2->recieveSignal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f, 1.f, 0.f));
         //g_TV3->recieveSignal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124, 100, 0), -g_cameraTarget);
@@ -435,6 +437,7 @@ int main(void)
         //////////////////////////////////////////////////////////////
         glBindFramebuffer(GL_FRAMEBUFFER, ::g_FBO_01->ID);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
         glViewport(0, 0, ::g_FBO_01->width, ::g_FBO_01->height);
         ::g_FBO_01->clearBuffer(true, true);
 
@@ -687,13 +690,15 @@ void setFBOPortal(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOMa
     glViewport(0, 0, fbo->width, fbo->height);
     fbo->clearBuffer(true, true);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
     //std::cout << "g_cameraEye" << g_cameraEye.x << " : " << g_cameraEye.y << " : " << g_cameraEye.z << std::endl;
 
         //glm::vec3 eyeTemp = glm::normalize(glm::cross(g_upVector, (glm::normalize(g_cameraEye-eye) )));
     glm::vec3 mirrorNorm = glm::normalize(target - eye);
     glm::vec3 eyeTemp = g_cameraEye - 2.f * glm::dot(g_cameraEye - eye, mirrorNorm) * mirrorNorm;
     glm::vec3 targetTemp = g_cameraTarget - 2.f * glm::dot(g_cameraTarget - eye, mirrorNorm) * mirrorNorm;
-    matView = glm::lookAt(eyeTemp, targetTemp, ::g_upVector);
+    //matView = glm::lookAt(eyeTemp, targetTemp, ::g_upVector);
+    matView = glm::lookAt(eye, target, ::g_upVector);
     //}
     //else
     //{
