@@ -406,13 +406,13 @@ int main(void)
         //glViewport(0, 0, width, height);
         //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //setFBO2(pShaderManager, pVAOManager);
-        pShaderManager->useShaderPRogram("Shader02");
+        //pShaderManager->useShaderPRogram("Shader02");
         setFBOPortal(::g_FBO_02, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f, 1.f, 0.f));
         setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f,1.f,0.f));
         setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget);
         //g_cameraEye = glm::vec4(0.f);
         //g_cameraTarget = glm::vec4(200.f, 200.f, -100.f, 0.f);
-        pShaderManager->useShaderPRogram("Shader01");
+        //pShaderManager->useShaderPRogram("Shader01");
         updateByFrameRate();
 
         //////////////////////////////////////////////////////////////
