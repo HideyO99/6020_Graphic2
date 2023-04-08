@@ -11,6 +11,9 @@ public:
 	TV();
 	~TV();
 
+	TV(int id);
+
+	int id;
 	void setup(glm::vec4 color, cMeshObj* body, cMeshObj* screen);
 	void TurnOn();
 	void TurnOff();

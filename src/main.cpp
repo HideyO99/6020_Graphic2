@@ -71,6 +71,7 @@ cFBO* g_FBO_01 = NULL;
 cFBO* g_FBO_02 = NULL;
 cFBO* g_FBO_03 = NULL;
 cFBO* g_FBO_04 = NULL;
+cFBO* g_FBO_05 = NULL;
 cMeshObj* g_MeshBoss = NULL;
 
 TV* g_TV1 = NULL;
@@ -168,6 +169,7 @@ int main(void)
     ::g_FBO_02 = new cFBO();
     ::g_FBO_03 = new cFBO();
     ::g_FBO_04 = new cFBO();
+    ::g_FBO_05 = new cFBO();
     int screenW = 0;
     int screenH = 0;
     glfwGetFramebufferSize(window, &screenW, &screenH);
@@ -176,6 +178,7 @@ int main(void)
     result = ::g_FBO_02->init(screenW, screenH, error); // scene 1
     result = ::g_FBO_03->init(screenW, screenH, error); // scene 2
     result = ::g_FBO_04->init(screenW, screenH, error); // scene 3
+    result = ::g_FBO_05->init(screenW, screenH, error); // scene 3
     if (!result)
     {
         std::cout << "error: FBO initialization = " << error << std::endl;
@@ -369,17 +372,17 @@ int main(void)
     result = pVAOManager->setInstanceObjLighting("boss", false);
 
     //TV setup
-    g_TV1 = new TV();
+    g_TV1 = new TV(1);
     g_TV1->setup(glm::vec4(1.f, 0.f, 0.f, 1.f), pVAOManager->findMeshObjAddr("TV1"), pVAOManager->findMeshObjAddr("TVScreen1"));
     pVAOManager->mapInstanceNametoMeshObj.erase("TV1");
     pVAOManager->mapInstanceNametoMeshObj.erase("TVScreen1");
 
-    g_TV2 = new TV();
+    g_TV2 = new TV(2);
     g_TV2->setup(glm::vec4(0.f, 1.f, 0.f, 1.f), pVAOManager->findMeshObjAddr("TV2"), pVAOManager->findMeshObjAddr("TVScreen2"));
     pVAOManager->mapInstanceNametoMeshObj.erase("TV2");
     pVAOManager->mapInstanceNametoMeshObj.erase("TVScreen2");
 
-    g_TV3 = new TV();
+    g_TV3 = new TV(3);
     g_TV3->setup(glm::vec4(0.f, 0.f, 1.f, 1.f), pVAOManager->findMeshObjAddr("TV3"), pVAOManager->findMeshObjAddr("TVScreen3"));
     pVAOManager->mapInstanceNametoMeshObj.erase("TV3");
     pVAOManager->mapInstanceNametoMeshObj.erase("TVScreen3");

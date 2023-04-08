@@ -10,14 +10,25 @@ extern float fov;
 extern cFBO* g_FBO_02;
 extern cFBO* g_FBO_03;
 extern cFBO* g_FBO_04;
+extern cFBO* g_FBO_05;
 
 TV::TV()
 {
-	m_currentChannel = 7;
-	isPwrOn = false;
-	meshBody = nullptr;
-	meshScreen = nullptr;
-	lastTurnOn = 0;
+	this->m_currentChannel = 7;
+	this->isPwrOn = false;
+	this->meshBody = nullptr;
+	this->meshScreen = nullptr;
+	this->lastTurnOn = 0;
+}
+
+TV::TV(int id)
+{
+    this->id = id;
+    this->m_currentChannel = 7;
+    this->isPwrOn = false;
+    this->meshBody = nullptr;
+    this->meshScreen = nullptr;
+    this->lastTurnOn = 0;
 }
 
 TV::~TV()
@@ -65,21 +76,16 @@ void TV::render(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
             break;
         }
     }
-
+    else
+    {
+        setupFBO2Texture(g_FBO_05, pShaderManager);
+    }
     glm::mat4 scrMAT = glm::mat4(1.f);
-    //cMeshObj* scrOBJ = pVAOManager->findMeshObjAddr(projector);
-    ////bool result = pVAOManager->setInstanceObjScale("projecter1", 100.f);
-    //bool result = pVAOManager->setInstanceObjVisible(projector, true);
-    //if (isStaticCHN())
-    //{
-    //    pShaderManager->setShaderUniform1f("bStaticScreen", true);
-    //    pShaderManager->setShaderUniform1f("iTime", g_CurrentTime);
-    //}
-    //pShaderManager->setShaderUniform1f("bMirror", true);
+
     drawObj(this->meshScreen, scrMAT, pShaderManager, pVAOManager);
-    //result = pVAOManager->setInstanceObjVisible(projector, false);
-    //pShaderManager->setShaderUniform1f("bMirror", false);
+
     pShaderManager->setShaderUniform1f("bStaticScreen", false);
+
     pShaderManager->setShaderUniform1f("bFullScreen", false);
 }
 
