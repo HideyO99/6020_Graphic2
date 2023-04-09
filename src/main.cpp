@@ -619,7 +619,8 @@ void setFBOPortal(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVAOMa
     glm::vec3 mirrorNorm = glm::normalize(target - eye);
     glm::vec3 eyeTemp = g_cameraEye - 2.f * glm::dot(g_cameraEye - eye, mirrorNorm) * mirrorNorm;
     glm::vec3 targetTemp = g_cameraTarget - 2.f * glm::dot(g_cameraTarget - eye, mirrorNorm) * mirrorNorm;
-    matView = glm::lookAt(eyeTemp, targetTemp, ::g_upVector);
+    //matView = glm::lookAt(eyeTemp, targetTemp, ::g_upVector);
+    matView = glm::lookAt(eye, target, ::g_upVector);
     //}
     //else
     //{
@@ -672,10 +673,12 @@ void setFBOtoTexture(cFBO* fbo, cShaderManager* pShaderManager, cVAOManager* pVA
     cMeshObj* scrOBJ = pVAOManager->findMeshObjAddr(projector);
     //bool result = pVAOManager->setInstanceObjScale("projecter1", 100.f);
     bool result = pVAOManager->setInstanceObjVisible(projector, true);
+    pShaderManager->setShaderUniform1f("bProjector", true);
     pShaderManager->setShaderUniform1f("bMirror", true);
     drawObj(scrOBJ, scrMAT, pShaderManager, pVAOManager);
     result = pVAOManager->setInstanceObjVisible(projector, false);
     pShaderManager->setShaderUniform1f("bMirror", false);
+    pShaderManager->setShaderUniform1f("bProjector", false);
     pShaderManager->setShaderUniform1f("bFullScreen", false);
 }
 
