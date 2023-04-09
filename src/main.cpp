@@ -387,9 +387,9 @@ int main(void)
     pVAOManager->mapInstanceNametoMeshObj.erase("TV3");
     pVAOManager->mapInstanceNametoMeshObj.erase("TVScreen3");
 
-    g_TV1->m_currentChannel = 3;
-    g_TV2->m_currentChannel = 7;
-    g_TV3->m_currentChannel = 11;
+    //g_TV1->m_currentChannel = 3;
+    //g_TV2->m_currentChannel = 7;
+    //g_TV3->m_currentChannel = 11;
         
     light0Setup(); // Dir light
     light1Setup(pVAOManager);// torch
