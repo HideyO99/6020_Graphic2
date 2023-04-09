@@ -35,6 +35,7 @@ const int MAX_KERNEL_1D_SIZE = 20;
 uniform bool bMirror;
 uniform bool bRipple;
 uniform float iTime;
+uniform bool bProjector;
 
 uniform vec4 debugColour;
 
@@ -113,6 +114,11 @@ void main()
 		else
 		{
 			textCoords = vec2( gl_FragCoord.x / screen_width, gl_FragCoord.y  / screen_height );
+		}
+		if(bProjector)
+		{
+			textCoords.x = -fUVx2.x;
+			textCoords.y = fUVx2.y;
 		}
 		vec4 vertexColour = texture( sampler_FBO_vertexMaterialColour, textCoords );
 		vec4 vertexNormal = texture( sampler_FBO_vertexNormal, textCoords );
