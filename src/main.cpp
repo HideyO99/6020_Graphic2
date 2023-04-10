@@ -2,8 +2,6 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-
-
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp> // glm::vec3        (x,y,z)
 #include <glm/vec4.hpp> // glm::vec4        (x,y,z,w)
@@ -27,6 +25,7 @@
 #include "boneShader.h"
 #include "time.h"
 #include "Animation/AnimationManager.h"
+#include "MazeGenerator/MazeManager.h"
 
 #define MODEL_LIST_XML          "asset/model.xml"
 #define VERTEX_SHADER_FILE      "src/shader/vertexShader.glsl"
@@ -70,6 +69,8 @@ cFBO* g_FBO_02 = NULL;
 cFBO* g_FBO_03 = NULL;
 cFBO* g_FBO_04 = NULL;
 cMeshObj* g_MeshBoss = NULL;
+MazeManager* g_Maze = NULL;
+
 
 AnimationManager* g_pAnimationManager = NULL;
 
@@ -340,8 +341,11 @@ int main(void)
     //light3Setup();
     //light4Setup();
 
-    ::g_pAnimationManager = new AnimationManager();
+    //::g_pAnimationManager = new AnimationManager();
     //createAnimation(pVAOManager);
+
+    g_Maze = new MazeManager();
+    g_Maze->CreateMaze(pVAOManager);
 
     cTime::update();
 

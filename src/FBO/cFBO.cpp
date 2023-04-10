@@ -41,6 +41,7 @@ bool cFBO::init(int width, int height, std::string& error)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
+
 	//vertex normal buffer(texture)
 	glGenTextures(1, &(this->vertexNormalID));
 	glBindTexture(GL_TEXTURE_2D, this->vertexNormalID);

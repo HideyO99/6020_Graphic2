@@ -157,6 +157,10 @@
     <ClCompile Include="src\Light\cLight.cpp" />
     <ClCompile Include="src\Light\cLightManager.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MazeGenerator\cMazeMaker_W2023.cpp" />
+    <ClCompile Include="src\MazeGenerator\cMazeMaker_W2023_async.cpp" />
+    <ClCompile Include="src\MazeGenerator\cMazeMaker_W2023_as_functions.cpp" />
+    <ClCompile Include="src\MazeGenerator\MazeManager.cpp" />
     <ClCompile Include="src\MeshObj\cMeshObj.cpp" />
     <ClCompile Include="src\Shader\cShader.cpp" />
     <ClCompile Include="src\Shader\cShaderManager.cpp" />
@@ -190,6 +194,8 @@
     <ClInclude Include="src\GUI\cGUI.h" />
     <ClInclude Include="src\Light\cLight.h" />
     <ClInclude Include="src\Light\cLightManager.h" />
+    <ClInclude Include="src\MazeGenerator\cMazeMaker_W2023.h" />
+    <ClInclude Include="src\MazeGenerator\MazeManager.h" />
     <ClInclude Include="src\MeshObj\cMeshObj.h" />
     <ClInclude Include="src\Shader\cShaderManager.h" />
     <ClInclude Include="src\Texture\C24BitBMPpixel.h" />
