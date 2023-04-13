@@ -37,6 +37,8 @@ public:
 
 	void CreateMaze(cVAOManager* pVAOManager);
 	void UpdateArea(int mazeViewRowIndex, int mazeViewColumnIndex, int mazeViewSize);
+	void UpdateAreaAsync(int mazeViewRowIndex, int mazeViewColumnIndex, int mazeViewSize);
+
 	//DWORD WINAPI UpdateAreaThread(LPVOID pVOIDMonster);
 	cMazeMaker_W2023* maker;
 	cMeshObj* meshObj;

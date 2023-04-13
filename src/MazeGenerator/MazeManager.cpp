@@ -7,6 +7,19 @@ CRITICAL_SECTION CS_MazeManager_ToBeLoadedVectorLock;
 MazeManager::MazeManager()
 {
 	InitializeCriticalSection(&CS_MazeManager_ToBeLoadedVectorLock);
+
+	for (unsigned int rowIndex = 0; rowIndex < 30; rowIndex++)
+	{
+		// Make an empty row
+		mazeRegion.push_back(std::vector<bool>());
+
+		for (unsigned int columnIndex = 0; columnIndex < 30; columnIndex++)
+		{
+			// Add an empty region
+			mazeRegion[rowIndex].push_back(false);
+
+		}//for ( unsigned int columnIndex
+	}//for ( unsigned int rowIndex
 }
 
 MazeManager::~MazeManager()
@@ -50,29 +63,37 @@ DWORD WINAPI UpdateAreaThread(LPVOID pVOIDMaze)
 	//std::cout << "Starting the monster thread" << std::endl;
 	sMazeThreadData* pMaze = (sMazeThreadData*)(pVOIDMaze);
 
-	while (!pMaze->bExitThread)
-	{
-		if (!pMaze->bSuspendThread)
-		{
-			//EnterCriticalSection(&g_CS);
-			pMaze->pTheMaze->GetMazeAreaSquare(pMaze->widthIndexCentre, pMaze->heightIndexCentre, pMaze->halfSizeInCells, *pMaze->mazeRegion);
-			//LeaveCriticalSection(&g_CS);
-			std::cout << "mazeRegion size = " << pMaze->mazeRegion->size() << std::endl;
+	std::vector< std::vector<bool> > mazeRegion;
 
-			Sleep(0);		// Release this thread if needed
-		}
-		else
+	pMaze->pTheMaze->GetMazeAreaSquare(pMaze->widthIndexCentre, pMaze->heightIndexCentre, pMaze->halfSizeInCells, mazeRegion);
+	unsigned int mazeSize = pMaze->halfSizeInCells * 2;
+
+	EnterCriticalSection(&CS_MazeManager_ToBeLoadedVectorLock);
+	pMaze->mazeRegion->clear();
+
+	for (int i = 0; i < mazeSize; i++)
+	{
+		std::vector<bool> b;
+		for (int j = 0; j < mazeSize; j++)
 		{
-			// Put thread to sleep for X ms
-			Sleep(pMaze->suspendTime_ms);
+			b.push_back(mazeRegion[i][j]);
 		}
+		pMaze->mazeRegion->push_back(b);
 	}
 
-	//std::cout << "mazeRegion size = " << pMaze->mazeRegion->size()<< std::endl;
+	LeaveCriticalSection(&CS_MazeManager_ToBeLoadedVectorLock);
+
+	Sleep(0);
+
 	return 0;
 }
 
 void MazeManager::UpdateArea(int mazeViewRowIndex, int mazeViewColumnIndex, int mazeViewSize)
+{
+	this->maker->GetMazeAreaSquare(mazeViewRowIndex, mazeViewColumnIndex, mazeViewSize, this->mazeRegion);
+}
+
+void MazeManager::UpdateAreaAsync(int mazeViewRowIndex, int mazeViewColumnIndex, int mazeViewSize)
 {
 	//InitializeCriticalSection(&g_CS);
 	LPDWORD lpThreadId = NULL;
@@ -83,7 +104,7 @@ void MazeManager::UpdateArea(int mazeViewRowIndex, int mazeViewColumnIndex, int 
 	threadData->widthIndexCentre = mazeViewRowIndex;
 	threadData->heightIndexCentre = mazeViewColumnIndex;
 	threadData->halfSizeInCells = mazeViewSize;
-	threadData->mazeRegion = &mazeRegion;
+	threadData->mazeRegion = &(this->mazeRegion);
 
 	hThread =
 		CreateThread(NULL,				// Security attributes
@@ -94,19 +115,6 @@ void MazeManager::UpdateArea(int mazeViewRowIndex, int mazeViewColumnIndex, int 
 			lpThreadId);
 
 	Sleep(0);
-	//EnterCriticalSection(&g_CS);
-	//memcpy(&this->mazeRegion, &threadData->mazeRegion, mazeViewSize * mazeViewSize * sizeof(bool));
-	//LeaveCriticalSection(&g_CS);
-	
-
-	//for (size_t i = 0; i < mazeViewSize*2; i++)
-	//{
-	//	mazeRegion.push_back(std::vector<bool>());
-	//	for (size_t j = 0; j < mazeViewSize*2; j++)
-	//	{
-	//		mazeRegion[i].push_back(threadData->mazeRegion[i][j]);
-	//	}
-	//}
 
 	threadData->bExitThread = true;
 	//DeleteCriticalSection(&g_CS);

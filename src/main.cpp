@@ -420,7 +420,7 @@ int main(void)
         //setFBOtoTexture(g_FBO_02, pShaderManager, pVAOManager, "projecter2");
         //setFBOtoTexture(g_FBO_03, pShaderManager, pVAOManager, "projecter3");
         //setFBOtoTexture(g_FBO_04, pShaderManager, pVAOManager, "projecter4");
-        //updateMazeObj(pShaderManager, pVAOManager);
+        updateMazeObj(pShaderManager, pVAOManager);
         updateInstanceObj(pShaderManager, pVAOManager);
 
         //////////////////////////////////////////////////////////////
@@ -899,7 +899,8 @@ void updateMazeObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
     //g_Maze->mazeRegion.empty();
     g_Maze->UpdateArea(g_mazeViewRowIndex, g_mazeViewColumnIndex, g_mazeViewSize);
 
-    
+    g_Maze->meshObj->bDoNotLight = true;
+
     unsigned int mazeFullSize = ::g_mazeViewSize * 2;
     for (unsigned int rowIndex = 0; rowIndex < mazeFullSize; rowIndex++)
     {
@@ -923,24 +924,26 @@ void updateMazeObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
             // Make the tiles "thicker"
             // (you normally wound't do this since it'll mess up the normals, but this 
             //  scaling likely won't since the sides are straight up and down)
-            g_Maze->meshObj->scale.y *= 10.0f;
+            //g_Maze->meshObj->scale.y *= 10.0f;
 
-            g_Maze->meshObj->position.y = -10.0f;
+            //g_Maze->meshObj->position.y = -10.0f;
 
-
+           
             // If it's a WALL, draw a floor mesh there
-            //if (g_Maze->mazeRegion->size() != 0)
+            if (g_Maze->mazeRegion.size() != 0)
             {
                 if (g_Maze->mazeRegion[rowIndex][columnIndex])
                 {
                     //todo
-                    g_Maze->meshObj->scale.y *= 10.0f;
-                    g_Maze->meshObj->position.y = -10.0f;
+                    g_Maze->meshObj->scale.y *= 20.0f;
+                    g_Maze->meshObj->position.y = 9.0f;
+                    g_Maze->meshObj->bDoNotLight = false;
                 }
                 else
                 {
-                    //g_Maze->meshObj->scale.y = MESHTOWORLDSCALE;
-                    //g_Maze->meshObj->position.y = 0.0f;
+                    g_Maze->meshObj->scale.y = MESHTOWORLDSCALE;
+                    g_Maze->meshObj->position.y = 0.0f;
+                    g_Maze->meshObj->bDoNotLight = true;
 
                 }
                 glm::mat4 matIdentity = glm::mat4(1.0f);
