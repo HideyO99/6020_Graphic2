@@ -897,58 +897,58 @@ void updateByFrameRate()
 void updateMazeObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
 {
     //g_Maze->mazeRegion.empty();
-    g_Maze->UpdateArea(g_mazeViewRowIndex, g_mazeViewColumnIndex, g_mazeViewSize);
+    g_Maze->update(g_mazeViewRowIndex, g_mazeViewColumnIndex, g_mazeViewSize, pShaderManager, pVAOManager);
 
-    g_Maze->meshObj->bDoNotLight = true;
+    //g_Maze->meshObj->bDoNotLight = true;
 
-    unsigned int mazeFullSize = ::g_mazeViewSize * 2;
-    for (unsigned int rowIndex = 0; rowIndex < mazeFullSize; rowIndex++)
-    {
-        for (unsigned int columnIndex = 0; columnIndex < mazeFullSize; columnIndex++)
-        {
+    //unsigned int mazeFullSize = ::g_mazeViewSize * 2;
+    //for (unsigned int rowIndex = 0; rowIndex < mazeFullSize; rowIndex++)
+    //{
+    //    for (unsigned int columnIndex = 0; columnIndex < mazeFullSize; columnIndex++)
+    //    {
 
-            const float TILESIZE = 10.0f;  // How big each tile is in the world (each grid is 10 units)
-            // Each mesh is 500x500 but that's too big
-            const float MESHTOWORLDSCALE = TILESIZE / 500.0f;
+    //        const float TILESIZE = 10.0f;  // How big each tile is in the world (each grid is 10 units)
+    //        // Each mesh is 500x500 but that's too big
+    //        const float MESHTOWORLDSCALE = TILESIZE / 500.0f;
 
-            float cellXLocation = -(::g_mazeViewSize * TILESIZE);
-            float cellYLocation = -(::g_mazeViewSize * TILESIZE);
+    //        float cellXLocation = -(::g_mazeViewSize * TILESIZE);
+    //        float cellYLocation = -(::g_mazeViewSize * TILESIZE);
 
-            cellXLocation += (columnIndex * TILESIZE);
-            cellYLocation += (rowIndex * TILESIZE);
-            //todo
-            g_Maze->meshObj->position.x = cellXLocation;
-            g_Maze->meshObj->position.z = cellYLocation;
-            g_Maze->meshObj->scale = glm::vec3(MESHTOWORLDSCALE); 
+    //        cellXLocation += (columnIndex * TILESIZE);
+    //        cellYLocation += (rowIndex * TILESIZE);
+    //        //todo
+    //        g_Maze->meshObj->position.x = cellXLocation;
+    //        g_Maze->meshObj->position.z = cellYLocation;
+    //        g_Maze->meshObj->scale = glm::vec3(MESHTOWORLDSCALE); 
 
-            // Make the tiles "thicker"
-            // (you normally wound't do this since it'll mess up the normals, but this 
-            //  scaling likely won't since the sides are straight up and down)
-            //g_Maze->meshObj->scale.y *= 10.0f;
+    //        // Make the tiles "thicker"
+    //        // (you normally wound't do this since it'll mess up the normals, but this 
+    //        //  scaling likely won't since the sides are straight up and down)
+    //        //g_Maze->meshObj->scale.y *= 10.0f;
 
-            //g_Maze->meshObj->position.y = -10.0f;
+    //        //g_Maze->meshObj->position.y = -10.0f;
 
-           
-            // If it's a WALL, draw a floor mesh there
-            if (g_Maze->mazeRegion.size() != 0)
-            {
-                if (g_Maze->mazeRegion[rowIndex][columnIndex])
-                {
-                    //todo
-                    g_Maze->meshObj->scale.y *= 20.0f;
-                    g_Maze->meshObj->position.y = 9.0f;
-                    g_Maze->meshObj->bDoNotLight = false;
-                }
-                else
-                {
-                    g_Maze->meshObj->scale.y = MESHTOWORLDSCALE;
-                    g_Maze->meshObj->position.y = 0.0f;
-                    g_Maze->meshObj->bDoNotLight = true;
+    //       
+    //        // If it's a WALL, draw a floor mesh there
+    //        if (g_Maze->mazeRegion.size() != 0)
+    //        {
+    //            if (g_Maze->mazeRegion[rowIndex][columnIndex])
+    //            {
+    //                //todo
+    //                g_Maze->meshObj->scale.y *= 20.0f;
+    //                g_Maze->meshObj->position.y = 9.0f;
+    //                g_Maze->meshObj->bDoNotLight = false;
+    //            }
+    //            else
+    //            {
+    //                g_Maze->meshObj->scale.y = MESHTOWORLDSCALE;
+    //                g_Maze->meshObj->position.y = 0.0f;
+    //                g_Maze->meshObj->bDoNotLight = true;
 
-                }
-                glm::mat4 matIdentity = glm::mat4(1.0f);
-                drawObj(g_Maze->meshObj, matIdentity, pShaderManager, pVAOManager);
-            }
-        }//for ( unsigned int columnIndex
-    }//for ( unsigned int rowIndex
+    //            }
+    //            glm::mat4 matIdentity = glm::mat4(1.0f);
+    //            drawObj(g_Maze->meshObj, matIdentity, pShaderManager, pVAOManager);
+    //        }
+    //    }//for ( unsigned int columnIndex
+    //}//for ( unsigned int rowIndex
 }
