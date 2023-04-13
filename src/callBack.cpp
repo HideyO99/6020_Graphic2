@@ -23,6 +23,10 @@ extern AnimationManager* g_pAnimationManager;
 extern bool g_PlayAnimation;
 extern bool toggleRipple;
 
+extern int g_mazeViewRowIndex;
+extern int g_mazeViewColumnIndex;
+extern int g_mazeViewSize;
+
 void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
@@ -41,25 +45,37 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
         //::g_cameraEye.x -= CAMERA_MOVE_SPEED;
         //::g_cameraEye += (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
-        g_MeshBoss->position.x -= 0.1;
+        g_mazeViewColumnIndex--;
     }
     if (key == GLFW_KEY_RIGHT)
     {
         //::g_cameraEye.x += CAMERA_MOVE_SPEED;
         //::g_cameraEye -= (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
-        g_MeshBoss->position.x += 0.1;
+        g_mazeViewColumnIndex++;
     }
     if (key == GLFW_KEY_UP)
     {
         //::g_cameraEye.z -= CAMERA_MOVE_SPEED;
         //::g_cameraEye += ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
-        g_MeshBoss->position.z -= 0.1;
+        g_mazeViewRowIndex++;
     }
     if (key == GLFW_KEY_DOWN)
     {
         //::g_cameraEye.z += CAMERA_MOVE_SPEED;
         //::g_cameraEye -= ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
-        g_MeshBoss->position.z += 0.1;
+        g_mazeViewRowIndex--;
+    }
+    if (key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS)
+    {
+        ::g_mazeViewSize++;
+    }
+    if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS)
+    {
+        // Don't go below, say 2 units? (4x4 maze?)
+        if (::g_mazeViewSize > 2)
+        {
+            ::g_mazeViewSize--;
+        }
     }
     if (key == GLFW_KEY_A)
     {
