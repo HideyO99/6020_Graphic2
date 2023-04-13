@@ -1,25 +1,114 @@
 #include "cVAOManager.h"
 #include "../Texture/cTextureManager.h"
 
+CRITICAL_SECTION CS_cVAOManager_ToBeLoadedVectorLock;
+
 extern cTextureManager* g_pTextureManager;
 
 void CastToGLM(const aiMatrix4x4& in, glm::mat4& out);
 
+
+struct sPlyFileLoaderInfo
+{
+	std::string fileTypesToLoadName;
+	std::string modelName;
+	// A pointer to the vector inside the VAO manager
+	// (we can't use "this" because we are in a C function, not a method)
+	std::vector<cModelDrawInfo>* p_vecMotoDrawInfo_ReadyToSendToGPU;
+	std::map< std::string, cTextureFromFile* >* p_map_TexNameToTextureID;
+	//std::map<std::string, cMeshObj*>* mapInstanceNametoMeshObj;
+	//std::vector<cMeshObj*>* pVecInstanceMeshObj;
+	//std::map<std::string, cModelDrawInfo>* mapModelNametoVAOID;
+	//glm::vec3* cameraEyeFromXML;
+	// Shader ID that matches this VAO
+	GLuint shaderID;
+};
+
+DWORD WINAPI LoadPlyFilesFromDriveThread(LPVOID pThreadParameters)
+{
+	sPlyFileLoaderInfo* pFileParams = (sPlyFileLoaderInfo*)pThreadParameters;
+	//cVAOManager pvao ;
+	c3DModelFileLoader loader;
+	cModelDrawInfo* drawInfo = new cModelDrawInfo();
+	std::string error;
+	//pvao->loadModelList(pFileParams->fileTypesToLoadName, pFileParams->shaderID);
+	std::string fileType = pFileParams->fileTypesToLoadName.substr(pFileParams->fileTypesToLoadName.find('.') + 1, std::string::npos);
+	if (fileType == "ply")
+	{
+		if (loader.loadPLYFile(pFileParams->fileTypesToLoadName, drawInfo, error))
+		{
+			EnterCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+			drawInfo->meshName = pFileParams->modelName;
+			drawInfo->CalculateExtents();
+			drawInfo->shaderID = pFileParams->shaderID;
+			pFileParams->p_vecMotoDrawInfo_ReadyToSendToGPU->push_back(*drawInfo);
+			LeaveCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+		}
+		else
+		{
+			std::cout << error;
+		}
+	}
+	else
+	{
+			//cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
+			//if (loader.loadFBXFileAsync(pFileParams->fileTypesToLoadName, i_instanceToModel->first.c_str(), modelDrawInfo, pFileParams->shaderID))
+			//{
+			//	EnterCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+			//	modelDrawInfo->shaderID = pFileParams->shaderID;
+			//	pFileParams->p_vecMotoDrawInfo_ReadyToSendToGPU->push_back(*modelDrawInfo);
+			//	pFileParams->p_map_TexNameToTextureID->emplace();
+			//	LeaveCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+			//}
+	}
+	//m_vecMotoDrawInfo_ReadyToSendToGPU
+
+	//		// *****************************************************************************
+	//for (std::map<std::string, cMeshObj* >::iterator itCurrentMesh = pvao->mapInstanceNametoMeshObj.begin();
+	//	itCurrentMesh != pvao->mapInstanceNametoMeshObj.end();
+	//	itCurrentMesh++)
+	//{
+	//	EnterCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+
+	//	// Add it to the vector of things to be GPU-ed
+	//	pFileParams->mapInstanceNametoMeshObj->emplace(itCurrentMesh->first.c_str(), itCurrentMesh->second);
+	//	pFileParams->pVecInstanceMeshObj->push_back(itCurrentMesh->second);
+	//	//pFileParams->mapModelNametoVAOID->emplace()
+	//	LeaveCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+	//}
+	//for (std::map<std::string, cModelDrawInfo>::iterator itCurrentModel = pvao->mapModelNametoVAOID.begin();
+	//	itCurrentModel != pvao->mapModelNametoVAOID.end();
+	//	itCurrentModel++)
+	//{
+	//	EnterCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+	//	pFileParams->mapModelNametoVAOID->emplace(itCurrentModel->first.c_str(), itCurrentModel->second);
+	//	LeaveCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+	//}
+	//EnterCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+	//pFileParams->cameraEyeFromXML = &pvao->cameraEyeFromXML;
+	//LeaveCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+	Sleep(0);
+
+	return 0;
+}
+
 cVAOManager::cVAOManager()
 {
+	InitializeCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
 }
 
 cVAOManager::~cVAOManager()
 {
+	DeleteCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
 }
 
 bool cVAOManager::loadModelToVAO(std::string filename, cModelDrawInfo* drawInfo, unsigned int shaderProgramID)
 {
 	GLenum error;
 	
-	drawInfo->meshName = filename;
+	//drawInfo->meshName = filename;
 
-	drawInfo->CalculateExtents();
+	//drawInfo->CalculateExtents();
 
 	glGenVertexArrays(1, &(drawInfo->VAO_ID));
 	glBindVertexArray(drawInfo->VAO_ID);
@@ -148,6 +237,7 @@ bool cVAOManager::loadModelList(std::string filename, unsigned int shaderProgram
 		return false;
 	}
 
+	
 	std::map<std::string, std::string>::iterator i_mapModel;
 	std::map<std::string, std::string>::iterator i_instanceToModel;
 
@@ -157,47 +247,77 @@ bool cVAOManager::loadModelList(std::string filename, unsigned int shaderProgram
 		if (!FindDrawInfo(i_instanceToModel->second.c_str(), tmp))
 		{
 			i_mapModel = modelListXML.mapModelNameAndPath.find(i_instanceToModel->second);
-			std::string fileType = i_mapModel->second.substr(i_mapModel->second.find('.') + 1, std::string::npos);
-			if (fileType == "ply")
-			{
-				cModelDrawInfo modelDrawInfo;
-				//cMeshObj meshObj;
-				std::string error = "";
-
-				result = loadPLYFile(i_mapModel->second, modelDrawInfo, error);
-				if (!result)
-				{
-					std::cout << "cannot load " << i_mapModel->first << std::endl;
-					std::cout << "error " << error << std::endl;
-					return false;
-				}
-				result = loadModelToVAO(i_mapModel->first, &modelDrawInfo, shaderProgramID);
-				if (!result)
-				{
-					std::cout << "cannot load " << i_mapModel->first << std::endl;
-					return false;
-				}
-			}
-			else //if (fileType == "fbx")
-			{
-				cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
-				//cMeshObj meshObj;
-
-				//result = loadFBXFile(i_mapModel->second, modelDrawInfo, shaderProgramID);
-				result = loadFBXFile(i_mapModel, i_instanceToModel->first.c_str(), modelDrawInfo, shaderProgramID);
-			}
-			//mapModelNametoMeshObj.emplace(i_mapModel->first, meshObj);
-			std::cout << i_mapModel->first << " is loaded" << std::endl;
+			loadModelListAsync(i_mapModel->second.c_str(), shaderProgramID, i_mapModel->first.c_str());
 		}
+		
 	}
+	//		std::string fileType = i_mapModel->second.substr(i_mapModel->second.find('.') + 1, std::string::npos);
+	//		if (fileType == "ply")
+	//		{
+	//			cModelDrawInfo modelDrawInfo;
+	//			//cMeshObj meshObj;
+	//			std::string error = "";
+
+	//			result = loadPLYFile(i_mapModel->second, modelDrawInfo, error);
+	//			if (!result)
+	//			{
+	//				std::cout << "cannot load " << i_mapModel->first << std::endl;
+	//				std::cout << "error " << error << std::endl;
+	//				return false;
+	//			}
+	//			result = loadModelToVAO(i_mapModel->first, &modelDrawInfo, shaderProgramID);
+	//			if (!result)
+	//			{
+	//				std::cout << "cannot load " << i_mapModel->first << std::endl;
+	//				return false;
+	//			}
+	//		}
+	//		else //if (fileType == "fbx")
+	//		{
+	//			cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
+	//			//cMeshObj meshObj;
+
+	//			//result = loadFBXFile(i_mapModel->second, modelDrawInfo, shaderProgramID);
+	//			result = loadFBXFile(i_mapModel, i_instanceToModel->first.c_str(), modelDrawInfo, shaderProgramID);
+	//		}
+	//		//mapModelNametoMeshObj.emplace(i_mapModel->first, meshObj);
+	//		std::cout << i_mapModel->first << " is loaded" << std::endl;
+	//	}
+	//}
 	cameraEyeFromXML = modelListXML.cameraEyeFromXML;
 	
 
 	return true;
 }
 
+bool cVAOManager::loadModelListAsync(std::string filename, unsigned int shaderProgramID, std::string modelName)
+{
+	sPlyFileLoaderInfo* pFileParams = new sPlyFileLoaderInfo();
+	pFileParams->fileTypesToLoadName = filename;
+	pFileParams->modelName = modelName;
+	pFileParams->shaderID = shaderProgramID;
+	//pFileParams->mapInstanceNametoMeshObj = &(this->mapInstanceNametoMeshObj);
+	//pFileParams->pVecInstanceMeshObj = &(this->pVecInstanceMeshObj);
+	//pFileParams->mapModelNametoVAOID = &(this->mapModelNametoVAOID);
+	//pFileParams->cameraEyeFromXML = &(this->cameraEyeFromXML);
+	pFileParams->p_vecMotoDrawInfo_ReadyToSendToGPU = &(this->m_vecMotoDrawInfo_ReadyToSendToGPU);
+
+	LPDWORD lpFileLoadingThreadId = 0;
+
+	HANDLE hFileLoadingThread =
+		CreateThread(NULL,				// Security attributes
+			0,					// Use default stack size
+			LoadPlyFilesFromDriveThread,	// Address of the function we are going to call
+			(void*)pFileParams,			// Please wait a moment
+			0, // 0 or CREATE_SUSPENDED
+			lpFileLoadingThreadId);
+
+	return true;
+}
+
 bool cVAOManager::FindDrawInfo(std::string filename, cModelDrawInfo& drawInfo)
 {
+	this->m_ScanForPlyFilesToCopyToGPU();
 	std::map<std::string, cModelDrawInfo>::iterator i_DrawInfo = mapModelNametoVAOID.find(filename);
 	
 	if (i_DrawInfo==mapModelNametoVAOID.end())
@@ -283,6 +403,83 @@ bool cVAOManager::loadFBXFile(std::map<std::string, std::string>::iterator i_map
 		//vecModelDraw.push_back(modelDrawInfo);
 	}
 	//mapModeltoMultiMesh.emplace(i_mapModel->first, vecModelDraw);
+
+
+	return true;
+}
+
+bool cVAOManager::loadFBXFileAsync(std::map<std::string, std::string>::iterator i_instanceToModel, std::string meshName, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID)
+{
+	//	const aiScene* scene = m_Importer.ReadFile(i_mapModel->second, ASSIMP_LOAD_FLAGS);
+
+	//aiNode* node = scene->mRootNode;
+	//for (int i = 0; i < node->mNumChildren; i++)
+	//{
+	//	aiNode* child = node->mChildren[i];
+
+	//	//Find channel data from our node name:
+	//	child->mName;
+	//}
+
+	//if (scene == 0 || !scene->HasMeshes())
+	//{
+	//	return false;
+	//}
+
+	////get texture
+	//std::string test;
+	//if (scene->HasMaterials())
+	//{
+	//	for (int i = 0; i < scene->mNumMaterials; i++)
+	//	{
+	//		const aiMaterial* pMat = scene->mMaterials[i];
+	//		if (pMat->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+	//		{
+	//			aiString path;
+	//			if (pMat->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL) == aiReturn_SUCCESS)
+	//			{
+	//				std::string tmp = path.data;
+	//				tmp = tmp.substr(tmp.find_last_of("/\\") + 1, std::string::npos);
+	//				if (::g_pTextureManager->isNotExistTexture(tmp))
+	//				{
+	//					::g_pTextureManager->create2DTextureFromFreeImgLib(tmp);
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
+
+
+	//std::vector<cModelDrawInfo*> vecModelDraw;
+	//cMeshObj* meshObj = findMeshObjAddr(meshName);
+
+	//for (int i = 0; i < scene->mNumMeshes; i++)
+	//{
+	//	cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
+	//	aiMesh* mesh = scene->mMeshes[i];
+	//	aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+	//	aiString texturePath;
+	//	loadMesh(mesh, modelDrawInfo, meshObj);
+	//	if(i==0)
+	//	{ 
+	//		loadModelToVAO(i_mapModel->first, modelDrawInfo, shaderProgramID);
+	//	}
+	//	else
+	//	{
+	//		cMeshObj* childMeshObj = new cMeshObj();
+	//		childMeshObj->instanceName = mesh->mName.C_Str();
+	//		childMeshObj->meshName = mesh->mName.C_Str();
+	//		meshObj->vecChildMesh.push_back(childMeshObj);
+	//		loadModelToVAO(mesh->mName.C_Str(), modelDrawInfo, shaderProgramID);
+	//	}
+	//	if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath, NULL, NULL, NULL, NULL, NULL) == aiReturn_SUCCESS)
+	//	{
+	//		std::string tmp = texturePath.data;
+	//		modelDrawInfo->TextureFile = tmp.substr(tmp.find_last_of("/\\") + 1, std::string::npos);
+	//	}
+	//	//vecModelDraw.push_back(modelDrawInfo);
+	//}
+	////mapModeltoMultiMesh.emplace(i_mapModel->first, vecModelDraw);
 
 
 	return true;
@@ -848,10 +1045,69 @@ bool cVAOManager::setTorchTexture(std::string meshObjName, std::string textureFi
 	return true;
 }
 
-void CastToGLM(const aiMatrix4x4& in, glm::mat4& out)
+void cVAOManager::createNewMeshOBJ(std::string InstantName, std::string ModelName, glm::vec3 pos, glm::vec3 rotate, glm::vec3 scale)
 {
-	out = glm::mat4(in.a1, in.b1, in.c1, in.d1,
-		in.a2, in.b2, in.c2, in.d2,
-		in.a3, in.b3, in.c3, in.d3,
-		in.a4, in.b4, in.c4, in.d4);
+	cMeshObj* pModedelInsance = new cMeshObj();
+
+	pModedelInsance->meshName = ModelName;
+	pModedelInsance->instanceName = InstantName;
+	pModedelInsance->position = pos;
+	pModedelInsance->scale = scale;
+	pModedelInsance->rotation = rotate;
+
+	//pModedelInsance->bUse_RGBA_colour = false;
+	//pModedelInsance->textures[0] = "Dungeons_2_Texture_01_A.bmp";
+	//pModedelInsance->textureRatios[0] = 1.0f;
+
+	mapInstanceNametoMeshObj.emplace(InstantName, pModedelInsance);
+	pVecInstanceMeshObj.push_back(pModedelInsance);
 }
+
+void cVAOManager::m_ScanForPlyFilesToCopyToGPU()
+{
+	bool bIsThereSomethingToLoad = false;
+	cModelDrawInfo modelToLoadToVAO;
+	BOOL bDidWeEnter = TryEnterCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+
+	if (bDidWeEnter)
+	{
+		// Checking the vector of thingies
+		if (!this->m_vecMotoDrawInfo_ReadyToSendToGPU.empty())
+		{
+			// Copy the info
+			modelToLoadToVAO = this->m_vecMotoDrawInfo_ReadyToSendToGPU[0];
+
+			bIsThereSomethingToLoad = true;
+
+			// Delete the original thing from the vector
+			this->m_vecMotoDrawInfo_ReadyToSendToGPU.erase(this->m_vecMotoDrawInfo_ReadyToSendToGPU.begin());
+		}
+
+		LeaveCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+
+	}
+
+	if (bIsThereSomethingToLoad)
+	{
+		if (this->loadModelToVAO(modelToLoadToVAO.meshName, &modelToLoadToVAO, modelToLoadToVAO.shaderID))
+		{
+			std::cout << "Loaded " << modelToLoadToVAO.meshName << " model" << std::endl;
+		}
+		else
+		{
+			std::cout << "ERROR: Couldn't load  " << modelToLoadToVAO.meshName << " model into VAO" << std::endl;
+		}
+	}
+
+
+	return;
+
+}
+
+//void CastToGLM(const aiMatrix4x4& in, glm::mat4& out)
+//{
+//	out = glm::mat4(in.a1, in.b1, in.c1, in.d1,
+//		in.a2, in.b2, in.c2, in.d2,
+//		in.a3, in.b3, in.c3, in.d3,
+//		in.a4, in.b4, in.c4, in.d4);
+//}

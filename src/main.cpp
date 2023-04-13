@@ -74,6 +74,10 @@ MazeManager* g_Maze = NULL;
 
 AnimationManager* g_pAnimationManager = NULL;
 
+int g_mazeViewRowIndex = 0;
+int g_mazeViewColumnIndex = 0;
+int g_mazeViewSize = 15;
+
 extern void error_callback(int error, const char* description);
 extern void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 extern void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
@@ -98,6 +102,7 @@ void setFBO2(cShaderManager* pShaderManager, cVAOManager* pVAOManager);
 void createAnimation(cVAOManager* pVAOManager);
 
 void updateByFrameRate();
+void updateMazeObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager);
 
 int main(void)
 {
@@ -224,6 +229,7 @@ int main(void)
     cVAOManager* pVAOManager = new cVAOManager();
     ::g_pTextureManager = new cTextureManager();
 
+    //result = pVAOManager->loadModelListAsync(MODEL_LIST_XML, shaderID);
     result = pVAOManager->loadModelList(MODEL_LIST_XML, shaderID);
     if (!result)
     {
@@ -346,6 +352,9 @@ int main(void)
 
     g_Maze = new MazeManager();
     g_Maze->CreateMaze(pVAOManager);
+    ::g_mazeViewRowIndex = (int)MAZESIZE / 2;
+    ::g_mazeViewColumnIndex = (int)MAZESIZE / 2;
+
 
     cTime::update();
 
@@ -364,9 +373,9 @@ int main(void)
 
         //glViewport(0, 0, width, height);
         //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        setFBO2(pShaderManager, pVAOManager);
-        setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f,1.f,0.f));
-        setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget);
+        //setFBO2(pShaderManager, pVAOManager);
+        //setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f,1.f,0.f));
+        //setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget);
         //g_cameraEye = glm::vec4(0.f);
         //g_cameraTarget = glm::vec4(200.f, 200.f, -100.f, 0.f);
         
@@ -408,9 +417,10 @@ int main(void)
         pShaderManager->setShaderUniformM4fv("mView", matView);
         pShaderManager->setShaderUniformM4fv("mProjection", matProjection);
        
-        setFBOtoTexture(g_FBO_02, pShaderManager, pVAOManager, "projecter2");
-        setFBOtoTexture(g_FBO_03, pShaderManager, pVAOManager, "projecter3");
-        setFBOtoTexture(g_FBO_04, pShaderManager, pVAOManager, "projecter4");
+        //setFBOtoTexture(g_FBO_02, pShaderManager, pVAOManager, "projecter2");
+        //setFBOtoTexture(g_FBO_03, pShaderManager, pVAOManager, "projecter3");
+        //setFBOtoTexture(g_FBO_04, pShaderManager, pVAOManager, "projecter4");
+        //updateMazeObj(pShaderManager, pVAOManager);
         updateInstanceObj(pShaderManager, pVAOManager);
 
         //////////////////////////////////////////////////////////////
@@ -882,4 +892,60 @@ void updateByFrameRate()
 
     //    g_physicSys.gameUpdate();
     //}
+}
+
+void updateMazeObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
+{
+    //g_Maze->mazeRegion.empty();
+    g_Maze->UpdateArea(g_mazeViewRowIndex, g_mazeViewColumnIndex, g_mazeViewSize);
+
+    
+    unsigned int mazeFullSize = ::g_mazeViewSize * 2;
+    for (unsigned int rowIndex = 0; rowIndex < mazeFullSize; rowIndex++)
+    {
+        for (unsigned int columnIndex = 0; columnIndex < mazeFullSize; columnIndex++)
+        {
+
+            const float TILESIZE = 10.0f;  // How big each tile is in the world (each grid is 10 units)
+            // Each mesh is 500x500 but that's too big
+            const float MESHTOWORLDSCALE = TILESIZE / 500.0f;
+
+            float cellXLocation = -(::g_mazeViewSize * TILESIZE);
+            float cellYLocation = -(::g_mazeViewSize * TILESIZE);
+
+            cellXLocation += (columnIndex * TILESIZE);
+            cellYLocation += (rowIndex * TILESIZE);
+            //todo
+            g_Maze->meshObj->position.x = cellXLocation;
+            g_Maze->meshObj->position.z = cellYLocation;
+            g_Maze->meshObj->scale = glm::vec3(MESHTOWORLDSCALE); 
+
+            // Make the tiles "thicker"
+            // (you normally wound't do this since it'll mess up the normals, but this 
+            //  scaling likely won't since the sides are straight up and down)
+            g_Maze->meshObj->scale.y *= 10.0f;
+
+            g_Maze->meshObj->position.y = -10.0f;
+
+
+            // If it's a WALL, draw a floor mesh there
+            //if (g_Maze->mazeRegion->size() != 0)
+            {
+                if (g_Maze->mazeRegion[rowIndex][columnIndex])
+                {
+                    //todo
+                    g_Maze->meshObj->scale.y *= 10.0f;
+                    g_Maze->meshObj->position.y = -10.0f;
+                }
+                else
+                {
+                    //g_Maze->meshObj->scale.y = MESHTOWORLDSCALE;
+                    //g_Maze->meshObj->position.y = 0.0f;
+
+                }
+                glm::mat4 matIdentity = glm::mat4(1.0f);
+                drawObj(g_Maze->meshObj, matIdentity, pShaderManager, pVAOManager);
+            }
+        }//for ( unsigned int columnIndex
+    }//for ( unsigned int rowIndex
 }

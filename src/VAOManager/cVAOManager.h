@@ -10,6 +10,9 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <Windows.h>
+#include "c3DModelFileLoader.h"
+#define WIN32_LEAN_AND_MEAN
 
 #define MODEL_LOAD_BUFFER 10000
 #define ASSIMP_LOAD_FLAGS	(aiProcess_Triangulate | \
@@ -32,9 +35,12 @@ public:
 
 	bool loadModelToVAO(std::string filename, cModelDrawInfo* drawInfo, unsigned int shaderProgramID);
 	bool loadModelList(std::string filename, unsigned int shaderProgramID);
+	bool loadModelListAsync(std::string filename, unsigned int shaderProgramID, std::string modelName);
+
 	bool FindDrawInfo(std::string filename, cModelDrawInfo& drawInfo);
 	//bool loadFBXFile(std::string filename, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID);
 	bool loadFBXFile(std::map<std::string, std::string>::iterator i_instanceToModel, std::string meshName, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID);
+	bool loadFBXFileAsync(std::map<std::string, std::string>::iterator i_instanceToModel, std::string meshName, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID);
 	bool loadMesh(const aiMesh* mesh, cModelDrawInfo* modelDrawInfo, cMeshObj* meshObj);
 	bool loadPLYFile(std::string filename, cModelDrawInfo& modelDrawInfo, std::string error);
 	bool setInstanceObjScale(std::string meshObjName, float value);
@@ -67,13 +73,17 @@ public:
 
 	bool setTorchTexture(std::string meshObjName, std::string textureFile, std::string markTextureFile);
 
+	void createNewMeshOBJ(std::string InstantName, std::string ModelName, glm::vec3 pos, glm::vec3 rotate, glm::vec3 scale);
+
 	std::map<std::string, cMeshObj*> mapInstanceNametoMeshObj;
 	std::map<std::string, std::vector<cModelDrawInfo*>> mapModeltoMultiMesh;
 	std::vector<cMeshObj*> pVecInstanceMeshObj;
 	glm::vec3 cameraEyeFromXML;
+	std::map<std::string, cModelDrawInfo> mapModelNametoVAOID;
 
 private:
-	std::map<std::string, cModelDrawInfo> mapModelNametoVAOID;
+	void m_ScanForPlyFilesToCopyToGPU();
+	std::vector<cModelDrawInfo> m_vecMotoDrawInfo_ReadyToSendToGPU;
 	aiScene* m_AssimpScene;
 	Assimp::Importer m_Importer;
 };

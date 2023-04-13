@@ -20,7 +20,8 @@ public:
 
 	std::string meshName;
 	std::string TextureFile;
-
+	
+	int shaderID;
 	unsigned int VAO_ID;
 
 	unsigned int VertexBufferID;

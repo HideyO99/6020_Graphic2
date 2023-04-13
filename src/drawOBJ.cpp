@@ -7,9 +7,75 @@
 extern cLightManager* g_pTheLightManager;
 extern cTextureManager* g_pTextureManager;
 extern BoneShader gBoneShader;
+extern glm::vec3 g_cameraEye;
+extern glm::vec3 g_cameraTarget;
 
 void drawObj(cMeshObj* pCurrentMeshObject, glm::mat4x4 mat_PARENT_Model, cShaderManager* pShaderManager, cVAOManager* pVAOManager)
 {
+    // Assume that the frustom planes are pure vertical and horizontal
+    {   // Outsize of the horizontal planes
+
+        glm::vec3 eyeNoY = ::g_cameraEye;
+        glm::vec3 targetNoY = ::g_cameraTarget;
+        glm::vec3 objectNoY = pCurrentMeshObject->position;
+
+        eyeNoY.y = 0.0f;
+        targetNoY.y = 0.0f;
+        objectNoY.y = 0.0f;
+
+        glm::vec3 vEyeVector = glm::normalize(targetNoY - eyeNoY);
+
+        glm::vec3 vObjectToEye = glm::normalize(objectNoY - eyeNoY);
+
+        // Take dot product of these two vectors
+        float dotView = glm::dot(vEyeVector, vObjectToEye);
+
+        // Cull anything below a certian angle.
+        // (this is just like the spot light does it, too)
+
+        // Get the cosine of 60 degrees
+        float desiredFOVCullAngleValue = glm::cos(glm::radians(30.0f));
+
+        // If greater than, then it's "in front" of the camera in the FOL
+        // If less than, it's outside (or behinds the camera)
+        if (dotView < desiredFOVCullAngleValue)
+        {
+            //return;
+        }
+    }
+
+    // Assume that the frustom planes are pure vertical and horizontal
+    {   // Outsize of the vertical planes
+
+        glm::vec3 eyeNoX = ::g_cameraEye;
+        glm::vec3 targetNoX = ::g_cameraTarget;
+        glm::vec3 objectNoX = pCurrentMeshObject->position;
+
+        eyeNoX.x = 0.0f;
+        targetNoX.x = 0.0f;
+        objectNoX.x = 0.0f;
+
+        glm::vec3 vEyeVector = glm::normalize(targetNoX - eyeNoX);
+
+        glm::vec3 vObjectToEye = glm::normalize(objectNoX - eyeNoX);
+
+        // Take dot product of these two vectors
+        float dotView = glm::dot(vEyeVector, vObjectToEye);
+
+        // Cull anything below a certian angle.
+        // (this is just like the spot light does it, too)
+
+        // Get the cosine of 60 degrees
+        float desiredFOVCullAngleValue = glm::cos(glm::radians(10.0f));
+
+        // If greater than, then it's "in front" of the camera in the FOL
+        // If less than, it's outside (or behinds the camera)
+        if (dotView < desiredFOVCullAngleValue)
+        {
+            //return;
+        }
+    }
+
     // Don't draw any "back facing" triangles
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
@@ -199,7 +265,26 @@ void drawObj(cMeshObj* pCurrentMeshObject, glm::mat4x4 mat_PARENT_Model, cShader
     pShaderManager->setShaderUniform1i("skyboxTexture", texture30Unit);
 
     cModelDrawInfo drawingInformation;
-    if (pVAOManager->FindDrawInfo(pCurrentMeshObject->meshName, drawingInformation))
+//todo doing
+    std::string meshToDraw = pCurrentMeshObject->meshName;
+
+    // Check if this object has a Level of Detail list of meshes
+    if (!pCurrentMeshObject->vecLODs.empty())
+    {
+        // go through the vector looking for the closest LOD from the camera
+        float distanceToEye = glm::distance(pCurrentMeshObject->position, g_cameraEye);
+
+        for (std::vector<sLODInfo>::iterator itLOD = pCurrentMeshObject->vecLODs.begin();
+            itLOD != pCurrentMeshObject->vecLODs.end(); itLOD++)
+        {
+            if (distanceToEye < itLOD->minDistance)
+            {
+                meshToDraw = itLOD->meshName;
+            }
+        }
+    }
+
+    if (pVAOManager->FindDrawInfo(meshToDraw, drawingInformation))
     { 
         glBindVertexArray(drawingInformation.VAO_ID);
 
@@ -208,12 +293,12 @@ void drawObj(cMeshObj* pCurrentMeshObject, glm::mat4x4 mat_PARENT_Model, cShader
         glBindVertexArray(0);
 
     }
-    else
-    {
-        // Didn't find that model
-        std::cout << "Error: didn't find model to draw." << std::endl;
+    //else
+    //{
+    //    // Didn't find that model
+    //    std::cout << "Error: didn't find model to draw." << std::endl;
 
-    }
+    //}
 
     for (std::vector<cMeshObj* >::iterator itCurrentMesh = pCurrentMeshObject->vecChildMesh.begin();
         itCurrentMesh != pCurrentMeshObject->vecChildMesh.end();

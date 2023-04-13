@@ -8,6 +8,18 @@
 
 #define MOVINGTEXTURE true
 
+struct sLODInfo
+{
+	sLODInfo(std::string meshToUse, float minimumDistanceFromCamera)
+	{
+		this->meshName = meshToUse;
+		this->minDistance = minimumDistanceFromCamera;
+	}
+	std::string meshName;
+	float minDistance;		// Won't draw until it's this distance from the camera
+};
+
+
 class cMeshObj
 {
 public:
@@ -15,6 +27,7 @@ public:
 	~cMeshObj();
 
 	std::string meshName;
+	std::vector<sLODInfo> vecLODs;
 	std::string instanceName;
 	glm::vec3 position;
 	glm::vec3 rotation;
