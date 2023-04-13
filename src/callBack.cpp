@@ -26,6 +26,7 @@ extern bool toggleRipple;
 extern int g_mazeViewRowIndex;
 extern int g_mazeViewColumnIndex;
 extern int g_mazeViewSize;
+extern bool g_startGame;
 
 void error_callback(int error, const char* description)
 {
@@ -116,7 +117,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         //::g_cameraEye = glm::vec3(-5.5f, -3.4f, 15.0f);
         //::g_cameraEye = glm::vec3(0.0, 100.0, 300.0f);
         //::g_cameraTarget = glm::vec3(5.0f, 0.0f, 0.0f);
-        bIsWalkAround = !bIsWalkAround;
+        g_startGame = !g_startGame;
 
     }
 }

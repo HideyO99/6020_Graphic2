@@ -1,7 +1,7 @@
 #pragma once
 #include "MeshObj/cMeshObj.h"
 #include "cBeholder.h"
-#define NUMBEHOLDER 100
+#define NUMBEHOLDER 1000
 
 class cBeholderManager
 {
@@ -20,5 +20,7 @@ public:
 	cMeshObj* meshObj;
 	MazeManager* m_mazeManager;
 	std::vector<cBeholder*> vecBeholder;
+private:
+	bool isInSight(int inputRow,int inputCol);
 };
 

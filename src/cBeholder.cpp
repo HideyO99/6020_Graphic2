@@ -118,7 +118,7 @@ void cBeholder::ProcessMove()
 		}
 		else
 		{
-			PosRow--;
+			PosCol--;
 		}
 		break;
 	case RIGHT:
@@ -153,7 +153,7 @@ void cBeholder::ProcessMove()
 		}
 		else
 		{
-			PosRow++;
+			PosCol++;
 		}
 		break;
 	case NONE:
@@ -178,7 +178,7 @@ void cBeholder::ProcessMove()
 	default:
 		break;
 	}
-
+	move = newD;
 }
 
 void cBeholder::checkSurround(bool& u, bool& d, bool& l, bool& r)
@@ -235,5 +235,5 @@ void cBeholder::update()
 	
 	ProcessMove();
 	rotate();
-	calWorldPos();
+	//calWorldPos();
 }

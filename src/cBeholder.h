@@ -25,6 +25,7 @@ public:
 	int PosCol;
 	cMeshObj* meshObj;
 	MazeManager* mazeManager;
+	void calWorldPos();
 
 private:
 	int m_prevPosRow;
@@ -33,6 +34,5 @@ private:
 	void ProcessMove();
 	void checkSurround(bool& u, bool& d, bool& l, bool& r);
 	void rotate();
-	void calWorldPos();
 
 };

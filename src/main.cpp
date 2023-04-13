@@ -79,6 +79,7 @@ AnimationManager* g_pAnimationManager = NULL;
 int g_mazeViewRowIndex = 0;
 int g_mazeViewColumnIndex = 0;
 int g_mazeViewSize = 15;
+bool g_startGame = false;
 
 extern void error_callback(int error, const char* description);
 extern void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -327,7 +328,7 @@ int main(void)
         glm::mat4x4 matProjection;
         glm::mat4x4 matView;
         
-        updateByFrameRate();
+        
 
         //////////////////////////////////////////////////////////////
         //FBO                                                       //
@@ -368,6 +369,7 @@ int main(void)
         //setFBOtoTexture(g_FBO_02, pShaderManager, pVAOManager, "projecter2");
         //setFBOtoTexture(g_FBO_03, pShaderManager, pVAOManager, "projecter3");
         //setFBOtoTexture(g_FBO_04, pShaderManager, pVAOManager, "projecter4");
+        updateByFrameRate();
         updateMazeObj(pShaderManager, pVAOManager);
         updateInstanceObj(pShaderManager, pVAOManager);
 

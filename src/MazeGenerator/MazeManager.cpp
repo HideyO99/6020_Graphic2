@@ -166,7 +166,7 @@ DWORD WINAPI UpdateAreaThread(LPVOID pVOIDMaze)
 
 			cellXLocation += (columnIndex * TILESIZE);
 			cellYLocation += (rowIndex * TILESIZE);
-			//todo
+			
 			meshObj->position.x = cellXLocation;
 			meshObj->position.z = cellYLocation;
 			meshObj->scale = glm::vec3(MESHTOWORLDSCALE);
@@ -178,7 +178,7 @@ DWORD WINAPI UpdateAreaThread(LPVOID pVOIDMaze)
 			{
 				if (pMaze->mazeManager->mazeRegion[rowIndex][columnIndex])
 				{
-					//todo
+					
 					meshObj->scale.y *= 20.0f;
 					meshObj->position.y = 9.0f;
 					meshObj->bDoNotLight = false;
@@ -190,9 +190,12 @@ DWORD WINAPI UpdateAreaThread(LPVOID pVOIDMaze)
 					meshObj->bDoNotLight = true;
 
 				}
+				//pMaze->vecMeshObj->at(0)->bUse_RGBA_colour = true;
+				//pMaze->vecMeshObj->at(0)->color_RGBA = glm::vec4(1, 0, 0, 1);
+				//pMaze->vecMeshObj->at(mazeFullSize*mazeFullSize -1 )->bUse_RGBA_colour = true;
+				//pMaze->vecMeshObj->at(mazeFullSize*mazeFullSize -1 )->color_RGBA = glm::vec4(0, 1, 0, 1);
 				//glm::mat4 matIdentity = glm::mat4(1.0f);
 				//EnterCriticalSection(&CS_MazeManager_ToBeLoadedVectorLock);
-
 				//pMaze->vecMeshObj->push_back(meshObj);
 				//drawObj(pMaze->mazeManager->meshObj, matIdentity, pMaze->pShaderManager, pMaze->pVAOManager);
 				//LeaveCriticalSection(&CS_MazeManager_ToBeLoadedVectorLock);
@@ -257,10 +260,13 @@ void MazeManager::update(int mazeViewRowIndex, int mazeViewColumnIndex, int maze
 		}
 	}
 	UpdateAreaAsync( mazeViewRowIndex,  mazeViewColumnIndex,  mazeViewSize);
-	minViewRow = mazeViewRowIndex - mazeViewSize;
-	maxViewRow = mazeViewRowIndex + mazeViewSize;	
-	minViewCol = mazeViewColumnIndex - mazeViewSize;
-	maxViewCol = mazeViewColumnIndex + mazeViewSize;
+	//minViewRow = mazeViewRowIndex - mazeViewSize;
+	//maxViewRow = mazeViewRowIndex + mazeViewSize;	
+	//minViewCol = mazeViewColumnIndex - mazeViewSize;
+	//maxViewCol = mazeViewColumnIndex + mazeViewSize;
+	ViewRowIndex = mazeViewRowIndex;
+	ViewColumnIndex = mazeViewColumnIndex;
+	ViewSize = mazeViewSize;
 
 	glm::mat4 matIdentity = glm::mat4(1.0f);
 	for (int i = 0; i < vecMesh.size(); i++)
@@ -271,7 +277,7 @@ void MazeManager::update(int mazeViewRowIndex, int mazeViewColumnIndex, int maze
 
 bool MazeManager::getMazeAtPos(int row, int col)
 {
-	if (row < 0 || col < 0 || row >= MAZESIZE || col >= MAZESIZE)
+	if (row < 0 || col < 0 || row >= MAZESIZE-1 || col >= MAZESIZE-1)
 	{
 		return true;
 	}

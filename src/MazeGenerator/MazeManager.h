@@ -22,10 +22,13 @@ public:
 	void update(int mazeViewRowIndex, int mazeViewColumnIndex, int mazeViewSize, cShaderManager* pShaderManager, cVAOManager* pVAOManager);
 	//DWORD WINAPI UpdateAreaThread(LPVOID pVOIDMonster);
 	bool getMazeAtPos(int row, int col);
-	int minViewRow;
-	int maxViewRow;
-	int minViewCol;
-	int maxViewCol;
+	//int minViewRow;
+	//int maxViewRow;
+	//int minViewCol;
+	//int maxViewCol;
+	int ViewRowIndex;
+	int ViewColumnIndex;
+	int ViewSize;
 	cMazeMaker_W2023* maker;
 	cMeshObj* meshObj;
 	std::vector< std::vector<bool> > mazeRegion;

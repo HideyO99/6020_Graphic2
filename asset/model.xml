@@ -8,11 +8,7 @@
 		<modelInstance>skybox<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
 	</model>
 	
-	<model name="moon">asset/model/UV_Sphere_Cylindrical_UIV_Projection_.ply
-		<modelInstance>moon<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
-	</model>
 
-	
 	<model name="debug_light">asset/model/ISO_Shphere_flat_3div_xyz_n_rgba_uv.ply
 		<modelInstance>debug_light1<posX> -5.5</posX><posZ> 7.8</posZ><rotateY>0</rotateY></modelInstance>
 		<modelInstance>debug_light2<posX>-11.2</posX><posZ> 3.5</posZ><rotateY>0</rotateY></modelInstance>
