@@ -253,12 +253,7 @@ int main(void)
     //load texture
     //::g_pTextureManager = new cTextureManager();
     ::g_pTextureManager->setBasePath(TEXTURE_PATH);
-    //::g_pTextureManager->create2DTextureFromBMP("Dungeons_2_Texture_01_A.bmp");
-    //::g_pTextureManager->create2DTextureFromBMP("lroc_color_poles_4k.bmp");
-    //::g_pTextureManager->create2DTextureFromBMP("glowing-fire-flame.bmp");
-    //::g_pTextureManager->create2DTextureFromBMP("glowing-fire-flame_bw.bmp");
-    //::g_pTextureManager->create2DTextureFromBMP("photos_2018_7_4_fst_water-blue.bmp"); 
-    //::g_pTextureManager->create2DTextureFromBMP("Beholder_Base_color.bmp");
+
     ::g_pTextureManager->create2DTextureFromFreeImgLib("Dungeons_2_Texture_01_A.bmp");
     ::g_pTextureManager->create2DTextureFromFreeImgLib("lroc_color_poles_4k.bmp");
     ::g_pTextureManager->create2DTextureFromFreeImgLib("glowing-fire-flame.bmp");
@@ -286,15 +281,6 @@ int main(void)
     //setup object
 
    result = pVAOManager->setDungeonTexture("floorA", "Dungeons_2_Texture_01_A.bmp");
-   result = pVAOManager->setTexture("moon", "lroc_color_poles_4k.bmp", 0);
-   result = pVAOManager->setInstanceObjPosition("moon", glm::vec4(200.f,200.f,-100.f,0.f));
-   result = pVAOManager->setInstanceObjScale("moon", 10);
-   result = pVAOManager->setInstanceObjLighting("moon", false);
-   result = pVAOManager->setTexture("water", "photos_2018_7_4_fst_water-blue.bmp", 0);
-   result = pVAOManager->setInstanceObjRGB("water", glm::vec4(1.f, 1.f, 1.f, 0.5f));
-   result = pVAOManager->setTorchTexture("flame", "glowing-fire-flame.bmp", "glowing-fire-flame_bw.bmp");
-   
-   result = pVAOManager->setIslandModelFlag("water", true);
 
    result = pVAOManager->setTexture("boss", "Beholder_Base_color.bmp", 0);
 
@@ -305,36 +291,6 @@ int main(void)
     result = pVAOManager->setUseRGBColorFlag("projecter1", false);
     result = pVAOManager->setInstanceObjPosition("projecter1", glm::vec4(0.f));
 
-    result = pVAOManager->setInstanceObjVisible("projecter2", false);
-    result = pVAOManager->setInstanceObjScale("projecter2", 5.f);
-    result = pVAOManager->setUseRGBColorFlag("projecter2", false);
-    result = pVAOManager->setInstanceObjPosition("projecter2", glm::vec4(-12.5f,2.5f,-15.f,1.f));
-
-    result = pVAOManager->setInstanceObjVisible("projecter3", true);
-    result = pVAOManager->setInstanceObjScale("projecter3", 5.f);
-    result = pVAOManager->setUseRGBColorFlag("projecter3", false);
-    result = pVAOManager->setInstanceObjPosition("projecter3", glm::vec4(-2.5f, 2.5f, -15.f, 1.f));
-
-    result = pVAOManager->setInstanceObjVisible("projecter4", true);
-    result = pVAOManager->setInstanceObjScale("projecter4", 5.f);
-    result = pVAOManager->setUseRGBColorFlag("projecter4", false);
-    result = pVAOManager->setInstanceObjPosition("projecter4", glm::vec4(7.5f, 2.5f, -15.f, 1.f));
-
-    result = pVAOManager->setInstanceObjPosition("orb", glm::vec4(-12.f, 2.5f, 0.f, 1.f));
-    result = pVAOManager->setInstanceObjScale("orb", 2.5);
-    result = pVAOManager->setInstanceObjRGB("orb", glm::vec4(1.f, 1.f, 1.f, 0.3f));
-    result = pVAOManager->setIslandModelFlag("orb", true);
-    result = pVAOManager->setInstanceObjVisible("orb", true);
-
-    result = pVAOManager->setInstanceObjScale("barrel1", 0.05);
-    result = pVAOManager->setInstanceObjVisible("barrel1", true);
-    result = pVAOManager->setInstanceObjRGB("barrel1", glm::vec4(1.f, 1.f, 1.f, 1.f));
-    result = pVAOManager->setTexture("barrel1", "Dungeons_2_Texture_01_A.bmp", 0);
-    result = pVAOManager->setInstanceObjLighting("barrel1", false);
-    //result = pVAOManager->setInstanceObjPosition("barrel1", glm::vec4(-12.5f, 2.5f, -15.f, 1.f));
-
-    result = pVAOManager->setInstanceObjScale("man1", 0.02);
-    result = pVAOManager->setTexture("man1", "man_Packed0_Diffuse.png", 0);
 
     result = pVAOManager->setInstanceObjPosition("boss", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
     //result = pVAOManager->set("boss", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
@@ -367,17 +323,6 @@ int main(void)
         //glm::mat4x4 matModel;
         glm::mat4x4 matProjection;
         glm::mat4x4 matView;
-
-        //glfwGetFramebufferSize(window, &width, &height);
-        //ratio = width / (float)height;
-
-        //glViewport(0, 0, width, height);
-        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //setFBO2(pShaderManager, pVAOManager);
-        //setFBOPortal(::g_FBO_03, pShaderManager, pVAOManager, glm::vec3(-2.5f, 2.5f, -10.f), glm::vec3(-2.5f,1.f,0.f));
-        //setFBOPortal(::g_FBO_04, pShaderManager, pVAOManager, glm::vec3(124,100,0), -g_cameraTarget);
-        //g_cameraEye = glm::vec4(0.f);
-        //g_cameraTarget = glm::vec4(200.f, 200.f, -100.f, 0.f);
         
         updateByFrameRate();
 
@@ -560,13 +505,10 @@ void updateInstanceObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
         }
         if (pCurrentMeshObject->instanceName == "boss")
         {
-            g_pTheLightManager->plight[7]->position = glm::vec4(pCurrentMeshObject->position, 1) + glm::vec4(-0.4f, 1.4f, 0, 0);
-            g_pTheLightManager->plight[8]->position = glm::vec4(pCurrentMeshObject->position, 1) + glm::vec4(0.7f, 1.2f, -0.3f, 0);
-            g_pTheLightManager->plight[9]->position = glm::vec4(pCurrentMeshObject->position, 1) + glm::vec4(-2.5f, -0.2f, 0, 0);
-            //std::cout << "Beholder position" << pCurrentMeshObject->position.x << ", " << pCurrentMeshObject->position.y << ", " << pCurrentMeshObject->position.z << std::endl;
-            //std::cout << "cameraEye " << g_cameraEye.x << ", " << g_cameraEye.y << ", " << g_cameraEye.z << std::endl;
-            //std::cout << "cameraTarget " << g_cameraTarget.x << ", " << g_cameraTarget.y << ", " << g_cameraTarget.z << std::endl;
-            //std::cout << "cameraFront " << g_cameraFront.x << ", " << g_cameraFront.y << ", " << g_cameraFront.z << std::endl;
+            //g_pTheLightManager->plight[7]->position = glm::vec4(pCurrentMeshObject->position, 1) + glm::vec4(-0.4f, 1.4f, 0, 0);
+            //g_pTheLightManager->plight[8]->position = glm::vec4(pCurrentMeshObject->position, 1) + glm::vec4(0.7f, 1.2f, -0.3f, 0);
+            //g_pTheLightManager->plight[9]->position = glm::vec4(pCurrentMeshObject->position, 1) + glm::vec4(-2.5f, -0.2f, 0, 0);
+
         }
         if (pCurrentMeshObject->isIslandModel)
         {
@@ -899,56 +841,4 @@ void updateMazeObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
     //g_Maze->mazeRegion.empty();
     g_Maze->update(g_mazeViewRowIndex, g_mazeViewColumnIndex, g_mazeViewSize, pShaderManager, pVAOManager);
 
-    //g_Maze->meshObj->bDoNotLight = true;
-
-    //unsigned int mazeFullSize = ::g_mazeViewSize * 2;
-    //for (unsigned int rowIndex = 0; rowIndex < mazeFullSize; rowIndex++)
-    //{
-    //    for (unsigned int columnIndex = 0; columnIndex < mazeFullSize; columnIndex++)
-    //    {
-
-    //        const float TILESIZE = 10.0f;  // How big each tile is in the world (each grid is 10 units)
-    //        // Each mesh is 500x500 but that's too big
-    //        const float MESHTOWORLDSCALE = TILESIZE / 500.0f;
-
-    //        float cellXLocation = -(::g_mazeViewSize * TILESIZE);
-    //        float cellYLocation = -(::g_mazeViewSize * TILESIZE);
-
-    //        cellXLocation += (columnIndex * TILESIZE);
-    //        cellYLocation += (rowIndex * TILESIZE);
-    //        //todo
-    //        g_Maze->meshObj->position.x = cellXLocation;
-    //        g_Maze->meshObj->position.z = cellYLocation;
-    //        g_Maze->meshObj->scale = glm::vec3(MESHTOWORLDSCALE); 
-
-    //        // Make the tiles "thicker"
-    //        // (you normally wound't do this since it'll mess up the normals, but this 
-    //        //  scaling likely won't since the sides are straight up and down)
-    //        //g_Maze->meshObj->scale.y *= 10.0f;
-
-    //        //g_Maze->meshObj->position.y = -10.0f;
-
-    //       
-    //        // If it's a WALL, draw a floor mesh there
-    //        if (g_Maze->mazeRegion.size() != 0)
-    //        {
-    //            if (g_Maze->mazeRegion[rowIndex][columnIndex])
-    //            {
-    //                //todo
-    //                g_Maze->meshObj->scale.y *= 20.0f;
-    //                g_Maze->meshObj->position.y = 9.0f;
-    //                g_Maze->meshObj->bDoNotLight = false;
-    //            }
-    //            else
-    //            {
-    //                g_Maze->meshObj->scale.y = MESHTOWORLDSCALE;
-    //                g_Maze->meshObj->position.y = 0.0f;
-    //                g_Maze->meshObj->bDoNotLight = true;
-
-    //            }
-    //            glm::mat4 matIdentity = glm::mat4(1.0f);
-    //            drawObj(g_Maze->meshObj, matIdentity, pShaderManager, pVAOManager);
-    //        }
-    //    }//for ( unsigned int columnIndex
-    //}//for ( unsigned int rowIndex
 }
