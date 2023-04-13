@@ -43,6 +43,12 @@
     <Filter Include="Animation">
       <UniqueIdentifier>{dd9bd281-376e-4131-87b3-89f01235b129}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Beholder">
+      <UniqueIdentifier>{6634b0ea-f250-4af9-bcb9-2e1bf4d7c54d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Maze">
+      <UniqueIdentifier>{a5d25b19-ea05-43f8-920f-540d300794e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GUI\cGUI.cpp">
@@ -141,20 +147,26 @@
     <ClCompile Include="src\time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\MazeGenerator\MazeManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\cBeholderManager.cpp">
+      <Filter>Beholder</Filter>
     </ClCompile>
     <ClCompile Include="src\VAOManager\c3DModelFileLoader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>VAOManager</Filter>
     </ClCompile>
     <ClCompile Include="src\MazeGenerator\cMazeMaker_W2023_async.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Maze</Filter>
     </ClCompile>
     <ClCompile Include="src\MazeGenerator\cMazeMaker_W2023.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Maze</Filter>
     </ClCompile>
     <ClCompile Include="src\MazeGenerator\cMazeMaker_W2023_as_functions.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Maze</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MazeGenerator\MazeManager.cpp">
+      <Filter>Maze</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cBeholder.cpp">
+      <Filter>Beholder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,14 +257,20 @@
     <ClInclude Include="src\BoneHierarchy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\MazeGenerator\cMazeMaker_W2023.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MazeGenerator\MazeManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\cBeholderManager.h">
+      <Filter>Beholder</Filter>
     </ClInclude>
     <ClInclude Include="src\VAOManager\c3DModelFileLoader.h">
-      <Filter>Header Files</Filter>
+      <Filter>VAOManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MazeGenerator\MazeManager.h">
+      <Filter>Maze</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MazeGenerator\cMazeMaker_W2023.h">
+      <Filter>Maze</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cBeholder.h">
+      <Filter>Beholder</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

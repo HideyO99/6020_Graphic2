@@ -264,3 +264,13 @@ void MazeManager::update(int mazeViewRowIndex, int mazeViewColumnIndex, int maze
 	}
 }
 
+bool MazeManager::getMazeAtPos(int row, int col)
+{
+	if (row < 0 || col < 0 || row >= MAZESIZE || col >= MAZESIZE)
+	{
+		return true;
+	}
+
+	return maker->maze[row][col][0];
+}
+

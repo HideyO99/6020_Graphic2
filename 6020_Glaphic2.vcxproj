@@ -149,6 +149,8 @@
     <ClCompile Include="src\boneShader.cpp" />
     <ClCompile Include="src\callBack.cpp" />
     <ClCompile Include="src\cAssimpModel.cpp" />
+    <ClCompile Include="src\cBeholder.cpp" />
+    <ClCompile Include="src\cBeholderManager.cpp" />
     <ClCompile Include="src\drawOBJ.cpp" />
     <ClCompile Include="src\FBO\cFBO.cpp" />
     <ClCompile Include="src\glad.c" />
@@ -190,6 +192,8 @@
     <ClInclude Include="src\BoneHierarchy.h" />
     <ClInclude Include="src\boneShader.h" />
     <ClInclude Include="src\cAssimpModel.h" />
+    <ClInclude Include="src\cBeholder.h" />
+    <ClInclude Include="src\cBeholderManager.h" />
     <ClInclude Include="src\FBO\cFBO.h" />
     <ClInclude Include="src\globalOpenGL.h" />
     <ClInclude Include="src\GUI\cGUI.h" />

@@ -994,9 +994,9 @@ bool cVAOManager::setDungeonTexture(std::string meshObjName, std::string texture
 		}
 		if ((itCurrentMesh->second->meshName == "boss"))
 		{
-			itCurrentMesh->second->scale = glm::vec3(0.8);
+			itCurrentMesh->second->scale = glm::vec3(2.f);
 			itCurrentMesh->second->position.x = -27.5f;
-			itCurrentMesh->second->position.y = 1.f;
+			itCurrentMesh->second->position.y = 3.f;
 			itCurrentMesh->second->position.z = 0.f;
 			itCurrentMesh->second->rotation.y = 0.f;
 			itCurrentMesh->second->rotation.z = 0.0f;
