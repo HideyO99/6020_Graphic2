@@ -9,10 +9,11 @@ public:
 	cBeholderManager();
 	~cBeholderManager();
 
-	void init();
+	void init(MazeManager* maze, cVAOManager* vao, cMeshObj* mesh, cShaderManager* shader);
 	void createBeholder();
 	void render();
 	bool isAvailable(int row, int col);
+	void update();
 
 	cShaderManager* pShaderManager;
 	cVAOManager* pVAOManager;

@@ -10,10 +10,13 @@ cBeholderManager::~cBeholderManager()
 {
 }
 
-void cBeholderManager::init()
+void cBeholderManager::init(MazeManager* maze, cVAOManager* vao, cMeshObj* mesh, cShaderManager* shader)
 {
 	vecBeholder.clear();
-
+	this->m_mazeManager = maze;
+	this->pVAOManager = vao;
+	this->meshObj = mesh;
+	this->pShaderManager = shader;
 }
 
 void cBeholderManager::createBeholder()
@@ -46,7 +49,13 @@ void cBeholderManager::render()
 	glm::mat4 matIdentity = glm::mat4(1.0f);
 	for (int i = 0; i < vecBeholder.size(); i++)
 	{
-		drawObj(this->vecBeholder[i]->meshObj, matIdentity, pShaderManager, pVAOManager);
+		if (   this->vecBeholder[i]->PosRow >= m_mazeManager->minViewRow 
+			&& this->vecBeholder[i]->PosRow <  m_mazeManager->maxViewRow
+			&& this->vecBeholder[i]->PosCol >= m_mazeManager->minViewCol 
+			&& this->vecBeholder[i]->PosCol <  m_mazeManager->maxViewCol)
+		{
+			drawObj(this->vecBeholder[i]->meshObj, matIdentity, pShaderManager, pVAOManager);
+		}
 	}
 }
 
@@ -66,4 +75,9 @@ bool cBeholderManager::isAvailable(int row, int col)
 	}
 
 	return true;
+}
+
+void cBeholderManager::update()
+{
+	render();
 }

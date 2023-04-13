@@ -26,6 +26,7 @@
 #include "time.h"
 #include "Animation/AnimationManager.h"
 #include "MazeGenerator/MazeManager.h"
+#include "cBeholderManager.h"
 
 #define MODEL_LIST_XML          "asset/model.xml"
 #define VERTEX_SHADER_FILE      "src/shader/vertexShader.glsl"
@@ -70,6 +71,7 @@ cFBO* g_FBO_03 = NULL;
 cFBO* g_FBO_04 = NULL;
 cMeshObj* g_MeshBoss = NULL;
 MazeManager* g_Maze = NULL;
+cBeholderManager* g_BeholderManager = NULL;
 
 
 AnimationManager* g_pAnimationManager = NULL;
@@ -310,7 +312,8 @@ int main(void)
     g_Maze->CreateMaze(pVAOManager);
     ::g_mazeViewRowIndex = (int)MAZESIZE / 2;
     ::g_mazeViewColumnIndex = (int)MAZESIZE / 2;
-
+    g_BeholderManager = new cBeholderManager();
+    g_BeholderManager->init(g_Maze, pVAOManager, g_MeshBoss, pShaderManager);
 
     cTime::update();
 
@@ -508,7 +511,7 @@ void updateInstanceObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
             //g_pTheLightManager->plight[7]->position = glm::vec4(pCurrentMeshObject->position, 1) + glm::vec4(-0.4f, 1.4f, 0, 0);
             //g_pTheLightManager->plight[8]->position = glm::vec4(pCurrentMeshObject->position, 1) + glm::vec4(0.7f, 1.2f, -0.3f, 0);
             //g_pTheLightManager->plight[9]->position = glm::vec4(pCurrentMeshObject->position, 1) + glm::vec4(-2.5f, -0.2f, 0, 0);
-
+            continue;
         }
         if (pCurrentMeshObject->isIslandModel)
         {
@@ -814,7 +817,7 @@ void updateByFrameRate()
     {
         double elapsedTime = g_CurrentTime - g_LastCall;
         g_LastCall = g_CurrentTime;
-
+        g_BeholderManager->update();
         //std::map<std::string, cObject*>::iterator obj_it = g_physicSys.mapOBJ.find("Player");
         //obj_it->second->position = ::g_cameraEye;
 

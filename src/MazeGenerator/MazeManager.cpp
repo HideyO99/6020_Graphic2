@@ -257,6 +257,11 @@ void MazeManager::update(int mazeViewRowIndex, int mazeViewColumnIndex, int maze
 		}
 	}
 	UpdateAreaAsync( mazeViewRowIndex,  mazeViewColumnIndex,  mazeViewSize);
+	minViewRow = mazeViewRowIndex - mazeViewSize;
+	maxViewRow = mazeViewRowIndex + mazeViewSize;	
+	minViewCol = mazeViewColumnIndex - mazeViewSize;
+	maxViewCol = mazeViewColumnIndex + mazeViewSize;
+
 	glm::mat4 matIdentity = glm::mat4(1.0f);
 	for (int i = 0; i < vecMesh.size(); i++)
 	{
