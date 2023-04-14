@@ -313,6 +313,10 @@ int main(void)
     g_Maze->CreateMaze(pVAOManager);
     ::g_mazeViewRowIndex = (int)MAZESIZE / 2;
     ::g_mazeViewColumnIndex = (int)MAZESIZE / 2;
+    g_Maze->ViewRowIndex = g_mazeViewRowIndex;
+    g_Maze->ViewColumnIndex = g_mazeViewColumnIndex;
+    g_Maze->ViewSize = g_mazeViewSize;
+    g_Maze->startThread();
     g_BeholderManager = new cBeholderManager();
     g_BeholderManager->init(g_Maze, pVAOManager, g_MeshBoss, pShaderManager);
 
@@ -508,7 +512,7 @@ void updateInstanceObj(cShaderManager* pShaderManager, cVAOManager* pVAOManager)
             // Skip the rest of the loop
             continue;
         }
-        if (pCurrentMeshObject->instanceName == "boss")
+        if (pCurrentMeshObject->instanceName == "boss" || pCurrentMeshObject->instanceName == "floorA1")
         {
             //g_pTheLightManager->plight[7]->position = glm::vec4(pCurrentMeshObject->position, 1) + glm::vec4(-0.4f, 1.4f, 0, 0);
             //g_pTheLightManager->plight[8]->position = glm::vec4(pCurrentMeshObject->position, 1) + glm::vec4(0.7f, 1.2f, -0.3f, 0);

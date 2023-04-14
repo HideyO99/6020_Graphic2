@@ -47,6 +47,7 @@ void cBeholderManager::createBeholder()
 	pBeholder->meshObj->textureRatios[0] = this->meshObj->textureRatios[0];
 	pBeholder->meshObj->scale = this->meshObj->scale;
 	pBeholder->calWorldPos();
+	pBeholder->startThread();
 	
 	vecBeholder.push_back(pBeholder);
 }
@@ -92,11 +93,11 @@ bool cBeholderManager::isAvailable(int row, int col)
 
 void cBeholderManager::update()
 {
-	if(g_startGame)
+	//if(g_startGame)
 	{
 		for (int i = 0; i < vecBeholder.size(); i++)
 		{
-			vecBeholder[i]->update();
+			vecBeholder[i]->isMove = g_startGame;
 		}
 	}
 	render();

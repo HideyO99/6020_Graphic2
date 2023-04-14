@@ -26,13 +26,15 @@ public:
 	cMeshObj* meshObj;
 	MazeManager* mazeManager;
 	void calWorldPos();
+	void ProcessMove();
+	void rotate();
+	void startThread();
+	bool isMove;
 
 private:
 	int m_prevPosRow;
 	int m_prevPosCol;
 	moveDir move;
-	void ProcessMove();
 	void checkSurround(bool& u, bool& d, bool& l, bool& r);
-	void rotate();
 
 };

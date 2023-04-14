@@ -1,5 +1,53 @@
 #include "cBeholder.h"
 
+struct sMonsterThreadData
+{
+	sMonsterThreadData()
+	{
+		pTheMonster = NULL;
+		bExitThread = false;
+		bSuspendThread = false;
+		// Pause for one frame at 60Hz (16 ms give or take)
+		suspendTime_ms = 16;
+	}
+	cBeholder* pTheMonster;
+	bool* pMove;
+	// Setting to true exits thread
+	bool bExitThread;
+	// Setting to true will stop the update
+	bool bSuspendThread;
+	unsigned int suspendTime_ms;
+};
+
+DWORD WINAPI MonsterThread(LPVOID pVOIDMonster)
+{
+	std::cout << "Starting the monster thread" << std::endl;
+	sMonsterThreadData* pMonster = (sMonsterThreadData*)(pVOIDMonster);
+
+	while (!pMonster->bExitThread)
+	{
+		if (!pMonster->bSuspendThread)
+		{
+			if (pMonster->pMove)
+			{
+				pMonster->pTheMonster->ProcessMove();
+				pMonster->pTheMonster->rotate();
+			}
+			pMonster->bSuspendThread = true;
+			//			Sleep(0);		// Release this thread if needed
+		}
+		else
+		{
+			// Put thread to sleep for X ms
+			Sleep(pMonster->suspendTime_ms);
+			pMonster->bSuspendThread = false;
+		}
+	}
+
+	std::cout << "Exiting the monster thread" << std::endl;
+	return 0;
+}
+
 cBeholder::cBeholder()
 {
 	move = NONE;
@@ -214,6 +262,23 @@ void cBeholder::rotate()
 	}
 }
 
+void cBeholder::startThread()
+{
+	LPDWORD lpThreadId = NULL;
+	HANDLE hThread = 0;
+	sMonsterThreadData* threadData = new sMonsterThreadData();
+	threadData->pTheMonster = this;
+	hThread =
+		CreateThread(NULL,				// Security attributes
+			0,					// Use default stack size
+			MonsterThread,	// Address of the function we are going to call
+			(void*)threadData,			// Please wait a moment
+			0,  // 0 or CREATE_SUSPENDED
+			lpThreadId);
+	
+	Sleep(0);
+}
+
 void cBeholder::calWorldPos()
 {
 	const float TILESIZE = 10.0f;  // How big each tile is in the world (each grid is 10 units)
@@ -236,4 +301,17 @@ void cBeholder::update()
 	ProcessMove();
 	rotate();
 	//calWorldPos();
+	//LPDWORD lpThreadId = NULL;
+	//HANDLE hThread = 0;
+	//sMonsterThreadData* threadData = new sMonsterThreadData();
+	//threadData->pTheMonster = this;
+	//hThread =
+	//	CreateThread(NULL,				// Security attributes
+	//		0,					// Use default stack size
+	//		UpdateMonsterThread,	// Address of the function we are going to call
+	//		(void*)threadData,			// Please wait a moment
+	//		0,  // 0 or CREATE_SUSPENDED
+	//		lpThreadId);
+
+	//Sleep(0);
 }

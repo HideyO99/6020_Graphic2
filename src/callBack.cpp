@@ -66,11 +66,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         //::g_cameraEye -= ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
         g_mazeViewRowIndex--;
     }
-    if (key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS)
+    if (key == GLFW_KEY_PAGE_UP && action == GLFW_RELEASE)
     {
         ::g_mazeViewSize++;
     }
-    if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS)
+    if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_RELEASE)
     {
         // Don't go below, say 2 units? (4x4 maze?)
         if (::g_mazeViewSize > 2)
