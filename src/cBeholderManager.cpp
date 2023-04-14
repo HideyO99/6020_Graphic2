@@ -21,11 +21,11 @@ void cBeholderManager::init(MazeManager* maze, cVAOManager* vao, cMeshObj* mesh,
 
 	for (int i = 0; i < NUMBEHOLDER; i++)
 	{
-		createBeholder();
+		createBeholder(i);
 	}
 }
 
-void cBeholderManager::createBeholder()
+void cBeholderManager::createBeholder(int id)
 {
 	int row, col;
 	do
@@ -36,6 +36,7 @@ void cBeholderManager::createBeholder()
 	} while (!isAvailable(row, col));
 
 	cBeholder* pBeholder = new cBeholder();
+	pBeholder->id = id;
 	pBeholder->PosRow = row;
 	pBeholder->PosCol = col;
 	pBeholder->mazeManager = m_mazeManager;
@@ -47,6 +48,7 @@ void cBeholderManager::createBeholder()
 	pBeholder->meshObj->textureRatios[0] = this->meshObj->textureRatios[0];
 	pBeholder->meshObj->scale = this->meshObj->scale;
 	pBeholder->calWorldPos();
+	pBeholder->pVecBeholder = &(this->vecBeholder);
 	
 	vecBeholder.push_back(pBeholder);
 }
@@ -94,12 +96,12 @@ void cBeholderManager::update()
 {
 	startThread();
 	//if(g_startGame)
-	{
-		for (int i = 0; i < vecBeholder.size(); i++)
-		{
-			vecBeholder[i]->isMove = g_startGame;
-		}
-	}
+	//{
+	//	for (int i = 0; i < vecBeholder.size(); i++)
+	//	{
+	//		vecBeholder[i]->isMove = g_startGame;
+	//	}
+	//}
 	render();
 }
 

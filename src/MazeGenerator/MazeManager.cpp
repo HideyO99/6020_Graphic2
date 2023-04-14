@@ -325,6 +325,30 @@ bool MazeManager::getMazeAtPos(int row, int col)
 	return maker->maze[row][col][0];
 }
 
+void MazeManager::setBeholderAtPos(int row, int col, bool available, int id)
+{
+	maker->maze[row][col][1] = available;
+	if (!available)
+	{
+		beholderMap[row][col] = id;
+	}
+	else
+	{
+		beholderMap[row][col] = NULL;
+	}
+
+}
+
+bool MazeManager::getPos(int row, int col)
+{
+	if (row < 0 || col < 0 || row >= MAZESIZE - 1 || col >= MAZESIZE - 1)
+	{
+		return true;
+	}
+
+	return maker->maze[row][col][1];
+}
+
 void MazeManager::startThread()
 {
 	int size = this->ViewSize * 2;

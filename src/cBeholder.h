@@ -20,16 +20,22 @@ public:
 	~cBeholder();
 
 	void update();
-	
+	int id;
 	int PosRow;
 	int PosCol;
+	bool alive;
 	cMeshObj* meshObj;
 	MazeManager* mazeManager;
+	std::vector<cBeholder*>* pVecBeholder;
+
 	void calWorldPos();
 	void ProcessMove();
 	void rotate();
 	void startThread();
 	bool isMove;
+	bool scanEnemy(moveDir d);
+	void attack(int enemyID);
+	void dead();
 
 private:
 	int m_prevPosRow;

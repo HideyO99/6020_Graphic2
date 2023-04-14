@@ -1,6 +1,7 @@
 #include "cGUI.h"
 extern int g_mazeViewRowIndex;
 extern int g_mazeViewColumnIndex;
+extern int g_mazeViewSize;
 
 cGUI::cGUI(glm::vec3* camPos, glm::vec3* camTar)
 {
@@ -232,42 +233,55 @@ bool cGUI::ImGUI_render2()
         if (ImGui::BeginTabItem("Model"))
         {
             ImGui::BeginGroup();
-            //ImGui::BeginChild("##MainWindow", ImVec2(450, 65), true);
-            ImGui::DragInt("row####", &g_mazeViewRowIndex, 1);
-            ImGui::DragInt("col####", &g_mazeViewColumnIndex, 1);
-            for (int i = 0; i < vecBeholder->size(); i++)
-            {
-                cBeholder* currentMonster = vecBeholder->at(i);
-                //cMeshObj* pCurrentMeshObject = pVecInstanceMeshObj->at(i);
-                //ImGui::Text(pCurrentMeshObject->instanceName.c_str());
-                //if (pCurrentMeshObject->meshName == "floorA" ||
-                //    pCurrentMeshObject->meshName == "floorB" ||
-                //    pCurrentMeshObject->meshName == "floorC" ||
-                //    pCurrentMeshObject->meshName == "wall" ||
-                //    pCurrentMeshObject->meshName == "door" ||
-                //    pCurrentMeshObject->meshName == "skybox" ||
-                //    pCurrentMeshObject->meshName == "terrain")
-                //{
-                //    continue;
-                //}
-                std::string num = currentMonster->meshObj->meshName + std::to_string(i);
-                if (ImGui::TreeNode((void*)(intptr_t)i, num.c_str()))
-                {
-                    ImGui::BeginGroup();
-                    ImGui::DragInt("row####", &currentMonster->PosRow, 1);
-                    ImGui::DragInt("col####", &currentMonster->PosCol, 1);
-                    //ImGui::DragFloat("Z pos##", &pCurrentMeshObject->position.z, 0.1f);
-                    ImGui::EndGroup();
-                    //ImGui::Text(pCurrentMeshObject->instanceName.c_str());
-                    ImGui::TreePop();
-                }
 
-                //ImGui::SameLine();
-                //pCurrentMeshObject->position;
-                //ImGui::InputText("Pos.x",)
+            if (ImGui::BeginTable("table1", 4))
+            {
+                ImGui::TableSetupScrollFreeze(1, 2);
+                ImGui::TableSetupColumn("item##");
+                ImGui::TableSetupColumn("Row");
+                ImGui::TableSetupColumn("Col");
+                ImGui::TableSetupColumn("status");
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Maze center");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%d", g_mazeViewRowIndex);
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%d", g_mazeViewColumnIndex);
+                ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%d", g_mazeViewSize);
+                for (int row = 0; row < vecBeholder->size(); row++)
+                {
+                    cBeholder* currentMonster = vecBeholder->at(row);
+                    ImGui::TableNextRow();
+                    for (int column = 0; column < 4; column++)
+                    {
+                        if (!ImGui::TableSetColumnIndex(column) && column > 0)
+                            continue;
+                        if (column == 0)
+                        {
+                            std::string num = currentMonster->meshObj->meshName.c_str() + std::to_string(currentMonster->id);
+                            ImGui::Text(num.c_str());
+                        }
+                        if (column == 1)
+                        {
+                            ImGui::Text("%d", currentMonster->PosRow);
+                        }
+                        if (column == 2)
+                        {
+                            ImGui::Text("%d", currentMonster->PosCol);
+                        }
+                        if (column == 3)
+                        {
+                            if(currentMonster->alive)
+                                ImGui::Text("Alive");
+                            else
+                                ImGui::Text("Dead");
+                        }
+                    }
+                }
             }
-            //ImGui::Text("test");
-            //ImGui::EndChild();
+            ImGui::EndTable();
             ImGui::EndGroup();
             ImGui::EndTabItem();
         }

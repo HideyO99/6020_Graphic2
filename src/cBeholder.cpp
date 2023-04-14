@@ -51,6 +51,7 @@ DWORD WINAPI MonsterThread(LPVOID pVOIDMonster)
 cBeholder::cBeholder()
 {
 	move = NONE;
+	alive = true;
 }
 
 cBeholder::~cBeholder()
@@ -62,6 +63,9 @@ void cBeholder::ProcessMove()
 	bool u, d, l, r;
 	checkSurround(u, d, l, r);
 	moveDir newD = move;
+	m_prevPosRow = PosRow;
+	m_prevPosCol = PosCol;
+	
 	switch (move)
 	{
 	case UP:
@@ -227,6 +231,8 @@ void cBeholder::ProcessMove()
 		break;
 	}
 	move = newD;
+	mazeManager->setBeholderAtPos(m_prevPosRow, m_prevPosCol, true, id);
+	mazeManager->setBeholderAtPos(PosRow, PosCol, false,id);
 }
 
 void cBeholder::checkSurround(bool& u, bool& d, bool& l, bool& r)
@@ -279,6 +285,56 @@ void cBeholder::startThread()
 	Sleep(0);
 }
 
+bool cBeholder::scanEnemy(moveDir d)
+{
+	int R = PosRow;
+	int C = PosCol;
+	bool foundEnemy = false;
+
+	switch (d)
+	{
+	case UP:
+		R--;
+		break;
+	case DOWN:
+		R++;
+		break;
+	case LEFT:
+		C--;
+		break;
+	case RIGHT:
+		C++;
+		break;
+	case NONE:
+		break;
+	default:
+		break;
+	}
+	if (R != PosRow || C != PosCol)
+	{
+		foundEnemy = !(mazeManager->getPos(R, C));
+	}
+	if (foundEnemy)
+	{
+		int enemyID = mazeManager->beholderMap[R][C];
+		attack(enemyID);
+	}
+	
+	return false;
+}
+
+void cBeholder::attack(int enemyID)
+{
+	pVecBeholder->at(enemyID)->dead();
+}
+
+void cBeholder::dead()
+{
+	this->alive = false;
+	meshObj->scale = glm::vec3(1);
+	meshObj->rotation = glm::vec3(HALFPI, PI, 0);
+}
+
 void cBeholder::calWorldPos()
 {
 	const float TILESIZE = 10.0f;  // How big each tile is in the world (each grid is 10 units)
@@ -297,8 +353,10 @@ void cBeholder::calWorldPos()
 
 void cBeholder::update()
 {
-	
-	ProcessMove();
-	rotate();
-
+	if (this->alive)
+	{
+		ProcessMove();
+		rotate();
+		scanEnemy(move);
+	}
 }
