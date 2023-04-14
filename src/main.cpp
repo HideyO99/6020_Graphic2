@@ -319,7 +319,8 @@ int main(void)
     g_Maze->startThread();
     g_BeholderManager = new cBeholderManager();
     g_BeholderManager->init(g_Maze, pVAOManager, g_MeshBoss, pShaderManager);
-
+    g_BeholderManager->oneThread();
+    gui_->vecBeholder = &g_BeholderManager->vecBeholder;
     cTime::update();
 
     while (!glfwWindowShouldClose(window))

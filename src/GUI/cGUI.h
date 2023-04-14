@@ -7,6 +7,7 @@
 #include "../MeshObj/cMeshObj.h"
 #include "../Light/cLightManager.h"
 #include <vector>
+#include "../cBeholder.h"
 
 class cGUI
 {
@@ -18,11 +19,13 @@ public:
 	void ImGUI_shutdown();
 	bool ImGUICreateFrame();
 	bool ImGUI_render();
+	bool ImGUI_render2();
 	bool ImGUI_update();
 
 	std::vector<cMeshObj*>* pVecInstanceMeshObj;
 	cLight* pLight[MAX_LIGHT_SOURCE];
 	glm::vec3* camPos;
 	glm::vec3* camTar;
+	std::vector<cBeholder*>* vecBeholder;
 };
 

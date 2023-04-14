@@ -11,7 +11,7 @@ struct sMonsterThreadData
 		suspendTime_ms = 16;
 	}
 	cBeholder* pTheMonster;
-	bool* pMove;
+	
 	// Setting to true exits thread
 	bool bExitThread;
 	// Setting to true will stop the update
@@ -28,19 +28,19 @@ DWORD WINAPI MonsterThread(LPVOID pVOIDMonster)
 	{
 		if (!pMonster->bSuspendThread)
 		{
-			if (pMonster->pMove)
+			if (pMonster->pTheMonster->isMove)
 			{
 				pMonster->pTheMonster->ProcessMove();
 				pMonster->pTheMonster->rotate();
 			}
-			pMonster->bSuspendThread = true;
+			//pMonster->bSuspendThread = true;
 			//			Sleep(0);		// Release this thread if needed
 		}
 		else
 		{
 			// Put thread to sleep for X ms
 			Sleep(pMonster->suspendTime_ms);
-			pMonster->bSuspendThread = false;
+			//pMonster->bSuspendThread = false;
 		}
 	}
 
@@ -300,18 +300,5 @@ void cBeholder::update()
 	
 	ProcessMove();
 	rotate();
-	//calWorldPos();
-	//LPDWORD lpThreadId = NULL;
-	//HANDLE hThread = 0;
-	//sMonsterThreadData* threadData = new sMonsterThreadData();
-	//threadData->pTheMonster = this;
-	//hThread =
-	//	CreateThread(NULL,				// Security attributes
-	//		0,					// Use default stack size
-	//		UpdateMonsterThread,	// Address of the function we are going to call
-	//		(void*)threadData,			// Please wait a moment
-	//		0,  // 0 or CREATE_SUSPENDED
-	//		lpThreadId);
 
-	//Sleep(0);
 }

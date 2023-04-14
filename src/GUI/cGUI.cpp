@@ -1,5 +1,6 @@
 #include "cGUI.h"
-
+extern int g_mazeViewRowIndex;
+extern int g_mazeViewColumnIndex;
 
 cGUI::cGUI(glm::vec3* camPos, glm::vec3* camTar)
 {
@@ -42,7 +43,7 @@ bool cGUI::ImGUICreateFrame()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    result = ImGUI_render();
+    result = ImGUI_render2();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -221,6 +222,154 @@ bool cGUI::ImGUI_render()
     return true;
 }
 
+bool cGUI::ImGUI_render2()
+{
+    ImGui::Begin("Model Settings");
+    //create tabs
+    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+    if (ImGui::BeginTabBar("Object", tab_bar_flags))
+    {
+        if (ImGui::BeginTabItem("Model"))
+        {
+            ImGui::BeginGroup();
+            //ImGui::BeginChild("##MainWindow", ImVec2(450, 65), true);
+            ImGui::DragInt("row####", &g_mazeViewRowIndex, 1);
+            ImGui::DragInt("col####", &g_mazeViewColumnIndex, 1);
+            for (int i = 0; i < vecBeholder->size(); i++)
+            {
+                cBeholder* currentMonster = vecBeholder->at(i);
+                //cMeshObj* pCurrentMeshObject = pVecInstanceMeshObj->at(i);
+                //ImGui::Text(pCurrentMeshObject->instanceName.c_str());
+                //if (pCurrentMeshObject->meshName == "floorA" ||
+                //    pCurrentMeshObject->meshName == "floorB" ||
+                //    pCurrentMeshObject->meshName == "floorC" ||
+                //    pCurrentMeshObject->meshName == "wall" ||
+                //    pCurrentMeshObject->meshName == "door" ||
+                //    pCurrentMeshObject->meshName == "skybox" ||
+                //    pCurrentMeshObject->meshName == "terrain")
+                //{
+                //    continue;
+                //}
+                std::string num = currentMonster->meshObj->meshName + std::to_string(i);
+                if (ImGui::TreeNode((void*)(intptr_t)i, num.c_str()))
+                {
+                    ImGui::BeginGroup();
+                    ImGui::DragInt("row####", &currentMonster->PosRow, 1);
+                    ImGui::DragInt("col####", &currentMonster->PosCol, 1);
+                    //ImGui::DragFloat("Z pos##", &pCurrentMeshObject->position.z, 0.1f);
+                    ImGui::EndGroup();
+                    //ImGui::Text(pCurrentMeshObject->instanceName.c_str());
+                    ImGui::TreePop();
+                }
+
+                //ImGui::SameLine();
+                //pCurrentMeshObject->position;
+                //ImGui::InputText("Pos.x",)
+            }
+            //ImGui::Text("test");
+            //ImGui::EndChild();
+            ImGui::EndGroup();
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Lighting"))
+        {
+            ImGui::BeginGroup();
+
+            for (int i = 0; i < MAX_LIGHT_SOURCE; i++)
+            {
+                if (ImGui::TreeNode((void*)(intptr_t)i, "light%d", i))
+                {
+                    ImGui::Text("light%d", i);
+                    cLight* pCurrentLgiht = pLight[i];
+                    switch (pCurrentLgiht->type)
+                    {
+                    case (cLight::LIGHT_POINT):
+                        ImGui::Checkbox("enable ##", (bool*)&pCurrentLgiht->turnON);
+                        ImGui::DragFloat("Position x##", &pCurrentLgiht->position.x, 1.f);
+                        ImGui::DragFloat("Position y##", &pCurrentLgiht->position.y, 1.f);
+                        ImGui::DragFloat("Position z##", &pCurrentLgiht->position.z, 1.f);
+                        ImGui::NewLine();
+                        ImGui::DragFloat("Diffuse x##", &pCurrentLgiht->diffuse.x, 0.1f);
+                        ImGui::DragFloat("Diffuse y##", &pCurrentLgiht->diffuse.y, 0.1f);
+                        ImGui::DragFloat("Diffuse z##", &pCurrentLgiht->diffuse.z, 0.1f);
+                        ImGui::NewLine();
+                        ImGui::DragFloat("Specualar R##", &pCurrentLgiht->specular.r, 0.01f);
+                        ImGui::DragFloat("Specualar G##", &pCurrentLgiht->specular.g, 0.01f);
+                        ImGui::DragFloat("Specualar B##", &pCurrentLgiht->specular.b, 0.01f);
+                        ImGui::NewLine();
+                        ImGui::DragFloat("constant ##", &pCurrentLgiht->attenuation.x, 0.01f);
+                        ImGui::DragFloat("linear ##", &pCurrentLgiht->attenuation.y, 0.001f);
+                        ImGui::DragFloat("quadratic ##", &pCurrentLgiht->attenuation.z, 0.0001f);
+
+                        break;
+                    case (cLight::LIGHT_SPOT):
+                        ImGui::Checkbox("enable ##", (bool*)&pCurrentLgiht->turnON);
+                        ImGui::DragFloat("Position x##", &pCurrentLgiht->position.x, 1.f);
+                        ImGui::DragFloat("Position y##", &pCurrentLgiht->position.y, 1.f);
+                        ImGui::DragFloat("Position z##", &pCurrentLgiht->position.z, 1.f);
+                        ImGui::NewLine();
+                        ImGui::DragFloat("Dirction x##", &pCurrentLgiht->direction.x, 0.01f);
+                        ImGui::DragFloat("Dirction y##", &pCurrentLgiht->direction.y, 0.01f);
+                        ImGui::DragFloat("Dirction z##", &pCurrentLgiht->direction.z, 0.01f);
+                        ImGui::NewLine();
+                        ImGui::DragFloat("Diffuse x##", &pCurrentLgiht->diffuse.x, 0.1f);
+                        ImGui::DragFloat("Diffuse y##", &pCurrentLgiht->diffuse.y, 0.1f);
+                        ImGui::DragFloat("Diffuse z##", &pCurrentLgiht->diffuse.z, 0.1f);
+                        ImGui::NewLine();
+                        ImGui::DragFloat("Specualar R##", &pCurrentLgiht->specular.r, 0.01f);
+                        ImGui::DragFloat("Specualar G##", &pCurrentLgiht->specular.g, 0.01f);
+                        ImGui::DragFloat("Specualar B##", &pCurrentLgiht->specular.b, 0.01f);
+                        ImGui::NewLine();
+                        ImGui::DragFloat("constant ##", &pCurrentLgiht->attenuation.x, 0.01f);
+                        ImGui::DragFloat("linear ##", &pCurrentLgiht->attenuation.y, 0.001f);
+                        ImGui::DragFloat("quadratic ##", &pCurrentLgiht->attenuation.z, 0.0001f);
+                        ImGui::NewLine();
+                        ImGui::DragFloat("inner angle ##", &pCurrentLgiht->angle.x, 0.01f);
+                        ImGui::DragFloat("outer angle ##", &pCurrentLgiht->angle.y, 0.01f);
+                        break;
+                    case (cLight::LIGHT_DIRECTION):
+                        ImGui::Checkbox("enable ##", (bool*)&pCurrentLgiht->turnON);
+                        ImGui::DragFloat("Dirction x##", &pCurrentLgiht->direction.x, 0.01f);
+                        ImGui::DragFloat("Dirction y##", &pCurrentLgiht->direction.y, 0.01f);
+                        ImGui::DragFloat("Dirction z##", &pCurrentLgiht->direction.z, 0.01f);
+                        ImGui::NewLine();
+                        ImGui::DragFloat("Diffuse x##", &pCurrentLgiht->diffuse.x, 0.1f);
+                        ImGui::DragFloat("Diffuse y##", &pCurrentLgiht->diffuse.y, 0.1f);
+                        ImGui::DragFloat("Diffuse z##", &pCurrentLgiht->diffuse.z, 0.1f);
+                        ImGui::NewLine();
+                        ImGui::DragFloat("Specualar R##", &pCurrentLgiht->specular.r, 0.01f);
+                        ImGui::DragFloat("Specualar G##", &pCurrentLgiht->specular.g, 0.01f);
+                        ImGui::DragFloat("Specualar B##", &pCurrentLgiht->specular.b, 0.01f);
+                        break;
+                    default:
+                        break;
+                    }
+                    ImGui::TreePop();
+                }
+            }
+            ImGui::EndGroup();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Camera"))
+        {
+            ImGui::BeginGroup(); ::
+                ImGui::DragFloat("camera x##", &camPos->x, 1.f);
+            ImGui::DragFloat("camera y##", &camPos->y, 1.f);
+            ImGui::DragFloat("camera z##", &camPos->z, 1.f);
+            ImGui::NewLine();
+            ImGui::DragFloat("target x##", &camTar->x, 1.f);
+            ImGui::DragFloat("target y##", &camTar->y, 1.f);
+            ImGui::DragFloat("target z##", &camTar->z, 1.f);
+            ImGui::EndGroup();
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
+    }
+    //ImGui::Separator();
+    ImGui::End();
+    return true;
+}
 bool cGUI::ImGUI_update()
 {
     
