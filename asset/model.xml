@@ -23,7 +23,7 @@
 	
 
 
-	<model name="boss">asset/model/BeholderSketchfab_xyz_n_rgba_uv.ply
+	<model name="boss">asset/model/BeholderSketchfab.fbx
 		<modelInstance>boss<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
 	</model>
 	<model name="projecter">asset/model/Quad_2_sided_aligned_on_XY_plane.ply

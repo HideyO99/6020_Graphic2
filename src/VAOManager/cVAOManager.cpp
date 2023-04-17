@@ -51,15 +51,15 @@ DWORD WINAPI LoadPlyFilesFromDriveThread(LPVOID pThreadParameters)
 	}
 	else
 	{
-			//cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
-			//if (loader.loadFBXFileAsync(pFileParams->fileTypesToLoadName, i_instanceToModel->first.c_str(), modelDrawInfo, pFileParams->shaderID))
-			//{
-			//	EnterCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
-			//	modelDrawInfo->shaderID = pFileParams->shaderID;
-			//	pFileParams->p_vecMotoDrawInfo_ReadyToSendToGPU->push_back(*modelDrawInfo);
-			//	pFileParams->p_map_TexNameToTextureID->emplace();
-			//	LeaveCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
-			//}
+			cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
+			if (loader.loadFBXFile(pFileParams->fileTypesToLoadName, pFileParams->modelName, modelDrawInfo, pFileParams->shaderID, pFileParams->p_vecMotoDrawInfo_ReadyToSendToGPU))
+			{
+				//EnterCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+				//modelDrawInfo->shaderID = pFileParams->shaderID;
+				//pFileParams->p_vecMotoDrawInfo_ReadyToSendToGPU->push_back(*modelDrawInfo);
+				//
+				//LeaveCriticalSection(&CS_cVAOManager_ToBeLoadedVectorLock);
+			}
 	}
 	//m_vecMotoDrawInfo_ReadyToSendToGPU
 

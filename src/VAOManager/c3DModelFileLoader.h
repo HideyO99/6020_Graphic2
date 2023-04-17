@@ -27,6 +27,9 @@ public:
 	//bool loadFBXFileAsync(std::string filename, std::string meshName, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID);
 	//bool loadMesh(const aiMesh* mesh, cModelDrawInfo* modelDrawInfo, cMeshObj* meshObj);
 	bool loadPLYFile(std::string filename, cModelDrawInfo* modelDrawInfo, std::string error);
+	bool loadFBXFile(std::string filename, std::string meshName, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID, std::vector<cModelDrawInfo>* p_vecMotoDrawInfo_ReadyToSendToGPU);
+
+	bool loadMesh(const aiMesh* mesh, cModelDrawInfo* modelDrawInfo, cMeshObj* meshObj);
 
 	aiScene* m_AssimpScene;
 	Assimp::Importer m_Importer;

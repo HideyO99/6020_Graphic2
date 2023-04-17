@@ -1,7 +1,7 @@
 #pragma once
 #include "MeshObj/cMeshObj.h"
 #include "cBeholder.h"
-#define NUMBEHOLDER 1000
+#define NUMBEHOLDER 1
 
 class cBeholderManager
 {

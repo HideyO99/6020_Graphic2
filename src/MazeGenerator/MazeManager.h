@@ -5,7 +5,7 @@
 #include <Windows.h>
 #include <assert.h>
 
-#define MAZESIZE 1000
+#define MAZESIZE 50
 
 
 
