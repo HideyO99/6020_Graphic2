@@ -138,9 +138,6 @@
     <ClCompile Include="src\Animation\AnimationManager.cpp">
       <Filter>Animation</Filter>
     </ClCompile>
-    <ClCompile Include="src\Animation\cAnimation.cpp">
-      <Filter>Animation</Filter>
-    </ClCompile>
     <ClCompile Include="src\boneShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -2,6 +2,7 @@
 #include "cAnimation.h"
 #include "../MeshObj/cMeshObj.h"
 #include <map>
+#include "../BoneHierarchy.h"
 
 class AnimationManager
 {
@@ -10,9 +11,8 @@ public:
 	~AnimationManager();
 
 	bool AddAnimation(const std::string& name, AnimationData animation);
-	//bool AddBoneAnimation(const std::string& name, BoneAnimationData boneanimation);
+	bool LoadCharacterAnimation(const std::string& name, CharacterAnimationData animation);
 	void AnimationUpdate(bool& playCMD,float dt);
-	//void BoneAnimationUpdate(bool& playCMD, float dt);
 	void play(bool isPlay);
 	void setSpeed(float speedX);
 	void setSequence(unsigned int& sequence);
@@ -23,6 +23,10 @@ public:
 	bool continuePlay;
 
 private:
+	void UpdateBoneHierarchy(BoneNode* node, CharacterAnimationData& data, const glm::mat4& parentTransformationMatrix, float keyFrameTime);
+	void SetGameObjectBoneModelMatrices(cMeshObj* meshObj, BoneNode* node, const CharacterAnimationData& data);
+	AnimationData* FindAnimationData(const std::string& nodeName, const CharacterAnimationData& data);
+
 	int FindPositionKeyIndex(const AnimationData& animation, float time);
 	int FindScaleKeyIndex(const AnimationData& animation, float time);
 	int FindRotationKeyIndex(const AnimationData& animation, float time);
@@ -34,7 +38,7 @@ private:
 	glm::mat4 CreateModelMatrix(const glm::mat4& parentModelMatrix, const glm::vec3& translate, const glm::vec3& scale, const glm::quat& rotate);
 
 	std::map<std::string, AnimationData> AnimationList;
-	//std::map<std::string, BoneAnimationData> BoneAnimationList;
+	std::map<std::string, CharacterAnimationData> m_CharacterAnimationsList;
 	glm::mat4 m_GlobalInverseTransform;
 };
 

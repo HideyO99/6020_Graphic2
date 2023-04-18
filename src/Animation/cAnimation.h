@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <assimp/scene.h>
+#include "../BoneHierarchy.h"
+
 
 struct BoneInfo
 {
@@ -57,71 +60,83 @@ enum EasingType
 
 struct PositionKeyFrame
 {
-	PositionKeyFrame(glm::vec3 Pos, float time, EasingType type = None, int boneID = 0) : Pos(Pos), time(time), type(type), boneID(boneID) {}
+	PositionKeyFrame()
+		: Pos(0.f), time(0.f), type(None) { }
+	PositionKeyFrame(glm::vec3 Pos, float time, EasingType type = None) : Pos(Pos), time(time), type(type) {}
 	glm::vec3 Pos;
 	float time;
 	EasingType type;
-	int boneID;
+	//int boneID;
 };
 
 struct ScaleKeyFrame
 {
-	ScaleKeyFrame(glm::vec3 Scale, float time, EasingType type = None, int boneID = 0) : Scale(Scale), time(time), type(type), boneID(boneID){}
+	ScaleKeyFrame()
+		: Scale(0.f), time(0.f), type(None) { }
+	ScaleKeyFrame(glm::vec3 Scale, float time, EasingType type = None) : Scale(Scale), time(time), type(type) {}
 	glm::vec3 Scale;
 	float time;
 	EasingType type;
-	int boneID;
+	//int boneID;
 };
 
 struct RotationKeyFrame
 {
-	RotationKeyFrame(glm::quat Rotation, float time, EasingType type = None, int boneID = 0) : Rotation(Rotation), time(time), type(type), boneID(boneID){}
+	RotationKeyFrame()
+		: Rotation(1.0f, 0.f, 0.f, 0.f), time(0.f), useSlerp(true) { }
+	RotationKeyFrame(glm::quat Rotation, float time, bool useSlerp = true) : Rotation(Rotation), time(time), useSlerp(useSlerp) {}
 	glm::quat Rotation;
 	float time;
-	//bool useSlerp;
-	EasingType type;
-	int boneID;
+	bool useSlerp;
+	//EasingType type;
+	//int boneID;
 };
 
 struct AnimationData
 {
+	AnimationData() {}
 	std::vector<PositionKeyFrame> PositionKeyFrames;
 	std::vector<ScaleKeyFrame> ScaleKeyFrames;
-	std::vector<RotationKeyFrame> RotationKeyFrames;
+	std::vector<RotationKeyFrame> RotationKeyFrames; 
+	std::string Name;
 	float Duration;
+	double TicksPerSecond;
 };
 
-//struct BoneAnimationData
-//{
-//	std::string Name;
-//
-//	BoneHierarchy* boneHierarchy;
-//	
-//	std::vector<BoneInfo> boneInfoVec;
-//	std::map<std::string, int> boneNameToIdMap;
-//
-//	std::vector<AnimationData*> Channels;
-//	//std::vector<PositionKeyFrame> PositionKeyFrames;
-//	//std::vector<ScaleKeyFrame> ScaleKeyFrames;
-//	//std::vector<RotationKeyFrame> RotationKeyFrames;
-//	float Duration;
-//};
+struct CharacterAnimationData
+{
+	CharacterAnimationData(const aiScene* scene) : AIScene(scene) { }
+	const aiScene* AIScene;
+
+	BoneHierarchy* BoneHierarchy;			// Utilized for Animation 
+
+	std::vector<BoneInfo> boneInfoVec;
+	std::map<std::string, int> boneNameToIdMap;
+	//cMeshObj* meshObj;
+	std::vector<AnimationData*> Channels;
+	std::string Name;
+	double Duration;
+	double TicksPerSecond;
+};
 
 
 class cAnimation
 {
 public:
-	cAnimation();
-	~cAnimation();
+	cAnimation() {}
+	~cAnimation() {}
 
-	std::string tag;
-	std::vector<std::string> seq;
-	unsigned int curSeq;
+	std::vector<glm::mat4> GlobalTransformations;
+	bool IsCharacterAnimation;
+	std::string AnimationType;
 	float AnimationTime;
 	bool IsPlaying;
 	bool IsLooping;
 	float Speed;
 
+	std::string tag;
+	std::vector<std::string> seq;
+	unsigned int curSeq;
 
 };
 

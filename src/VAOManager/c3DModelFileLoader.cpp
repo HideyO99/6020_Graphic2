@@ -1,7 +1,10 @@
 #include "c3DModelFileLoader.h"
 #include "../Texture/cTextureManager.h"
+#include "../BoneHierarchy.h"
+#include "../Animation/AnimationManager.h"
 
 extern cTextureManager* g_pTextureManager;
+extern AnimationManager* g_pAnimationManager;
 
 void CastToGLM(const aiMatrix4x4& in, glm::mat4& out);
 
@@ -98,6 +101,42 @@ bool c3DModelFileLoader::loadPLYFile(std::string filename, cModelDrawInfo* model
 	return true;
 }
 
+BoneNode* CreateNodeHierarchy(aiNode* node, int depth = 0)
+{
+	BoneNode* newNode = new BoneNode();
+	newNode->name = node->mName.C_Str();
+	CastToGLM(node->mTransformation, newNode->transformation);
+
+	for (int i = 0; i < depth; i++)
+		printf(" ");
+	printf("%s (%d)\n", newNode->name.c_str(), node->mNumChildren);
+
+
+	glm::vec3 globalScale, globalTranslation, ignore3;
+	glm::vec4 ignore4;
+	glm::quat globalOrientation;
+
+	bool success = glm::decompose(newNode->transformation, globalScale, globalOrientation, globalTranslation, ignore3, ignore4);
+
+	printf("  NodeTransformation:\n");
+	printf("    Position: (%.4f, %.4f, %.4f)\n", globalTranslation.x, globalTranslation.y, globalTranslation.z);
+	printf("    Scale: (%.4f, %.4f, %.4f)\n", globalScale.x, globalScale.y, globalScale.z);
+	printf("    Rotation: (%.4f, %.4f, %.4f, %.4f)\n", globalOrientation.x, globalOrientation.y, globalOrientation.z, globalOrientation.w);
+	printf("\n");
+
+	std::vector<aiNode*> children;
+
+	for (int i = 0; i < node->mNumChildren; i++)
+	{
+		children.push_back(node->mChildren[i]);
+
+		BoneNode* childNode = CreateNodeHierarchy(node->mChildren[i], depth + 1);
+		newNode->AddChild(childNode);
+	}
+
+	return newNode;
+}
+
 bool c3DModelFileLoader::loadFBXFile(std::string filename, std::string meshName, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID, std::vector<cModelDrawInfo>* p_vecMotoDrawInfo_ReadyToSendToGPU)
 {
 	const aiScene* scene = m_Importer.ReadFile(filename, ASSIMP_LOAD_FLAGS);
@@ -115,6 +154,12 @@ bool c3DModelFileLoader::loadFBXFile(std::string filename, std::string meshName,
 	{
 		return false;
 	}
+
+	BoneHierarchy* boneHierarchy = new BoneHierarchy();
+	boneHierarchy->root = CreateNodeHierarchy(scene->mRootNode);
+	CastToGLM(scene->mRootNode->mTransformation, boneHierarchy->globalInverseTransform);
+	boneHierarchy->globalInverseTransform = glm::inverse(boneHierarchy->globalInverseTransform);
+
 
 	//get texture
 	std::string test;
@@ -139,54 +184,141 @@ bool c3DModelFileLoader::loadFBXFile(std::string filename, std::string meshName,
 		}
 	}
 
-
-	std::vector<cModelDrawInfo*> vecModelDraw;
-	cMeshObj* meshObj = new cMeshObj();
-
-	for (int i = 0; i < scene->mNumMeshes; i++)
+	if (scene->HasMeshes())
 	{
-		cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
-		aiMesh* mesh = scene->mMeshes[i];
-		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-		aiString texturePath;
-		loadMesh(mesh, modelDrawInfo, meshObj);
-		if (i == 0)
+		std::vector<cModelDrawInfo*> vecModelDraw;
+		cMeshObj* meshObj = new cMeshObj();
+		
+		CharacterAnimationData animationData(scene);
+		for (int i = 0; i < scene->mNumMeshes; i++)
 		{
-			meshObj->instanceName = meshName;
-			modelDrawInfo->meshName = meshName;
-			modelDrawInfo->CalculateExtents();
-			modelDrawInfo->shaderID = shaderProgramID;
-			p_vecMotoDrawInfo_ReadyToSendToGPU->push_back(*modelDrawInfo);
-			//loadModelToVAO(i_mapModel->first, modelDrawInfo, shaderProgramID);
-		}
-		else
-		{
-			cMeshObj* childMeshObj = new cMeshObj();
-			childMeshObj->instanceName = mesh->mName.C_Str();
-			childMeshObj->meshName = mesh->mName.C_Str();
-			meshObj->vecChildMesh.push_back(childMeshObj);
-			modelDrawInfo->meshName = meshName;
-			modelDrawInfo->CalculateExtents();
-			modelDrawInfo->shaderID = shaderProgramID;
-			p_vecMotoDrawInfo_ReadyToSendToGPU->push_back(*modelDrawInfo);
-			//loadModelToVAO(mesh->mName.C_Str(), modelDrawInfo, shaderProgramID);
-		}
-		if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath, NULL, NULL, NULL, NULL, NULL) == aiReturn_SUCCESS)
-		{
-			std::string tmp = texturePath.data;
-			modelDrawInfo->TextureFile = tmp.substr(tmp.find_last_of("/\\") + 1, std::string::npos);
+			
+			cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
+			aiMesh* mesh = scene->mMeshes[i];
+			aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+			aiString texturePath;
+			loadMesh(mesh, modelDrawInfo, meshObj, animationData);
+			if (i == 0)
+			{
+				meshObj->instanceName = meshName;
+				modelDrawInfo->meshName = meshName;
+				modelDrawInfo->CalculateExtents();
+				modelDrawInfo->shaderID = shaderProgramID;
+				p_vecMotoDrawInfo_ReadyToSendToGPU->push_back(*modelDrawInfo);
+				//loadModelToVAO(i_mapModel->first, modelDrawInfo, shaderProgramID);
+			}
+			else
+			{
+				cMeshObj* childMeshObj = new cMeshObj();
+				childMeshObj->instanceName = mesh->mName.C_Str();
+				childMeshObj->meshName = mesh->mName.C_Str();
+				meshObj->vecChildMesh.push_back(childMeshObj);
+				modelDrawInfo->meshName = meshName;
+				modelDrawInfo->CalculateExtents();
+				modelDrawInfo->shaderID = shaderProgramID;
+				p_vecMotoDrawInfo_ReadyToSendToGPU->push_back(*modelDrawInfo);
+				//loadModelToVAO(mesh->mName.C_Str(), modelDrawInfo, shaderProgramID);
+			}
+			if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath, NULL, NULL, NULL, NULL, NULL) == aiReturn_SUCCESS)
+			{
+				std::string tmp = texturePath.data;
+				modelDrawInfo->TextureFile = tmp.substr(tmp.find_last_of("/\\") + 1, std::string::npos);
+			}
+
+			//vecModelDraw.push_back(modelDrawInfo);
 		}
 
-		//vecModelDraw.push_back(modelDrawInfo);
+		//load animation
+		unsigned int numAnimations = scene->mNumAnimations;
+		printf("-Loading %d animations!\n", numAnimations);
+		for (int i = 0; i < numAnimations; i++)
+		{
+			
+			aiAnimation* animation = scene->mAnimations[i];
+
+			//animationName = animation->mName.C_Str();
+			LoadAssimpAnimation(animationData, animation, boneHierarchy);
+
+		}
+		//mapModeltoMultiMesh.emplace(i_mapModel->first, vecModelDraw);
+
+
+		return true;
 	}
-	//mapModeltoMultiMesh.emplace(i_mapModel->first, vecModelDraw);
-
-
-	return true;
-
+	return false;
 }
 
-bool c3DModelFileLoader::loadMesh(const aiMesh* mesh, cModelDrawInfo* modelDrawInfo, cMeshObj* meshObj)
+void c3DModelFileLoader::LoadAssimpAnimation(CharacterAnimationData& characterAnimation, const aiAnimation* animation, BoneHierarchy* boneHierarchy)
+{
+	if (animation == nullptr)
+		return;
+
+	printf("LoadAssimpAnimation %s\n", animation->mName.C_Str());
+
+	characterAnimation.Name = std::string(animation->mName.C_Str());
+	characterAnimation.Duration = animation->mDuration;
+	characterAnimation.TicksPerSecond = animation->mTicksPerSecond;
+
+	unsigned int numChannels = animation->mNumChannels;
+
+	printf("- Loading %d channels\n", numChannels);
+
+	characterAnimation.Channels.resize(numChannels);
+	for (int i = 0; i < numChannels; i++)
+	{
+		const aiNodeAnim* nodeAnim = animation->mChannels[i];
+		std::string name(nodeAnim->mNodeName.C_Str());
+
+		printf("  %s\n", name.c_str());
+
+		unsigned int numPositionKeys = nodeAnim->mNumPositionKeys;
+		unsigned int numRotationKeys = nodeAnim->mNumRotationKeys;
+		unsigned int numScalingKeys = nodeAnim->mNumScalingKeys;
+
+		AnimationData* animData = new AnimationData();
+		characterAnimation.Channels[i] = animData;
+		animData->Name = name;
+
+		animData->PositionKeyFrames.resize(numPositionKeys);
+		animData->RotationKeyFrames.resize(numRotationKeys);
+		animData->ScaleKeyFrames.resize(numScalingKeys);
+
+		for (int keyIdx = 0; keyIdx < numPositionKeys; keyIdx++)
+		{
+			const aiVectorKey& posKey = nodeAnim->mPositionKeys[keyIdx];
+			animData->PositionKeyFrames[keyIdx].time = posKey.mTime;
+			animData->PositionKeyFrames[keyIdx].Pos.x = posKey.mValue.x;
+			animData->PositionKeyFrames[keyIdx].Pos.y = posKey.mValue.y;
+			animData->PositionKeyFrames[keyIdx].Pos.z = posKey.mValue.z;
+		}
+
+		for (int keyIdx = 0; keyIdx < numRotationKeys; keyIdx++)
+		{
+			const aiQuatKey& rotKey = nodeAnim->mRotationKeys[keyIdx];
+			animData->RotationKeyFrames[keyIdx].time = rotKey.mTime;
+			animData->RotationKeyFrames[keyIdx].Rotation.x = rotKey.mValue.x;
+			animData->RotationKeyFrames[keyIdx].Rotation.y = rotKey.mValue.y;
+			animData->RotationKeyFrames[keyIdx].Rotation.z = rotKey.mValue.z;
+			animData->RotationKeyFrames[keyIdx].Rotation.w = rotKey.mValue.w;
+		}
+
+		for (int keyIdx = 0; keyIdx < numScalingKeys; keyIdx++)
+		{
+			const aiVectorKey& scaleKey = nodeAnim->mScalingKeys[keyIdx];
+			animData->ScaleKeyFrames[keyIdx].time = scaleKey.mTime;
+			animData->ScaleKeyFrames[keyIdx].Scale.x = scaleKey.mValue.x;
+			animData->ScaleKeyFrames[keyIdx].Scale.y = scaleKey.mValue.y;
+			animData->ScaleKeyFrames[keyIdx].Scale.z = scaleKey.mValue.z;
+		}
+	}
+
+	characterAnimation.BoneHierarchy = boneHierarchy;
+	g_pAnimationManager->LoadCharacterAnimation(characterAnimation.Name, characterAnimation);
+
+	printf("- Done!\n");
+}
+
+bool c3DModelFileLoader::loadMesh(const aiMesh* mesh, cModelDrawInfo* modelDrawInfo, cMeshObj* meshObj, CharacterAnimationData& animationData)
 {
 	modelDrawInfo->numberOfVertices = mesh->mNumVertices;
 	modelDrawInfo->numberOfIndices = mesh->mNumFaces * 3;
@@ -208,21 +340,21 @@ bool c3DModelFileLoader::loadMesh(const aiMesh* mesh, cModelDrawInfo* modelDrawI
 			const aiBone* bone = mesh->mBones[i_bones];
 			std::string boneName = bone->mName.C_Str();
 			int boneIDx = 0;
-			std::map<std::string, int>::iterator it = meshObj->boneNameToIdMap.find(boneName);
-			if (it == meshObj->boneNameToIdMap.end())
+			std::map<std::string, int>::iterator it = animationData.boneNameToIdMap.find(boneName);
+			if (it == animationData.boneNameToIdMap.end())
 			{
 				boneIDx = boneCount;
 				boneCount++;
 				BoneInfo boneInfo;
 				boneInfo.name = boneName;
-				meshObj->boneInfoVec.push_back(boneInfo);
-				CastToGLM(bone->mOffsetMatrix, meshObj->boneInfoVec[boneIDx].boneOffset);
-				meshObj->boneNameToIdMap.emplace(boneName, boneIDx);
-				meshObj->BoneModelMatrices.push_back(glm::mat4(1.f));
+				animationData.boneInfoVec.push_back(boneInfo);
+				CastToGLM(bone->mOffsetMatrix, animationData.boneInfoVec[boneIDx].boneOffset);
+				animationData.boneNameToIdMap.emplace(boneName, boneIDx);
+				//animationData.BoneModelMatrices.push_back(glm::mat4(1.f));
 			}
 			else
 			{
-				boneIDx = meshObj->boneNameToIdMap[boneName];
+				boneIDx = animationData.boneNameToIdMap[boneName];
 			}
 			//todo
 

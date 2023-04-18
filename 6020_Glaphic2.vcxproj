@@ -145,7 +145,6 @@
     <ClCompile Include="dev\inc\imgui\imgui_tables.cpp" />
     <ClCompile Include="dev\inc\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Animation\AnimationManager.cpp" />
-    <ClCompile Include="src\Animation\cAnimation.cpp" />
     <ClCompile Include="src\boneShader.cpp" />
     <ClCompile Include="src\callBack.cpp" />
     <ClCompile Include="src\cAssimpModel.cpp" />

@@ -21,19 +21,16 @@
 		<modelInstance>debug_light9<posX> -1.5</posX><posZ>11.2</posZ><rotateY>0</rotateY></modelInstance>
 	</model>
 	
-
-
-	<model name="boss">asset/model/BeholderSketchfab.fbx
-		<modelInstance>boss<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
-	</model>
 	<model name="projecter">asset/model/Quad_2_sided_aligned_on_XY_plane.ply
 		<modelInstance>projecter1<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
 	</model>
 	
-
-	
 </PLYMODEL>
-
+<FBXMODEL>
+	<model name="boss">asset/model/BeholderSketchfab.fbx
+		<modelInstance>boss<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
+	</model>
+</FBXMODEL>
 <EYE_LOCATION>
 	<x>0</x>
 	<y>150</y>

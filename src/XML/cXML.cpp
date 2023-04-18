@@ -98,20 +98,11 @@ void cXML::load(pugi::xml_document& modelList_xml, std::map<std::string, cMeshOb
 			pModedelInsance->meshName = modelName;
 			pModedelInsance->instanceName = instance;
 			pModedelInsance->position.x = std::stof(node_lv3.child("posX").child_value());
-			pModedelInsance->position.y = 0; //pModedelInsance->position.y = std::stof(node_lv3.child("posY").child_value());
+			pModedelInsance->position.y = 0; 
 			pModedelInsance->position.z = std::stof(node_lv3.child("posZ").child_value());
-			//pModedelInsance->scale = 0.01;
-			//pModedelInsance->rotation.x = std::stof(node_lv3.child("rotateX").child_value());
+
 			pModedelInsance->rotation.y = std::stof(node_lv3.child("rotateY").child_value());
-			//pModedelInsance->rotation.z = std::stof(node_lv3.child("rotateZ").child_value());
-			//pModedelInsance->textures[0] = node_lv3.child("texture0").child_value();
-			//pModedelInsance->textures[1] = node_lv3.child("texture1").child_value();
-			//pModedelInsance->textures[2] = node_lv3.child("texture2").child_value();
-			//pModedelInsance->textures[3] = node_lv3.child("texture3").child_value();
-			//pModedelInsance->textures[4] = node_lv3.child("texture4").child_value();
-			//pModedelInsance->textures[5] = node_lv3.child("texture5").child_value();
-			//pModedelInsance->textures[6] = node_lv3.child("texture6").child_value();
-			//pModedelInsance->textures[7] = node_lv3.child("texture7").child_value();
+
 			mapInstancetoMeshOBJ.emplace(instance, pModedelInsance);
 			pVecInstanceMeshObj.push_back(pModedelInsance);
 			mapInstanceAndModelName.emplace(instance, modelName);
