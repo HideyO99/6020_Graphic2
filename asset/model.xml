@@ -27,7 +27,7 @@
 	
 </PLYMODEL>
 <FBXMODEL>
-	<model name="boss">asset/model/BeholderSketchfab.fbx
+	<model name="boss">asset/model/Adventurer Aland@Attack01.FBX
 		<modelInstance>boss<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
 	</model>
 </FBXMODEL>

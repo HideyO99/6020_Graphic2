@@ -165,6 +165,9 @@
     <ClCompile Include="src\cBeholder.cpp">
       <Filter>Beholder</Filter>
     </ClCompile>
+    <ClCompile Include="src\Animation\Character.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GUI\cGUI.h">
@@ -268,6 +271,9 @@
     </ClInclude>
     <ClInclude Include="src\cBeholder.h">
       <Filter>Beholder</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\Character.h">
+      <Filter>Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

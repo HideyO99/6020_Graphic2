@@ -54,7 +54,7 @@ DWORD WINAPI LoadPlyFilesFromDriveThread(LPVOID pThreadParameters)
 			cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
 			if (loader.loadFBXFile(pFileParams->fileTypesToLoadName, pFileParams->modelName, modelDrawInfo, pFileParams->shaderID, pFileParams->p_vecMotoDrawInfo_ReadyToSendToGPU))
 			{
-
+				std::cout << "fbx";
 			}
 	}
 

@@ -140,7 +140,7 @@ BoneNode* CreateNodeHierarchy(aiNode* node, int depth = 0)
 bool c3DModelFileLoader::loadFBXFile(std::string filename, std::string meshName, cModelDrawInfo* modelDrawInfo, unsigned int shaderProgramID, std::vector<cModelDrawInfo>* p_vecMotoDrawInfo_ReadyToSendToGPU)
 {
 	const aiScene* scene = m_Importer.ReadFile(filename, ASSIMP_LOAD_FLAGS);
-
+	std::string error = m_Importer.GetErrorString();
 	aiNode* node = scene->mRootNode;
 	for (int i = 0; i < node->mNumChildren; i++)
 	{

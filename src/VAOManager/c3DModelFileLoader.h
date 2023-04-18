@@ -15,7 +15,8 @@
 							 aiProcess_GenSmoothNormals | \
 							 aiProcess_PopulateArmatureData | \
 							 aiProcess_FixInfacingNormals | \
-							 aiProcess_LimitBoneWeights)
+							 aiProcess_LimitBoneWeights )
+							 //aiProcess_JoinIdenticalVertices)
 
 class c3DModelFileLoader
 {
