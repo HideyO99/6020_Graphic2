@@ -168,6 +168,12 @@
     <ClCompile Include="src\Animation\Character.cpp">
       <Filter>Animation</Filter>
     </ClCompile>
+    <ClCompile Include="src\MeshObj\Model.cpp">
+      <Filter>MeshObj</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ragdoll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GUI\cGUI.h">
@@ -274,6 +280,15 @@
     </ClInclude>
     <ClInclude Include="src\Animation\Character.h">
       <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshObj\vertex_type.h">
+      <Filter>MeshObj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshObj\Model.h">
+      <Filter>MeshObj</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ragdoll.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
