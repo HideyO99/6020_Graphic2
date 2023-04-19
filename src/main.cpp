@@ -27,6 +27,7 @@
 #include "Animation/AnimationManager.h"
 #include "MazeGenerator/MazeManager.h"
 #include "cBeholderManager.h"
+#include "Monster/MonsterManager.h"
 
 #define MODEL_LIST_XML          "asset/model.xml"
 #define VERTEX_SHADER_FILE      "src/shader/vertexShader.glsl"
@@ -72,6 +73,7 @@ cFBO* g_FBO_04 = NULL;
 cMeshObj* g_MeshBoss = NULL;
 MazeManager* g_Maze = NULL;
 cBeholderManager* g_BeholderManager = NULL;
+MonsterManager* g_monsterManager = NULL;
 
 
 AnimationManager* g_pAnimationManager = NULL;
@@ -311,7 +313,7 @@ int main(void)
     //light4Setup();
 
     
-    //createAnimation(pVAOManager);
+    createAnimation(pVAOManager);
 
     g_Maze = new MazeManager();
     g_Maze->CreateMaze(pVAOManager);
@@ -325,6 +327,11 @@ int main(void)
     g_BeholderManager->init(g_Maze, pVAOManager, g_MeshBoss, pShaderManager);
     g_BeholderManager->oneThread();
     gui_->vecBeholder = &g_BeholderManager->vecBeholder;
+    
+    g_monsterManager = new MonsterManager();
+    g_monsterManager->init(pVAOManager, g_MeshBoss, pShaderManager);
+    g_monsterManager->createThread();
+
     cTime::update();
 
     while (!glfwWindowShouldClose(window))
@@ -775,7 +782,7 @@ void createAnimation(cVAOManager* pVAOManager)
     meshObj->Animation.IsLooping = true;
     meshObj->Animation.IsPlaying = true;
     meshObj->Animation.Speed = 1.f;
-    meshObj->Animation.AnimationType = "Take 001";
+    meshObj->Animation.AnimationType = "mixamo.com";
     meshObj->hasBone = true;
 
    // //AnimationData* animData = new AnimationData();
@@ -787,7 +794,7 @@ void createAnimation(cVAOManager* pVAOManager)
    // meshObj->Animation.IsLooping = true;
    // meshObj->Animation.IsPlaying = false;
    // meshObj->Animation.AnimationTime = 0.f;
-    g_pAnimationManager->animationOBJList.push_back(meshObj);
+    //g_pAnimationManager->animationOBJList.push_back(meshObj);
 
 
    // //Sequence 1
@@ -837,6 +844,7 @@ void updateByFrameRate()
         double elapsedTime = g_CurrentTime - g_LastCall;
         g_LastCall = g_CurrentTime;
         g_BeholderManager->update();
+        g_monsterManager->update();
         //std::map<std::string, cObject*>::iterator obj_it = g_physicSys.mapOBJ.find("Player");
         //obj_it->second->position = ::g_cameraEye;
 
@@ -846,7 +854,7 @@ void updateByFrameRate()
 
         //obj_it->second->update();
 
-        //g_pAnimationManager->AnimationUpdate(g_PlayAnimation, elapsedTime);
+        g_pAnimationManager->AnimationUpdate(g_PlayAnimation, elapsedTime);
         //g_physicSys.updateSystem(elapsedTime);
     }
     //if (g_CurrentTime >= g_LastCall5s + SEC_UPDATE)

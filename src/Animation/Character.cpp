@@ -177,7 +177,7 @@ void Character::LoadAssimpBones(const aiMesh* assimpMesh)
 
 		for (int weightIdx = 0; weightIdx < bone->mNumWeights; weightIdx++)
 		{
-			const aiVertexWeight vw = bone->mWeights[i];
+			const aiVertexWeight vw = bone->mWeights[weightIdx];
 			float weight = vw.mWeight;
 			int vertID = vw.mVertexId;
 			m_BoneVertexData[vertID].AddBoneInfo(boneIdx, weight);
@@ -193,132 +193,132 @@ bool Character::LoadAssimpMesh(const aiMesh* mesh)
 	//Bones
 	LoadAssimpBones(mesh);
 
-	std::string meshName(mesh->mName.data);
-	printf("%s\n", meshName.c_str());
+	//std::string meshName(mesh->mName.data);
+	//printf("%s\n", meshName.c_str());
 
-	// Data
-	unsigned int numFaces = mesh->mNumFaces;
-	unsigned int numIndicesInIndexArray = numFaces * 3;
-	sVertex_RGBA_XYZ_N_UV_T_BiN_Bones* pTempVertArray = new sVertex_RGBA_XYZ_N_UV_T_BiN_Bones[numIndicesInIndexArray * 2];
-	GLuint* pIndexArrayLocal = new GLuint[numIndicesInIndexArray * 2];
+	//// Data
+	//unsigned int numFaces = mesh->mNumFaces;
+	//unsigned int numIndicesInIndexArray = numFaces * 3;
+	//sVertex_RGBA_XYZ_N_UV_T_BiN_Bones* pTempVertArray = new sVertex_RGBA_XYZ_N_UV_T_BiN_Bones[numIndicesInIndexArray * 2];
+	//GLuint* pIndexArrayLocal = new GLuint[numIndicesInIndexArray * 2];
 
-	int vertArrayIndex = 0;
-	for (int faceIndex = 0; faceIndex < numFaces; faceIndex++)
-	{
-		const aiFace& face = mesh->mFaces[faceIndex];
+	//int vertArrayIndex = 0;
+	//for (int faceIndex = 0; faceIndex < numFaces; faceIndex++)
+	//{
+	//	const aiFace& face = mesh->mFaces[faceIndex];
 
-		unsigned int numIndices = face.mNumIndices;
-		for (int indicesIndex = 0; indicesIndex < numIndices; indicesIndex++)
-		{
-			unsigned int vertexIndex = face.mIndices[indicesIndex];
+	//	unsigned int numIndices = face.mNumIndices;
+	//	for (int indicesIndex = 0; indicesIndex < numIndices; indicesIndex++)
+	//	{
+	//		unsigned int vertexIndex = face.mIndices[indicesIndex];
 
-			const aiVector3D& vertex = mesh->mVertices[vertexIndex];
+	//		const aiVector3D& vertex = mesh->mVertices[vertexIndex];
 
-			pTempVertArray[vertArrayIndex].Pos.x = vertex.x;
-			pTempVertArray[vertArrayIndex].Pos.y = vertex.y;
-			pTempVertArray[vertArrayIndex].Pos.z = vertex.z;
-			pTempVertArray[vertArrayIndex].Pos.w = 1.0f;
+	//		pTempVertArray[vertArrayIndex].Pos.x = vertex.x;
+	//		pTempVertArray[vertArrayIndex].Pos.y = vertex.y;
+	//		pTempVertArray[vertArrayIndex].Pos.z = vertex.z;
+	//		pTempVertArray[vertArrayIndex].Pos.w = 1.0f;
 
-			if (mesh->HasNormals())
-			{
-				const aiVector3D& normal = mesh->mNormals[vertexIndex];
-				pTempVertArray[vertArrayIndex].Normal.x = normal.x;
-				pTempVertArray[vertArrayIndex].Normal.y = normal.y;
-				pTempVertArray[vertArrayIndex].Normal.z = normal.z;
-				pTempVertArray[vertArrayIndex].Normal.w = 0.f;
-			}
-			else
-			{
-				pTempVertArray[vertArrayIndex].Normal.x = 1.f;
-				pTempVertArray[vertArrayIndex].Normal.y = 0.f;
-				pTempVertArray[vertArrayIndex].Normal.z = 0.f;
-				pTempVertArray[vertArrayIndex].Normal.w = 0.f;
-			}
+	//		if (mesh->HasNormals())
+	//		{
+	//			const aiVector3D& normal = mesh->mNormals[vertexIndex];
+	//			pTempVertArray[vertArrayIndex].Normal.x = normal.x;
+	//			pTempVertArray[vertArrayIndex].Normal.y = normal.y;
+	//			pTempVertArray[vertArrayIndex].Normal.z = normal.z;
+	//			pTempVertArray[vertArrayIndex].Normal.w = 0.f;
+	//		}
+	//		else
+	//		{
+	//			pTempVertArray[vertArrayIndex].Normal.x = 1.f;
+	//			pTempVertArray[vertArrayIndex].Normal.y = 0.f;
+	//			pTempVertArray[vertArrayIndex].Normal.z = 0.f;
+	//			pTempVertArray[vertArrayIndex].Normal.w = 0.f;
+	//		}
 
-			//if (assimpMesh->HasTextureCoords(0))
-			//{
-				//const aiVector3D& uvCoord = assimpMesh->mTextureCoords[0][vertexIndex];
-			pTempVertArray[vertArrayIndex].TexUVx2.x = 0;
-			pTempVertArray[vertArrayIndex].TexUVx2.y = 0;
-			pTempVertArray[vertArrayIndex].TexUVx2.z = 0;
-			pTempVertArray[vertArrayIndex].TexUVx2.w = 0;
-			//}
+	//		//if (assimpMesh->HasTextureCoords(0))
+	//		//{
+	//			//const aiVector3D& uvCoord = assimpMesh->mTextureCoords[0][vertexIndex];
+	//		pTempVertArray[vertArrayIndex].TexUVx2.x = 0;
+	//		pTempVertArray[vertArrayIndex].TexUVx2.y = 0;
+	//		pTempVertArray[vertArrayIndex].TexUVx2.z = 0;
+	//		pTempVertArray[vertArrayIndex].TexUVx2.w = 0;
+	//		//}
 
-			// Use a BoneInformation Map to get bone info and store the values here
+	//		// Use a BoneInformation Map to get bone info and store the values here
 
-			// Copy instead of reference, try..
-			BoneVertexData bvd = m_BoneVertexData[vertexIndex];
-			pTempVertArray[vertArrayIndex].BoneID.x = bvd.ids[0];
-			pTempVertArray[vertArrayIndex].BoneID.y = bvd.ids[1];
-			pTempVertArray[vertArrayIndex].BoneID.z = bvd.ids[2];
-			pTempVertArray[vertArrayIndex].BoneID.w = bvd.ids[3];
+	//		// Copy instead of reference, try..
+	//		BoneVertexData bvd = m_BoneVertexData[vertexIndex];
+	//		pTempVertArray[vertArrayIndex].BoneID.x = bvd.ids[0];
+	//		pTempVertArray[vertArrayIndex].BoneID.y = bvd.ids[1];
+	//		pTempVertArray[vertArrayIndex].BoneID.z = bvd.ids[2];
+	//		pTempVertArray[vertArrayIndex].BoneID.w = bvd.ids[3];
 
-			pTempVertArray[vertArrayIndex].BoneWeight.x = bvd.weights[0];
-			pTempVertArray[vertArrayIndex].BoneWeight.y = bvd.weights[1];
-			pTempVertArray[vertArrayIndex].BoneWeight.z = bvd.weights[2];
-			pTempVertArray[vertArrayIndex].BoneWeight.w = bvd.weights[3];
+	//		pTempVertArray[vertArrayIndex].BoneWeight.x = bvd.weights[0];
+	//		pTempVertArray[vertArrayIndex].BoneWeight.y = bvd.weights[1];
+	//		pTempVertArray[vertArrayIndex].BoneWeight.z = bvd.weights[2];
+	//		pTempVertArray[vertArrayIndex].BoneWeight.w = bvd.weights[3];
 
-			pIndexArrayLocal[vertArrayIndex] = vertArrayIndex;
+	//		pIndexArrayLocal[vertArrayIndex] = vertArrayIndex;
 
-			vertArrayIndex++;
-		}
-	}
+	//		vertArrayIndex++;
+	//	}
+	//}
 
-	Model* model = new Model();
-	//int testNumTriangles = triangles.size();
-	model->NumTriangles = numFaces;
-	glGenVertexArrays(1, &model->VBO);
-	glBindVertexArray(model->VBO);
-	//CheckGLError();
+	//Model* model = new Model();
+	////int testNumTriangles = triangles.size();
+	//model->NumTriangles = numFaces;
+	//glGenVertexArrays(1, &model->VBO);
+	//glBindVertexArray(model->VBO);
+	////CheckGLError();
 
-	glGenBuffers(1, &model->VertBuffID);
-	glGenBuffers(1, &model->IndBuffID);
-	//CheckGLError();
+	//glGenBuffers(1, &model->VertBuffID);
+	//glGenBuffers(1, &model->IndBuffID);
+	////CheckGLError();
 
-	glBindBuffer(GL_ARRAY_BUFFER, model->VertBuffID);
-	//CheckGLError();
+	//glBindBuffer(GL_ARRAY_BUFFER, model->VertBuffID);
+	////CheckGLError();
 
-	unsigned int totalVertBufferSizeBYTES = numIndicesInIndexArray * sizeof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones);
-	glBufferData(GL_ARRAY_BUFFER, totalVertBufferSizeBYTES, pTempVertArray, GL_STATIC_DRAW);
-	//CheckGLError();
+	//unsigned int totalVertBufferSizeBYTES = numIndicesInIndexArray * sizeof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones);
+	//glBufferData(GL_ARRAY_BUFFER, totalVertBufferSizeBYTES, pTempVertArray, GL_STATIC_DRAW);
+	////CheckGLError();
 
-	unsigned int bytesInOneVertex = sizeof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones);
-	unsigned int byteOffsetToPosition = offsetof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones, Pos);
-	unsigned int byteOffsetToUVCoords = offsetof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones, TexUVx2);
-	unsigned int byteOffsetToNormal = offsetof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones, Normal);
-	unsigned int byteOffsetToBoneWeights = offsetof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones, BoneWeight);
-	unsigned int byteOffsetToBoneIds = offsetof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones, BoneID);
+	//unsigned int bytesInOneVertex = sizeof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones);
+	//unsigned int byteOffsetToPosition = offsetof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones, Pos);
+	//unsigned int byteOffsetToUVCoords = offsetof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones, TexUVx2);
+	//unsigned int byteOffsetToNormal = offsetof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones, Normal);
+	//unsigned int byteOffsetToBoneWeights = offsetof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones, BoneWeight);
+	//unsigned int byteOffsetToBoneIds = offsetof(sVertex_RGBA_XYZ_N_UV_T_BiN_Bones, BoneID);
 
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	glEnableVertexAttribArray(4);
-	//CheckGLError();
+	//glEnableVertexAttribArray(0);
+	//glEnableVertexAttribArray(1);
+	//glEnableVertexAttribArray(2);
+	//glEnableVertexAttribArray(3);
+	//glEnableVertexAttribArray(4);
+	////CheckGLError();
 
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToPosition);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToUVCoords);
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToNormal);
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToBoneWeights);
-	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToBoneIds);
+	//glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToPosition);
+	//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToUVCoords);
+	//glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToNormal);
+	//glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToBoneWeights);
+	//glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToBoneIds);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IndBuffID);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IndBuffID);
 
-	unsigned int sizeOfIndexArrayInBytes = numIndicesInIndexArray * sizeof(GLuint);
+	//unsigned int sizeOfIndexArrayInBytes = numIndicesInIndexArray * sizeof(GLuint);
 
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeOfIndexArrayInBytes, pIndexArrayLocal, GL_STATIC_DRAW);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeOfIndexArrayInBytes, pIndexArrayLocal, GL_STATIC_DRAW);
 
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 
-	delete[] pTempVertArray;
-	delete[] pIndexArrayLocal;
+	//delete[] pTempVertArray;
+	//delete[] pIndexArrayLocal;
 
-	//printf("  - Done Generating Buffer data");
+	////printf("  - Done Generating Buffer data");
 
-	//printf("  - Finished Loading model \"%s\" with %d vertices, %d triangles, id is: %d\n", mesh->mName.C_Str(), mesh->mNumVertices, model->NumTriangles, model->Vbo);
-	m_MeshToIdMap[meshName] = m_Models.size();
-	m_Models.push_back(model);
+	////printf("  - Finished Loading model \"%s\" with %d vertices, %d triangles, id is: %d\n", mesh->mName.C_Str(), mesh->mNumVertices, model->NumTriangles, model->Vbo);
+	//m_MeshToIdMap[meshName] = m_Models.size();
+	//m_Models.push_back(model);
 
 	return true;
 }

@@ -8,7 +8,7 @@ public:
 	Monster();
 	~Monster();
 
-	void update();
+	void update(double dt);
 	int id;
 	int PosRow;
 	int PosCol;
