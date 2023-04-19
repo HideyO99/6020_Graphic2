@@ -49,6 +49,9 @@
     <Filter Include="Maze">
       <UniqueIdentifier>{a5d25b19-ea05-43f8-920f-540d300794e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Monster">
+      <UniqueIdentifier>{79fc23a5-1029-4c50-8e4a-d47ba8d6e72d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GUI\cGUI.cpp">
@@ -174,6 +177,12 @@
     <ClCompile Include="src\Ragdoll.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Monster\Monster.cpp">
+      <Filter>Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Monster\MonsterManager.cpp">
+      <Filter>Monster</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GUI\cGUI.h">
@@ -289,6 +298,12 @@
     </ClInclude>
     <ClInclude Include="src\Ragdoll.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Monster\Monster.h">
+      <Filter>Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Monster\MonsterManager.h">
+      <Filter>Monster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

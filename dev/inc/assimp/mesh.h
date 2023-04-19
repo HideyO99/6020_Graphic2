@@ -566,6 +566,9 @@ struct aiAnimMesh {
 /** @brief Enumerates the methods of mesh morphing supported by Assimp.
  */
 enum aiMorphingMethod {
+    /** Morphing method to be determined */
+    aiMorphingMethod_UNKNOWN = 0x0,
+
     /** Interpolation between morph targets */
     aiMorphingMethod_VERTEX_BLEND = 0x1,
 
@@ -734,20 +737,27 @@ struct aiMesh {
      **/
     C_STRUCT aiString mName;
 
-    /** The number of attachment meshes. Note! Currently only works with Collada loader. */
+    /** The number of attachment meshes.
+     *  Currently known to work with loaders:
+     *   - Collada
+     *   - gltf
+     */
     unsigned int mNumAnimMeshes;
 
     /** Attachment meshes for this mesh, for vertex-based animation.
      *  Attachment meshes carry replacement data for some of the
      *  mesh'es vertex components (usually positions, normals).
-     *  Note! Currently only works with Collada loader.*/
+     *  Currently known to work with loaders:
+     *   - Collada
+     *   - gltf
+     */
     C_STRUCT aiAnimMesh **mAnimMeshes;
 
     /**
      *  Method of morphing when anim-meshes are specified.
      *  @see aiMorphingMethod to learn more about the provided morphing targets.
      */
-    unsigned int mMethod;
+    enum aiMorphingMethod mMethod;
 
     /**
      *  The bounding box.
@@ -778,7 +788,7 @@ struct aiMesh {
               mMaterialIndex(0),
               mNumAnimMeshes(0),
               mAnimMeshes(nullptr),
-              mMethod(0),
+              mMethod(aiMorphingMethod_UNKNOWN),
               mAABB(),
               mTextureCoordsNames(nullptr) {
         for (unsigned int a = 0; a < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++a) {
@@ -985,8 +995,10 @@ struct aiSkeletonBone {
 #ifdef __cplusplus
     aiSkeletonBone() :
             mParent(-1),
+#ifndef ASSIMP_BUILD_NO_ARMATUREPOPULATE_PROCESS
             mArmature(nullptr),
             mNode(nullptr),
+#endif
             mNumnWeights(0),
             mMeshId(nullptr),
             mWeights(nullptr),
@@ -1002,7 +1014,7 @@ struct aiSkeletonBone {
 #endif // __cplusplus
 };
 /**
- *  @brief  
+ *  @brief
  */
 struct aiSkeleton {
     /**

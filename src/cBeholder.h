@@ -1,6 +1,7 @@
 #pragma once
 #include "MazeGenerator/MazeManager.h"
 
+
 #define PI 3.14159
 #define HALFPI 1.57079
 
@@ -24,6 +25,7 @@ public:
 	int PosRow;
 	int PosCol;
 	bool alive;
+
 	cMeshObj* meshObj;
 	MazeManager* mazeManager;
 	std::vector<cBeholder*>* pVecBeholder;
@@ -31,7 +33,7 @@ public:
 	void calWorldPos();
 	void ProcessMove();
 	void rotate();
-	void startThread();
+	//void startThread();
 	bool isMove;
 	bool scanEnemy(moveDir d);
 	void attack(int enemyID);

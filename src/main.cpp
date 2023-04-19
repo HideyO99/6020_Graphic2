@@ -32,7 +32,7 @@
 #define VERTEX_SHADER_FILE      "src/shader/vertexShader.glsl"
 #define FRAGMENT_SHADER_FILE    "src/shader/fragmentShader.glsl"
 #define TEXTURE_PATH            "asset/texture"
-#define USE_IMGUI false
+#define USE_IMGUI true
 #define SEC_UPDATE 5
 
 glm::vec3 g_cameraEye = glm::vec3(0.0, 5.0, 0.0f);
@@ -266,6 +266,7 @@ int main(void)
     ::g_pTextureManager->create2DTextureFromFreeImgLib("photos_2018_7_4_fst_water-blue.bmp");
     ::g_pTextureManager->create2DTextureFromFreeImgLib("Beholder_Base_color.bmp");
     ::g_pTextureManager->create2DTextureFromFreeImgLib("man_Packed0_Diffuse.png");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("ply_tex_20308190_gacha.png");
 
     std::string load_texture_error = "";
     if (g_pTextureManager->createCubeTextureFromFreeImgLib("SpaceBox",
@@ -287,7 +288,8 @@ int main(void)
 
    result = pVAOManager->setDungeonTexture("floorA", "Dungeons_2_Texture_01_A.bmp");
 
-   result = pVAOManager->setTexture("boss", "Beholder_Base_color.bmp", 0);
+  // result = pVAOManager->setTexture("boss", "Beholder_Base_color.bmp", 0);
+   result = pVAOManager->setTexture("boss", "ply_tex_20308190_gacha.png", 0);
 
     result = pVAOManager->setSkyBoxFlag("skybox",true);
     //full screen quad
@@ -309,7 +311,7 @@ int main(void)
     //light4Setup();
 
     
-    createAnimation(pVAOManager);
+    //createAnimation(pVAOManager);
 
     g_Maze = new MazeManager();
     g_Maze->CreateMaze(pVAOManager);
@@ -319,10 +321,10 @@ int main(void)
     g_Maze->ViewColumnIndex = g_mazeViewColumnIndex;
     g_Maze->ViewSize = g_mazeViewSize;
     g_Maze->startThread();
-    //g_BeholderManager = new cBeholderManager();
-    //g_BeholderManager->init(g_Maze, pVAOManager, g_MeshBoss, pShaderManager);
-    //g_BeholderManager->oneThread();
-    //gui_->vecBeholder = &g_BeholderManager->vecBeholder;
+    g_BeholderManager = new cBeholderManager();
+    g_BeholderManager->init(g_Maze, pVAOManager, g_MeshBoss, pShaderManager);
+    g_BeholderManager->oneThread();
+    gui_->vecBeholder = &g_BeholderManager->vecBeholder;
     cTime::update();
 
     while (!glfwWindowShouldClose(window))
@@ -834,7 +836,7 @@ void updateByFrameRate()
     {
         double elapsedTime = g_CurrentTime - g_LastCall;
         g_LastCall = g_CurrentTime;
-        //g_BeholderManager->update();
+        g_BeholderManager->update();
         //std::map<std::string, cObject*>::iterator obj_it = g_physicSys.mapOBJ.find("Player");
         //obj_it->second->position = ::g_cameraEye;
 
@@ -844,7 +846,7 @@ void updateByFrameRate()
 
         //obj_it->second->update();
 
-        g_pAnimationManager->AnimationUpdate(g_PlayAnimation, elapsedTime);
+        //g_pAnimationManager->AnimationUpdate(g_PlayAnimation, elapsedTime);
         //g_physicSys.updateSystem(elapsedTime);
     }
     //if (g_CurrentTime >= g_LastCall5s + SEC_UPDATE)
