@@ -134,21 +134,21 @@ void drawObj(cMeshObj* pCurrentMeshObject, glm::mat4x4 mat_PARENT_Model, cShader
     //std::cout << pCurrentMeshObject->instanceName << " position x = " << pCurrentMeshObject->position.x << " y = " << pCurrentMeshObject->position.y << " z = " << pCurrentMeshObject->position.z << std::endl;
 
     //rotate //todo change to quat
-    glm::mat4 matRoationZ = glm::rotate(glm::mat4(1.0f), pCurrentMeshObject->rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 matRoationY = glm::rotate(glm::mat4(1.0f), pCurrentMeshObject->rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 matRoationX = glm::rotate(glm::mat4(1.0f), pCurrentMeshObject->rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-
+    //glm::mat4 matRoationZ = glm::rotate(glm::mat4(1.0f), pCurrentMeshObject->rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    //glm::mat4 matRoationY = glm::rotate(glm::mat4(1.0f), pCurrentMeshObject->rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+    //glm::mat4 matRoationX = glm::rotate(glm::mat4(1.0f), pCurrentMeshObject->rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::mat4 matRotation = glm::mat4_cast(pCurrentMeshObject->rotation);
     // Scale the object
     glm::vec3 uniformScale = pCurrentMeshObject->scale;
     glm::mat4 matScale = glm::scale(glm::mat4(1.0f), uniformScale);
 
     matModel = matModel * matTranslation;
 
-    matModel = matModel * matRoationX;
-    matModel = matModel * matRoationY;
-    matModel = matModel * matRoationZ;
+    //matModel = matModel * matRoationX;
+    //matModel = matModel * matRoationY;
+    //matModel = matModel * matRoationZ;
 
-    matModel = matModel * matScale;
+    matModel = matModel * matRotation * matScale;
 
     pShaderManager->setShaderUniformM4fv("mModel", matModel);
     //pShaderManager->setShaderUniformM4fv("mView", matView);

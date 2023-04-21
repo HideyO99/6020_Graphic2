@@ -249,7 +249,7 @@ void cBeholder::rotate()
 	switch (move)
 	{
 	case UP:
-		meshObj->rotation = glm::vec3(0);
+		meshObj->rotation = glm::angleAxis(glm::vec3(0,0,0).y,glm::vec3(0,1,0)); //glm::vec3(0);
 		break;
 	case DOWN:
 		meshObj->rotation = glm::vec3(0,PI,0);

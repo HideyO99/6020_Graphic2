@@ -5,7 +5,7 @@ cMeshObj::cMeshObj()
 	this->meshName.clear();
 
 	this->position = glm::vec3(0.f);
-	this->rotation = glm::vec3(0.0f);
+	this->rotation = glm::quat(1.f,0.f,0.f,0.0f);
 	this->scale = glm::vec3(1.f);
 	this->isWireframe = false;
 

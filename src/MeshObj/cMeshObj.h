@@ -30,7 +30,7 @@ public:
 	std::vector<sLODInfo> vecLODs;
 	std::string instanceName;
 	glm::vec3 position;
-	glm::vec3 rotation;
+	glm::quat rotation;
 	glm::vec3 scale;
 	bool isWireframe;
 	glm::vec4 color_RGBA;

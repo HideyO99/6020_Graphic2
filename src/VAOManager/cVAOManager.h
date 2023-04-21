@@ -72,7 +72,7 @@ public:
 
 	bool setTorchTexture(std::string meshObjName, std::string textureFile, std::string markTextureFile);
 
-	void createNewMeshOBJ(std::string InstantName, std::string ModelName, glm::vec3 pos, glm::vec3 rotate, glm::vec3 scale);
+	void createNewMeshOBJ(std::string InstantName, std::string ModelName, glm::vec3 pos, glm::quat rotate, glm::vec3 scale);
 
 	std::map<std::string, cMeshObj*> mapInstanceNametoMeshObj;
 	std::map<std::string, std::vector<cModelDrawInfo*>> mapModeltoMultiMesh;

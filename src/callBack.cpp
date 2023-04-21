@@ -5,6 +5,7 @@
 #include <iostream>
 #include "FBO/cFBO.h"
 #include "Animation/AnimationManager.h"
+#include "Monster/MonsterManager.h"
 
 extern cMeshObj* g_MeshBoss;
 extern glm::vec3 g_cameraEye;
@@ -27,6 +28,7 @@ extern int g_mazeViewRowIndex;
 extern int g_mazeViewColumnIndex;
 extern int g_mazeViewSize;
 extern bool g_startGame;
+extern MonsterManager* g_monsterManager;
 
 void error_callback(int error, const char* description)
 {
@@ -111,6 +113,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
         toggleRipple = !toggleRipple;
         toggleblur = false;
+    }
+    if (key == GLFW_KEY_3 && action == GLFW_RELEASE)
+    {
+        //toggleRipple = !toggleRipple;
+        //toggleblur = false;
+        g_monsterManager->vecMonster.at(0)->attack();
+    }
+    if (key == GLFW_KEY_4 && action == GLFW_RELEASE)
+    {
+        //toggleRipple = !toggleRipple;
+        //toggleblur = false;
+        g_monsterManager->vecMonster.at(0)->dead();
     }
     if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
     {

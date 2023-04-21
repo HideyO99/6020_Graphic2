@@ -835,7 +835,7 @@ bool cVAOManager::setDungeonTexture(std::string meshObjName, std::string texture
 			itCurrentMesh->second->position.x = -124.8f;
 			itCurrentMesh->second->position.y = -40.f;
 			itCurrentMesh->second->position.z = -1.6f;
-			itCurrentMesh->second->rotation.y = 0.f;
+			itCurrentMesh->second->rotation = glm::quat(1.f,0.f,0.f,0.f);
 			itCurrentMesh->second->isWireframe = false;
 			itCurrentMesh->second->color_RGBA = glm::vec4(1,1,0,1);
 			itCurrentMesh->second->bUse_RGBA_colour = true;
@@ -846,8 +846,8 @@ bool cVAOManager::setDungeonTexture(std::string meshObjName, std::string texture
 			itCurrentMesh->second->position.x = -167.7f;
 			itCurrentMesh->second->position.y = -10.5f;
 			itCurrentMesh->second->position.z = -54.f;
-			itCurrentMesh->second->rotation.y = -5.9f;
-			itCurrentMesh->second->rotation.z = 0.0f;
+			//itCurrentMesh->second->rotation.y = -5.9f;
+			//itCurrentMesh->second->rotation.z = 0.0f;
 			itCurrentMesh->second->isWireframe = false;
 			itCurrentMesh->second->color_RGBA = glm::vec4(1, 1, 0, 1);
 			itCurrentMesh->second->bUse_RGBA_colour = true;
@@ -861,8 +861,7 @@ bool cVAOManager::setDungeonTexture(std::string meshObjName, std::string texture
 			itCurrentMesh->second->position.x = -27.5f;
 			itCurrentMesh->second->position.y = 3.f;
 			itCurrentMesh->second->position.z = 0.f;
-			itCurrentMesh->second->rotation.y = 0.f;
-			itCurrentMesh->second->rotation.z = 0.0f;
+			itCurrentMesh->second->rotation = glm::quat(1.f, 0.f, 0.f, 0.f);
 			itCurrentMesh->second->isWireframe = false;
 			itCurrentMesh->second->color_RGBA = glm::vec4(1, 1, 0, 1);
 			itCurrentMesh->second->bUse_RGBA_colour = true;
@@ -908,7 +907,7 @@ bool cVAOManager::setTorchTexture(std::string meshObjName, std::string textureFi
 	return true;
 }
 
-void cVAOManager::createNewMeshOBJ(std::string InstantName, std::string ModelName, glm::vec3 pos, glm::vec3 rotate, glm::vec3 scale)
+void cVAOManager::createNewMeshOBJ(std::string InstantName, std::string ModelName, glm::vec3 pos, glm::quat rotate, glm::vec3 scale)
 {
 	cMeshObj* pModedelInsance = new cMeshObj();
 

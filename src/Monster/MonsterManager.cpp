@@ -16,9 +16,9 @@ MonsterManager::~MonsterManager()
 void MonsterManager::init(cVAOManager* vao, cMeshObj* mesh, cShaderManager* shader)
 {
 	const char* ANIMATION1 = "asset/model/MremirehODesbiens@Walk.fbx";
-	//const char* ANIMATION2 = "asset/model/Zombie Walk.fbx";
-	//const char* ANIMATION3 = "asset/model/Zombie Attack.fbx";
-	//const char* ANIMATION4 = "asset/model/Zombie Dying.fbx";
+	const char* ANIMATION2 = "asset/model/MremirehODesbiens@ZombieAttack.fbx";
+	const char* ANIMATION3 = "asset/model/MremirehODesbiens@Dying.fbx";
+	const char* ANIMATION4 = "asset/model/MremirehODesbiens@asciiIdel.fbx";
 	//std::string charFBX = "asset/model/MremirehODesbiens@ZombieIdle.fbx";
 	std::string charFBX = "asset/model/MremirehODesbiens@asciiIdel.fbx";
 
@@ -31,9 +31,9 @@ void MonsterManager::init(cVAOManager* vao, cMeshObj* mesh, cShaderManager* shad
 	this->prototypeCharacter = new Character();
 	std::vector<std::string> animation;
 	animation.push_back(ANIMATION1);
-	//animation.push_back(ANIMATION2);
-	//animation.push_back(ANIMATION3);
-	//animation.push_back(ANIMATION4);
+	animation.push_back(ANIMATION2);
+	animation.push_back(ANIMATION3);
+	animation.push_back(ANIMATION4);
 	//this->prototypeCharacter.
 	this->prototypeCharacter->LoadCharacterFromAssimp(charFBX.c_str());
 	
@@ -77,7 +77,10 @@ void MonsterManager::createMonster(int id)
 	pMonster->meshObj->textureRatios[0] = this->meshObj->textureRatios[0];
 	//pMonster->meshObj->scale = this->meshObj->scale;
 	pMonster->meshObj->scale = glm::vec3(0.2f);
-	pMonster->charAnimate = this->prototypeCharacter;
+	//pMonster->charAnimate = this->prototypeCharacter;
+	pMonster->charAnimate = new Character();
+	*pMonster->charAnimate = *(this->prototypeCharacter);
+
 	pMonster->meshObj->Animation.IsCharacterAnimation = true;
 	pMonster->meshObj->Animation.AnimationTime = 0.f;
 	pMonster->meshObj->Animation.IsLooping = true;
@@ -88,7 +91,7 @@ void MonsterManager::createMonster(int id)
 	pMonster->meshObj->Animation.AnimationType = "mixamo.com";
 
 	pMonster->charAnimate->SetAnimation(0);
-	g_pAnimationManager->animationOBJList.push_back(pMonster->meshObj);
+	//g_pAnimationManager->animationOBJList.push_back(pMonster->meshObj);
 	this->vecMonster.push_back(pMonster);
 }
 

@@ -12,6 +12,7 @@ Monster::~Monster()
 void Monster::update(double dt)
 {
 	//charAnimate->SetAnimation(0);
+	printf("Character: %d , ", this->id);
 	this->charAnimate->UpdateTransforms(this->meshObj->BoneModelMatrices, this->meshObj->GlobalTransformations, dt);
 }
 
@@ -29,10 +30,10 @@ void Monster::rotate()
 
 void Monster::attack()
 {
-	//charAnimate->SetAnimation(2);
+	charAnimate->SetAnimation(1);
 }
 
 void Monster::dead()
 {
-	//charAnimate->SetAnimation(3);
+	charAnimate->SetAnimation(2);
 }

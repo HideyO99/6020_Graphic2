@@ -101,7 +101,8 @@ void cXML::load(pugi::xml_document& modelList_xml, std::map<std::string, cMeshOb
 			pModedelInsance->position.y = 0; 
 			pModedelInsance->position.z = std::stof(node_lv3.child("posZ").child_value());
 
-			pModedelInsance->rotation.y = std::stof(node_lv3.child("rotateY").child_value());
+			//pModedelInsance->rotation.y = std::stof(node_lv3.child("rotateY").child_value());
+			pModedelInsance->rotation = glm::quat(1.f,0.f,0.f,0.f);
 
 			mapInstancetoMeshOBJ.emplace(instance, pModedelInsance);
 			pVecInstanceMeshObj.push_back(pModedelInsance);

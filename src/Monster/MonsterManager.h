@@ -5,7 +5,7 @@
 #include "Monster.h"
 #include "../VAOManager/cVAOManager.h"
 #include "../Shader/cShaderManager.h"
-#define NUMMONSTER 1
+#define NUMMONSTER 2
 class MonsterManager
 {
 public:

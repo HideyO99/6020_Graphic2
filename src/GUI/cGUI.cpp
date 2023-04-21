@@ -87,6 +87,7 @@ bool cGUI::ImGUI_render()
                     ImGui::EndGroup();
                     ImGui::NewLine();
                     ImGui::BeginGroup();
+                    ImGui::DragFloat("W Rotate##", &pCurrentMeshObject->rotation.w, 0.1f);
                     ImGui::DragFloat("X Rotate##", &pCurrentMeshObject->rotation.x, 0.1f);
                     ImGui::DragFloat("Y Rotate##", &pCurrentMeshObject->rotation.y, 0.1f);
                     ImGui::DragFloat("Z Rotate##", &pCurrentMeshObject->rotation.z, 0.1f);

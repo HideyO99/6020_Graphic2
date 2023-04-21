@@ -111,11 +111,12 @@ void AnimationManager::AnimationUpdate(bool& playCMD,float dt)
 
 					//printf("--------------------\n");
 					//printf("Time: %.4f %d/%d\n", animation.AnimationTime, keyFrameTime, (int)animationData.Duration);
-					UpdateBoneHierarchy(animationData.BoneHierarchy->root, animationData, identity, animation.AnimationTime);
+					
+					//UpdateBoneHierarchy(animationData.BoneHierarchy->root, animationData, identity, animation.AnimationTime);
 
 					//Model* model = GDP_GetModel(go->Renderer.MeshId);
 
-					SetGameObjectBoneModelMatrices(AnimationOBJ, animationData.BoneHierarchy->root, animationData);
+					//SetGameObjectBoneModelMatrices(AnimationOBJ, animationData.BoneHierarchy->root, animationData);
 				}
 
 			}
@@ -496,34 +497,42 @@ int AnimationManager::FindRotationKeyIndex(const AnimationData& animation, float
 
 glm::vec3 AnimationManager::GetAnimationPosition(const AnimationData& animation, float time)
 {
+	if (animation.PositionKeyFrames.size() == 1)
+		return animation.PositionKeyFrames[0].Pos;
+	//int currentPosKFIndex = FindPositionKeyIndex(animation, time);
+	//if ((animation.PositionKeyFrames.size() == 1)|| (currentPosKFIndex == animation.PositionKeyFrames.size() - 1))
+	//{
+	//	return animation.PositionKeyFrames[currentPosKFIndex].Pos;
+	//}
 	int currentPosKFIndex = FindPositionKeyIndex(animation, time);
-	if ((animation.PositionKeyFrames.size() == 1)|| (currentPosKFIndex == animation.PositionKeyFrames.size() - 1))
-	{
-		return animation.PositionKeyFrames[currentPosKFIndex].Pos;
-	}
-
 	int nextPosKFIndex = currentPosKFIndex + 1;
 	PositionKeyFrame currentKF = animation.PositionKeyFrames[currentPosKFIndex];
 	PositionKeyFrame nextKF = animation.PositionKeyFrames[nextPosKFIndex];
-	float diff = nextKF.time - currentKF.time;
-	float ratio = (time - currentKF.time) / diff;
+	float difference = nextKF.time - currentKF.time;
+	float ratio = (time - currentKF.time) / difference;
 
-	switch (currentKF.type)
-	{
-	case EaseIn:
-		ratio = glm::sineEaseIn(ratio);
-		break;
-	case EaseOut:
-		ratio = glm::sineEaseOut(ratio);
-		break;
-	case EaseInOut:
-		ratio = glm::sineEaseInOut(ratio);
-		break;
-	case None:
-		break;
-	default:
-		break;
-	}
+	//int nextPosKFIndex = currentPosKFIndex + 1;
+	//PositionKeyFrame currentKF = animation.PositionKeyFrames[currentPosKFIndex];
+	//PositionKeyFrame nextKF = animation.PositionKeyFrames[nextPosKFIndex];
+	//float diff = nextKF.time - currentKF.time;
+	//float ratio = (time - currentKF.time) / diff;
+
+	//switch (currentKF.type)
+	//{
+	//case EaseIn:
+	//	ratio = glm::sineEaseIn(ratio);
+	//	break;
+	//case EaseOut:
+	//	ratio = glm::sineEaseOut(ratio);
+	//	break;
+	//case EaseInOut:
+	//	ratio = glm::sineEaseInOut(ratio);
+	//	break;
+	//case None:
+	//	break;
+	//default:
+	//	break;
+	//}
 	if (ratio < 0.f) ratio = 0.f;
 	if (ratio > 0.f) ratio = 1.f;
 	
@@ -534,34 +543,43 @@ glm::vec3 AnimationManager::GetAnimationPosition(const AnimationData& animation,
 
 glm::vec3 AnimationManager::GetAnimationScale(const AnimationData& animation, float time)
 {
-	int currentScaleKFIndex = FindScaleKeyIndex(animation, time);
-	if ((animation.ScaleKeyFrames.size() == 1) || (currentScaleKFIndex == animation.ScaleKeyFrames.size() - 1))
-	{
-		return animation.ScaleKeyFrames[currentScaleKFIndex].Scale;
-	}
+	if (animation.ScaleKeyFrames.size() == 1)
+		return animation.ScaleKeyFrames[0].Scale;
 
+	//int currentScaleKFIndex = FindScaleKeyIndex(animation, time);
+	//if ((animation.ScaleKeyFrames.size() == 1) || (currentScaleKFIndex == animation.ScaleKeyFrames.size() - 1))
+	//{
+	//	return animation.ScaleKeyFrames[currentScaleKFIndex].Scale;
+	//}
+	int currentScaleKFIndex = FindScaleKeyIndex(animation, time);
 	int nextScaleKFIndex = currentScaleKFIndex + 1;
 	ScaleKeyFrame currentKF = animation.ScaleKeyFrames[currentScaleKFIndex];
 	ScaleKeyFrame nextKF = animation.ScaleKeyFrames[nextScaleKFIndex];
-	float diff = nextKF.time - currentKF.time;
-	float ratio = (time - currentKF.time) / diff;
+	float difference = nextKF.time - currentKF.time;
+	float ratio = (time - currentKF.time) / difference;
 
-	switch (currentKF.type)
-	{
-	case EaseIn:
-		ratio = glm::sineEaseIn(ratio);
-		break;
-	case EaseOut:
-		ratio = glm::sineEaseOut(ratio);
-		break;
-	case EaseInOut:
-		ratio = glm::sineEaseInOut(ratio);
-		break;
-	case None:
-		break;
-	default:
-		break;
-	}
+	//int nextScaleKFIndex = currentScaleKFIndex + 1;
+	//ScaleKeyFrame currentKF = animation.ScaleKeyFrames[currentScaleKFIndex];
+	//ScaleKeyFrame nextKF = animation.ScaleKeyFrames[nextScaleKFIndex];
+	//float diff = nextKF.time - currentKF.time;
+	//float ratio = (time - currentKF.time) / diff;
+
+	//switch (currentKF.type)
+	//{
+	//case EaseIn:
+	//	ratio = glm::sineEaseIn(ratio);
+	//	break;
+	//case EaseOut:
+	//	ratio = glm::sineEaseOut(ratio);
+	//	break;
+	//case EaseInOut:
+	//	ratio = glm::sineEaseInOut(ratio);
+	//	break;
+	//case None:
+	//	break;
+	//default:
+	//	break;
+	//}
 
 	if (ratio < 0.0f) ratio = 0.0f;
 	if (ratio > 1.0f) ratio = 1.0f;
@@ -572,17 +590,27 @@ glm::vec3 AnimationManager::GetAnimationScale(const AnimationData& animation, fl
 
 glm::quat AnimationManager::GetAnimationRotation(const AnimationData& animation, float time)
 {
-	int currentRotatationKFIndex = FindRotationKeyIndex(animation, time);
-	if ((animation.RotationKeyFrames.size() == 1) || (currentRotatationKFIndex == animation.RotationKeyFrames.size() - 1))
-	{
-		return animation.RotationKeyFrames[currentRotatationKFIndex].Rotation;
-	}
+	if (animation.RotationKeyFrames.size() == 1)
+		return animation.RotationKeyFrames[0].Rotation;
 
+	int currentRotatationKFIndex = FindRotationKeyIndex(animation, time);
 	int nextRotatationKFIndex = currentRotatationKFIndex + 1;
 	RotationKeyFrame currentKF = animation.RotationKeyFrames[currentRotatationKFIndex];
 	RotationKeyFrame nextKF = animation.RotationKeyFrames[nextRotatationKFIndex];
 	float diff = nextKF.time - currentKF.time;
 	float ratio = (time - currentKF.time) / diff;
+
+	//int currentRotatationKFIndex = FindRotationKeyIndex(animation, time);
+	//if ((animation.RotationKeyFrames.size() == 1) || (currentRotatationKFIndex == animation.RotationKeyFrames.size() - 1))
+	//{
+	//	return animation.RotationKeyFrames[currentRotatationKFIndex].Rotation;
+	//}
+
+	//int nextRotatationKFIndex = currentRotatationKFIndex + 1;
+	//RotationKeyFrame currentKF = animation.RotationKeyFrames[currentRotatationKFIndex];
+	//RotationKeyFrame nextKF = animation.RotationKeyFrames[nextRotatationKFIndex];
+	//float diff = nextKF.time - currentKF.time;
+	//float ratio = (time - currentKF.time) / diff;
 
 	if (ratio < 0.0f) ratio = 0.0f;
 	if (ratio > 1.0f) ratio = 1.0f;
