@@ -3,8 +3,8 @@
 layout (location = 0) in vec4 vPosition ;
 layout (location = 1) in vec4 vUVx2;
 layout (location = 2) in vec4 vNormal ;			
-layout (location = 3) in vec4 vBoneID;
-layout (location = 4) in vec4 vBoneWeight;
+layout (location = 3) in vec4 vBoneWeight;
+layout (location = 4) in vec4 vBoneID;
 layout (location = 5) in vec4 vTangent;
 layout (location = 6) in vec4 vBiNormal;
 layout (location = 7) in vec4 vColour ;
@@ -27,8 +27,8 @@ uniform mat4 mProjection;
 uniform float time;
 uniform bool bMovingTexture;
 
-uniform mat4 BoneMatrices[30];
-uniform mat4 BoneRotationMatrices[30];
+uniform mat4 BoneMatrices[100];
+uniform mat4 BoneRotationMatrices[100];
 uniform bool hasBone;
 
 void main()
@@ -44,7 +44,9 @@ void main()
 	    boneTransform += BoneMatrices[int(vBoneID[2])] * vBoneWeight[2];
 	    boneTransform += BoneMatrices[int(vBoneID[3])] * vBoneWeight[3];
 	    vec4 position = boneTransform * vPosition;
-
+        //position = vec4(vertPosition,1);
+        //gl_Position = mMVP * position;
+        //fVertWorldLocation = (mModel * vec4(position.xyz,1.0f));
         gl_Position = mMVP * vec4(position.xyz, 1.0f);
         fVertWorldLocation.xyz = (mModel * vec4(position.xyz, 1.0f)).xyz;
 	    fVertWorldLocation.w = 1.0f;
@@ -52,6 +54,7 @@ void main()
     else
     {
         gl_Position = mMVP * vec4(vertPosition, 1.0); 
+       // gl_Position = mMVP * vec4(0,0,0, 1.0); 
 
         fVertWorldLocation.xyz = (mModel * vec4(vertPosition, 1.0f)).xyz;
 	    fVertWorldLocation.w = 1.0f;

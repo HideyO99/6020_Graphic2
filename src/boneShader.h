@@ -3,7 +3,7 @@
 #include "Shader/cShaderManager.h"
 #include <sstream>
 
-const int NUM_BONES = 30;
+const int NUM_BONES = 100;
 struct BoneShader {
     GLuint BoneMatrices[NUM_BONES];
     GLuint BoneRotationMatrices[NUM_BONES];

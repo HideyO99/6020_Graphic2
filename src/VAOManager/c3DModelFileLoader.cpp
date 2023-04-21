@@ -141,14 +141,14 @@ bool c3DModelFileLoader::loadFBXFile(std::string filename, std::string meshName,
 {
 	const aiScene* scene = m_Importer.ReadFile(filename, ASSIMP_LOAD_FLAGS);
 	std::string error = m_Importer.GetErrorString();
-	aiNode* node = scene->mRootNode;
-	for (int i = 0; i < node->mNumChildren; i++)
-	{
-		aiNode* child = node->mChildren[i];
+	//aiNode* node = scene->mRootNode;
+	//for (int i = 0; i < node->mNumChildren; i++)
+	//{
+	//	aiNode* child = node->mChildren[i];
 
-		//Find channel data from our node name:
-		child->mName;
-	}
+	//	//Find channel data from our node name:
+	//	child->mName;
+	//}
 
 	if (scene == 0 || !scene->HasMeshes())
 	{
@@ -190,35 +190,35 @@ bool c3DModelFileLoader::loadFBXFile(std::string filename, std::string meshName,
 		cMeshObj* meshObj = new cMeshObj();
 		
 		CharacterAnimationData animationData(scene);
-		for (int i = 0; i < scene->mNumMeshes; i++)
+		//for (int i = 0; i < scene->mNumMeshes; i++)
 		{
 			
 			cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
-			aiMesh* mesh = scene->mMeshes[i];
+			aiMesh* mesh = scene->mMeshes[1];
 			aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
 			aiString texturePath;
 			loadMesh(mesh, modelDrawInfo, meshObj, animationData);
-			if (i == 0)
+			//if (i == 0)
 			{
 				meshObj->instanceName = meshName;
-				modelDrawInfo->meshName = meshName;
+				modelDrawInfo->meshName = mesh->mName.data; //meshName;
 				modelDrawInfo->CalculateExtents();
 				modelDrawInfo->shaderID = shaderProgramID;
 				p_vecMotoDrawInfo_ReadyToSendToGPU->push_back(*modelDrawInfo);
 				//loadModelToVAO(i_mapModel->first, modelDrawInfo, shaderProgramID);
 			}
-			else
-			{
-				cMeshObj* childMeshObj = new cMeshObj();
-				childMeshObj->instanceName = mesh->mName.C_Str();
-				childMeshObj->meshName = mesh->mName.C_Str();
-				meshObj->vecChildMesh.push_back(childMeshObj);
-				modelDrawInfo->meshName = meshName;
-				modelDrawInfo->CalculateExtents();
-				modelDrawInfo->shaderID = shaderProgramID;
-				p_vecMotoDrawInfo_ReadyToSendToGPU->push_back(*modelDrawInfo);
-				//loadModelToVAO(mesh->mName.C_Str(), modelDrawInfo, shaderProgramID);
-			}
+			//else
+			//{
+			//	cMeshObj* childMeshObj = new cMeshObj();
+			//	childMeshObj->instanceName = mesh->mName.C_Str();
+			//	childMeshObj->meshName = mesh->mName.C_Str();
+			//	meshObj->vecChildMesh.push_back(childMeshObj);
+			//	modelDrawInfo->meshName = meshName;
+			//	modelDrawInfo->CalculateExtents();
+			//	modelDrawInfo->shaderID = shaderProgramID;
+			//	p_vecMotoDrawInfo_ReadyToSendToGPU->push_back(*modelDrawInfo);
+			//	//loadModelToVAO(mesh->mName.C_Str(), modelDrawInfo, shaderProgramID);
+			//}
 			if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath, NULL, NULL, NULL, NULL, NULL) == aiReturn_SUCCESS)
 			{
 				std::string tmp = texturePath.data;
@@ -241,7 +241,7 @@ bool c3DModelFileLoader::loadFBXFile(std::string filename, std::string meshName,
 
 		}
 		//mapModeltoMultiMesh.emplace(i_mapModel->first, vecModelDraw);
-
+		meshObj->CharacterData = &animationData;
 
 		return true;
 	}

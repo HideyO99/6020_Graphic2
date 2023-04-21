@@ -524,8 +524,12 @@ glm::vec3 AnimationManager::GetAnimationPosition(const AnimationData& animation,
 	default:
 		break;
 	}
-
-	return glm::mix(currentKF.Pos, nextKF.Pos, ratio);
+	if (ratio < 0.f) ratio = 0.f;
+	if (ratio > 0.f) ratio = 1.f;
+	
+	glm::vec3 result = (nextKF.Pos - currentKF.Pos) * ratio + currentKF.Pos;
+	//return glm::mix(currentKF.Pos, nextKF.Pos, ratio);
+	return result;
 }
 
 glm::vec3 AnimationManager::GetAnimationScale(const AnimationData& animation, float time)
@@ -559,7 +563,11 @@ glm::vec3 AnimationManager::GetAnimationScale(const AnimationData& animation, fl
 		break;
 	}
 
-	return glm::mix(currentKF.Scale, nextKF.Scale, ratio);
+	if (ratio < 0.0f) ratio = 0.0f;
+	if (ratio > 1.0f) ratio = 1.0f;
+	glm::vec3 result = (nextKF.Scale - currentKF.Scale) * ratio + currentKF.Scale;
+	//return glm::mix(currentKF.Scale, nextKF.Scale, ratio);
+	return result;
 }
 
 glm::quat AnimationManager::GetAnimationRotation(const AnimationData& animation, float time)

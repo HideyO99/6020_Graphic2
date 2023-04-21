@@ -53,6 +53,8 @@ public:
 	glm::mat4 BoneRotationMatrices[66];
 
 	cAnimation Animation;
+	CharacterAnimationData* CharacterData;
+
 
 	std::vector<BoneInfo> boneInfoVec;
 	std::map<std::string, int> boneNameToIdMap;

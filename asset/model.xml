@@ -27,7 +27,7 @@
 	
 </PLYMODEL>
 <FBXMODEL>
-	<model name="boss">asset/model/Zombie Idle.fbx
+	<model name="boss">asset/model/MremirehODesbiens@asciiIdel.fbx
 		<modelInstance>boss<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
 	</model>
 </FBXMODEL>

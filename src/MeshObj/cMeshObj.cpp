@@ -32,6 +32,7 @@ cMeshObj::cMeshObj()
 #endif
 
 	this->hasBone = false;
+	this->CharacterData = nullptr;
 }
 
 cMeshObj::~cMeshObj()

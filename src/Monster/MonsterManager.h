@@ -5,7 +5,7 @@
 #include "Monster.h"
 #include "../VAOManager/cVAOManager.h"
 #include "../Shader/cShaderManager.h"
-#define NUMMONSTER 2
+#define NUMMONSTER 1
 class MonsterManager
 {
 public:
@@ -14,7 +14,7 @@ public:
 
 	void init(cVAOManager* vao, cMeshObj* mesh, cShaderManager* shader);
 	void createMonster(int id);
-	void update();
+	void update(float elapsed);
 	void render();
 
 	void createThread();

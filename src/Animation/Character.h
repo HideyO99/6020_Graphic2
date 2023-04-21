@@ -92,6 +92,7 @@ public:
 
 	// Render
 	Model* GetModel(int index = 0);
+	std::string getName() { return m_Name; }
 
 	bool UseAssimp;
 

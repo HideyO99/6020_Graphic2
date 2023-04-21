@@ -3,6 +3,7 @@
 #include "Light/cLightManager.h"
 #include "Texture/cTextureManager.h"
 #include "boneShader.h"
+#include "MeshObj/Model.h"
 
 extern cLightManager* g_pTheLightManager;
 extern cTextureManager* g_pTextureManager;
@@ -158,6 +159,7 @@ void drawObj(cMeshObj* pCurrentMeshObject, glm::mat4x4 mat_PARENT_Model, cShader
 
     if (pCurrentMeshObject->hasBone)
     {
+        pShaderManager->setShaderUniform1f("hasBone", (GLfloat)GL_TRUE);
         for (int i = 0; i < pCurrentMeshObject->BoneModelMatrices.size(); i++)
         {
             glUniformMatrix4fv(gBoneShader.BoneMatrices[i], 1, GL_FALSE, glm::value_ptr(pCurrentMeshObject->BoneModelMatrices[i]));
@@ -306,5 +308,9 @@ void drawObj(cMeshObj* pCurrentMeshObject, glm::mat4x4 mat_PARENT_Model, cShader
     {
         cMeshObj* pCurrentChildMeshObject = *itCurrentMesh;
         drawObj(pCurrentChildMeshObject, matModel, pShaderManager, pVAOManager);
+    }
+    if (pCurrentMeshObject->hasBone)
+    {
+        pShaderManager->setShaderUniform1f("hasBone", (GLfloat)GL_FALSE);
     }
 }

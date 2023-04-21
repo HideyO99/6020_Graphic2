@@ -15,11 +15,12 @@ MonsterManager::~MonsterManager()
 
 void MonsterManager::init(cVAOManager* vao, cMeshObj* mesh, cShaderManager* shader)
 {
-	const char* ANIMATION1 = "asset/model/Zombie Agonizing.fbx";
-	const char* ANIMATION2 = "asset/model/Zombie Walk.fbx";
-	const char* ANIMATION3 = "asset/model/Zombie Attack.fbx";
-	const char* ANIMATION4 = "asset/model/Zombie Dying.fbx";
-	std::string charFBX = "asset/model/zero.fbx";
+	const char* ANIMATION1 = "asset/model/MremirehODesbiens@Walk.fbx";
+	//const char* ANIMATION2 = "asset/model/Zombie Walk.fbx";
+	//const char* ANIMATION3 = "asset/model/Zombie Attack.fbx";
+	//const char* ANIMATION4 = "asset/model/Zombie Dying.fbx";
+	//std::string charFBX = "asset/model/MremirehODesbiens@ZombieIdle.fbx";
+	std::string charFBX = "asset/model/MremirehODesbiens@asciiIdel.fbx";
 
 
 	vecMonster.clear();
@@ -30,10 +31,10 @@ void MonsterManager::init(cVAOManager* vao, cMeshObj* mesh, cShaderManager* shad
 	this->prototypeCharacter = new Character();
 	std::vector<std::string> animation;
 	animation.push_back(ANIMATION1);
-	animation.push_back(ANIMATION2);
-	animation.push_back(ANIMATION3);
-	animation.push_back(ANIMATION4);
-
+	//animation.push_back(ANIMATION2);
+	//animation.push_back(ANIMATION3);
+	//animation.push_back(ANIMATION4);
+	//this->prototypeCharacter.
 	this->prototypeCharacter->LoadCharacterFromAssimp(charFBX.c_str());
 	
 	for (int i = 0; i < animation.size(); i++)
@@ -69,20 +70,20 @@ void MonsterManager::createMonster(int id)
 	pMonster->meshObj = new cMeshObj();
 	pMonster->meshObj->bDoNotLight = true;
 	pMonster->meshObj->bUse_RGBA_colour = false;
-	pMonster->meshObj->meshName = this->meshObj->meshName;
+	pMonster->meshObj->meshName = this->prototypeCharacter->getName();
 	pMonster->meshObj->instanceName = std::to_string(id);
 
 	pMonster->meshObj->textures[0] = this->meshObj->textures[0];
 	pMonster->meshObj->textureRatios[0] = this->meshObj->textureRatios[0];
 	//pMonster->meshObj->scale = this->meshObj->scale;
-	pMonster->meshObj->scale = glm::vec3(10.f);
+	pMonster->meshObj->scale = glm::vec3(0.2f);
 	pMonster->charAnimate = this->prototypeCharacter;
 	pMonster->meshObj->Animation.IsCharacterAnimation = true;
 	pMonster->meshObj->Animation.AnimationTime = 0.f;
 	pMonster->meshObj->Animation.IsLooping = true;
 	pMonster->meshObj->Animation.IsPlaying = true;
 	pMonster->meshObj->Animation.Speed = 1.f;
-	pMonster->meshObj->position = glm::vec3(id*5, 4.f, -5.f);
+	pMonster->meshObj->position = glm::vec3(id*50, 4.f, -5.f);
 	pMonster->meshObj->hasBone = true;
 	pMonster->meshObj->Animation.AnimationType = "mixamo.com";
 
@@ -91,9 +92,13 @@ void MonsterManager::createMonster(int id)
 	this->vecMonster.push_back(pMonster);
 }
 
-void MonsterManager::update()
+void MonsterManager::update(float elapsed)
 {
-	startThread();
+	//startThread();
+	for (int i = 0; i < vecMonster.size(); i++)
+	{
+		vecMonster[i]->update(elapsed);
+	}
 	render();
 }
 

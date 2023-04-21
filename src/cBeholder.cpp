@@ -331,7 +331,7 @@ void cBeholder::attack(int enemyID)
 void cBeholder::dead()
 {
 	this->alive = false;
-	meshObj->scale = glm::vec3(1);
+	//meshObj->scale = glm::vec3(1);
 	meshObj->rotation = glm::vec3(HALFPI, PI, 0);
 }
 
@@ -348,7 +348,7 @@ void cBeholder::calWorldPos()
 	this->meshObj->position.x = cellXLocation;
 	this->meshObj->position.y = 3.f;
 	this->meshObj->position.z = cellYLocation;
-	this->meshObj->scale = glm::vec3(MESHTOWORLDSCALE);
+	//this->meshObj->scale = glm::vec3(MESHTOWORLDSCALE);
 }
 
 void cBeholder::update()

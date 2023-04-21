@@ -11,9 +11,9 @@ Model::~Model()
 
 Model::Model(const char* filepath)
 {
-	const aiScene* scene = m_AssimpImporter.ReadFile(filepath, ASSIMP_LOAD_FLAGS | aiProcess_ConvertToLeftHanded);
+	const aiScene* scene = m_AssimpImporter.ReadFile(filepath, aiProcess_GenNormals);
 
-	aiMesh* mesh = scene->mMeshes[0];
+	aiMesh* mesh = scene->mMeshes[1];
 
 	if (scene == 0 || !scene->HasMeshes())
 		return;

@@ -74,6 +74,7 @@ cMeshObj* g_MeshBoss = NULL;
 MazeManager* g_Maze = NULL;
 cBeholderManager* g_BeholderManager = NULL;
 MonsterManager* g_monsterManager = NULL;
+cVAOManager* g_pVAOManager = NULL;
 
 
 AnimationManager* g_pAnimationManager = NULL;
@@ -234,6 +235,7 @@ int main(void)
 
     //load model
     cVAOManager* pVAOManager = new cVAOManager();
+    g_pVAOManager = pVAOManager;
     ::g_pTextureManager = new cTextureManager();
 
     //result = pVAOManager->loadModelListAsync(MODEL_LIST_XML, shaderID);
@@ -269,6 +271,7 @@ int main(void)
     ::g_pTextureManager->create2DTextureFromFreeImgLib("Beholder_Base_color.bmp");
     ::g_pTextureManager->create2DTextureFromFreeImgLib("man_Packed0_Diffuse.png");
     ::g_pTextureManager->create2DTextureFromFreeImgLib("ply_tex_20308190_gacha.png");
+    ::g_pTextureManager->create2DTextureFromFreeImgLib("mremireh_body__diffuse.png");
 
     std::string load_texture_error = "";
     if (g_pTextureManager->createCubeTextureFromFreeImgLib("SpaceBox",
@@ -291,17 +294,20 @@ int main(void)
    result = pVAOManager->setDungeonTexture("floorA", "Dungeons_2_Texture_01_A.bmp");
 
   // result = pVAOManager->setTexture("boss", "Beholder_Base_color.bmp", 0);
-   result = pVAOManager->setTexture("boss", "ply_tex_20308190_gacha.png", 0);
+   result = pVAOManager->setTexture("boss", "mremireh_body__diffuse.png", 0);
 
     result = pVAOManager->setSkyBoxFlag("skybox",true);
     //full screen quad
     result = pVAOManager->setInstanceObjVisible("projecter1", false); 
     result = pVAOManager->setInstanceObjScale("projecter1", 0.03f);
+
     result = pVAOManager->setUseRGBColorFlag("projecter1", false);
     result = pVAOManager->setInstanceObjPosition("projecter1", glm::vec4(0.f));
 
 
+    result = pVAOManager->setInstanceObjVisible("boss", false); 
     result = pVAOManager->setInstanceObjPosition("boss", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
+    result = pVAOManager->setInstanceObjScale("boss", 0.2f);
     //result = pVAOManager->set("boss", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
     g_MeshBoss = pVAOManager->findMeshObjAddr("boss");
     result = pVAOManager->setInstanceObjLighting("boss", false);
@@ -330,7 +336,7 @@ int main(void)
     
     g_monsterManager = new MonsterManager();
     g_monsterManager->init(pVAOManager, g_MeshBoss, pShaderManager);
-    g_monsterManager->createThread();
+    //g_monsterManager->createThread();
 
     cTime::update();
 
@@ -844,7 +850,7 @@ void updateByFrameRate()
         double elapsedTime = g_CurrentTime - g_LastCall;
         g_LastCall = g_CurrentTime;
         g_BeholderManager->update();
-        g_monsterManager->update();
+        g_monsterManager->update(elapsedTime);
         //std::map<std::string, cObject*>::iterator obj_it = g_physicSys.mapOBJ.find("Player");
         //obj_it->second->position = ::g_cameraEye;
 

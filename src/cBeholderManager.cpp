@@ -69,7 +69,7 @@ void cBeholderManager::render()
 			this->vecBeholder[i]->meshObj->position.x = cellXLocation + offset;
 			this->vecBeholder[i]->meshObj->position.y = 4;
 			this->vecBeholder[i]->meshObj->position.z = cellYLocation + offset;
-			this->vecBeholder[i]->meshObj->scale = glm::vec3(20.f);
+			//this->vecBeholder[i]->meshObj->scale = glm::vec3(20.f);
 			drawObj(this->vecBeholder[i]->meshObj, matIdentity, pShaderManager, pVAOManager);
 		}
 	}

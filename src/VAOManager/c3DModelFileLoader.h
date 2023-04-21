@@ -12,11 +12,7 @@
 
 #define MODEL_LOAD_BUFFER 10000
 #define ASSIMP_LOAD_FLAGS	(aiProcess_Triangulate | \
-							 aiProcess_GenSmoothNormals | \
-							 aiProcess_PopulateArmatureData | \
-							 aiProcess_FixInfacingNormals | \
-							 aiProcess_LimitBoneWeights )
-							 //aiProcess_JoinIdenticalVertices)
+							 aiProcess_JoinIdenticalVertices)
 
 class c3DModelFileLoader
 {
