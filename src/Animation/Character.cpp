@@ -24,7 +24,7 @@ AssimpScene::~AssimpScene()
 
 Character::Character()
 {
-	m_IsPlaying = false;
+	m_IsPlaying = true;
 	m_AnimationSpeed = 1.f;
 	m_CurrentTimeInSeconds = 0.f;
 	m_CurrentAnimation = 0;

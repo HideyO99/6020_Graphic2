@@ -377,18 +377,21 @@ bool c3DModelFileLoader::loadMesh(const aiMesh* mesh, cModelDrawInfo* modelDrawI
 		modelDrawInfo->pVertices[i_vertices].x = mesh->mVertices[i_vertices].x;
 		modelDrawInfo->pVertices[i_vertices].y = mesh->mVertices[i_vertices].y;
 		modelDrawInfo->pVertices[i_vertices].z = mesh->mVertices[i_vertices].z;
+		modelDrawInfo->pVertices[i_vertices].w = 0;
 
 		if (mesh->HasNormals())
 		{
 			modelDrawInfo->pVertices[i_vertices].nx = mesh->mNormals[i_vertices].x;
 			modelDrawInfo->pVertices[i_vertices].ny = mesh->mNormals[i_vertices].y;
 			modelDrawInfo->pVertices[i_vertices].nz = mesh->mNormals[i_vertices].z;
+			modelDrawInfo->pVertices[i_vertices].nw = 0;
 		}
 		else
 		{
-			modelDrawInfo->pVertices[i_vertices].nx = 0;
+			modelDrawInfo->pVertices[i_vertices].nx = 1;
 			modelDrawInfo->pVertices[i_vertices].ny = 0;
 			modelDrawInfo->pVertices[i_vertices].nz = 0;
+			modelDrawInfo->pVertices[i_vertices].nw = 0;
 		}
 
 		if (mesh->HasVertexColors(i_vertices))
