@@ -1,5 +1,6 @@
 #pragma once
-#include "iBodyType.h"
+
+#include "BodyType.h"
 
 class iCollision
 {

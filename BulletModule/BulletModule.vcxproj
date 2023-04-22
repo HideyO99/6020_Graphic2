@@ -70,6 +70,16 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)dev\inc;$(SolutionDir)PhysicInterface\src;$(SolutionDir)dev\inc\bullet;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)dev\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SolutionDir)PhysicInterface\src;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)dev\inc;$(SolutionDir)PhysicInterface\src;$(SolutionDir)dev\inc\bullet;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)dev\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SolutionDir)PhysicInterface\src;$(SourcePath)</SourcePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -134,6 +144,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CharacterCTRL.h" />
+    <ClInclude Include="Conversion.h" />
+    <ClInclude Include="PhysicsFactory.h" />
+    <ClInclude Include="PhysicsWorld.h" />
+    <ClInclude Include="RigidBody.h" />
+    <ClInclude Include="Vehicle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CharacterCTRL.cpp" />
+    <ClCompile Include="Conversion.cpp" />
+    <ClCompile Include="PhysicsFactory.cpp" />
+    <ClCompile Include="PhysicsWorld.cpp" />
+    <ClCompile Include="RigidBody.cpp" />
+    <ClCompile Include="Vehicle.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

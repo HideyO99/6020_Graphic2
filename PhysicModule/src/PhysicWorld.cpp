@@ -179,7 +179,7 @@ void PhysicWorld::addRigid(iCollision* body)
 	}
 	else if (shape->getShapeType() == shapeType::Box)
 	{
-		iBoxShape* box = iBoxShape::cast(shape);
+		BoxShape* box = BoxShape::cast(shape);
 		float halfExtentX = box->getHalfExtents().x;
 		float halfExtentY = box->getHalfExtents().y;
 		float halfExtentZ = box->getHalfExtents().z;

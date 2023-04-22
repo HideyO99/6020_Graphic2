@@ -8,13 +8,11 @@ public:
 	virtual ~iCharacterCTRL() {}
 
 	virtual void SetWalkDirection(const Vec3& walkDirection) = 0;
-	virtual void SetPosition(const Vec3& position) = 0;
-	virtual void GetPosition(Vec3& position) const = 0;
-
-	virtual void SetRotation(const Quat& rotation) = 0;
-	virtual void GetRotation(Quat& rotation) const = 0;
-
-	virtual void SetGravity(const Vec3& gravity) = 0;
+	virtual void SetVelocityForTimeInterval(const glm::vec3& velocity, float timeInterval) = 0;
+	virtual void Warp(const glm::vec3& origin) = 0;
+	virtual bool CanJump() const = 0;
+	virtual void Jump(const glm::vec3& dir = glm::vec3(0, 0, 0)) = 0;
+	virtual bool OnGround() const = 0;
 
 protected:
 	iCharacterCTRL() {}

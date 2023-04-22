@@ -15,43 +15,37 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\iBodyType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\iBoxShape.h">
+    <ClInclude Include="src\BoxShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\iCollision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\iCollisionListener.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\iCylinderShape.h">
+    <ClInclude Include="src\CylinderShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\iPhysicFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\iPhysicWorld.h">
+    <ClInclude Include="src\iPhysicsWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\iPlaneShape.h">
+    <ClInclude Include="src\PlaneShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\iRigidBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\iRigidBodyDesc.h">
+    <ClInclude Include="src\RigidBodyDesc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\iShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\iSphereShape.h">
+    <ClInclude Include="src\SphereShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\iCapsuleShape.h">
+    <ClInclude Include="src\CapsuleShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\iCharacterCTRL.h">
@@ -60,24 +54,48 @@
     <ClInclude Include="src\global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\iCollisionBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BodyType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\iVehicle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\iConstraint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ConstraintType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ConeTwistConstraint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Point2PointConstraint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\iBoxShape.cpp">
+    <ClCompile Include="src\BoxShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\iCylinderShape.cpp">
+    <ClCompile Include="src\CylinderShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\iPlaneShape.cpp">
+    <ClCompile Include="src\PlaneShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\iRigidBodyDesc.cpp">
+    <ClCompile Include="src\SphereShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\iSphereShape.cpp">
+    <ClCompile Include="src\CapsuleShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\iCapsuleShape.cpp">
+    <ClCompile Include="src\ConeTwistConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Point2PointConstraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #pragma once
 #include "global.h"
 
-enum class shapeType
+enum class ShapeType
 {
 	Box,
 	Capsule,
@@ -15,21 +15,21 @@ class iShape
 {
 public:
 	virtual ~iShape() {}
-	shapeType getShapeType()
-	{
-		return m_shapeType;
-	}
 
-private:
-	shapeType m_shapeType;
-	iShape(const iShape&);
-	iShape& operator=(const iShape&) {}
+	ShapeType GetShapeType() const {
+		return m_ShapeType;
+	}
 
 protected:
-	iShape(shapeType type) 
-	{
-		m_shapeType = type;
-	}
+	iShape(ShapeType shapeType)
+		: m_ShapeType(shapeType)
+	{ }
+
+private:
+	ShapeType m_ShapeType;
+
+	iShape(const iShape&) = delete;
+	iShape& operator=(const iShape&) {}
 };
 
 class iConvexShape : public iShape
@@ -38,7 +38,7 @@ public:
 	virtual ~iConvexShape() {}
 
 protected:
-	iConvexShape(shapeType shapeType)
+	iConvexShape(ShapeType shapeType)
 		: iShape(shapeType)
 	{ }
 
@@ -53,7 +53,7 @@ public:
 	virtual ~iConcaveShape() {}
 
 protected:
-	iConcaveShape(shapeType shapeType)
+	iConcaveShape(ShapeType shapeType)
 		: iShape(shapeType)
 	{ }
 

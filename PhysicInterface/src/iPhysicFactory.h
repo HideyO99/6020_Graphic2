@@ -1,26 +1,29 @@
 #pragma once
-#include "iPhysicWorld.h"
+#include "iPhysicsWorld.h"
 #include "iRigidBody.h"
-#include "iRigidBodyDesc.h"
+#include "RigidBodyDesc.h"
 #include "iCharacterCTRL.h"
+#include "iVehicle.h"
+#include "global.h"
 
-class iPhysicFactory
+class iPhysicsFactory
 {
 public:
-	virtual ~iPhysicFactory() {}
+	virtual ~iPhysicsFactory() {}
 
-	virtual iPhysicWorld* createWorld() = 0;
-	virtual iRigidBody* createRigidBody(const iRigidBodyDesc& desc, iShape* shape) = 0;
-	virtual iCharacterCTRL* CreateCharacterController(iShape* shape, Vec3& pos, const Quat& rotate) = 0;
-
-private:
-	iPhysicFactory(const iPhysicFactory&) {}
-	iPhysicFactory& operator=(const iPhysicFactory&)
-	{
-		return *this;
-	}
+	virtual iPhysicsWorld* CreateWorld() = 0;
+	virtual iRigidBody* CreateRigidBody(const RigidBodyDesc& desc, iShape* shape) = 0;
+	virtual iVehicle* CreateVehicle(iRigidBody* chassis) = 0;
+	virtual iCharacterCTRL* CreateCharacterController(
+		iConvexShape* shape, float stepHeight, const Vec3& up) = 0;
 
 protected:
-	iPhysicFactory() {}
+	iPhysicsFactory() {}
+
+private:
+	iPhysicsFactory(const iPhysicsFactory&) {}
+	iPhysicsFactory& operator=(const iPhysicsFactory&) {
+		return *this;
+	}
 };
 

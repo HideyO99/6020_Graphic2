@@ -5,15 +5,15 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "6020_Glaphic2", "6020_Glaphic2.vcxproj", "{43E43F66-7C3B-452C-BF0F-F35B3B0396A4}"
 	ProjectSection(ProjectDependencies) = postProject
-		{ADB26234-11D6-4B72-A8F0-D9902D30F450} = {ADB26234-11D6-4B72-A8F0-D9902D30F450}
 		{BAA634EE-8E66-43D8-9950-89AB4DF50EEB} = {BAA634EE-8E66-43D8-9950-89AB4DF50EEB}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysicInterface", "PhysicInterface\PhysicInterface.vcxproj", "{BAA634EE-8E66-43D8-9950-89AB4DF50EEB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysicModule", "PhysicModule\PhysicModule.vcxproj", "{ADB26234-11D6-4B72-A8F0-D9902D30F450}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletModule", "BulletModule\BulletModule.vcxproj", "{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BAA634EE-8E66-43D8-9950-89AB4DF50EEB} = {BAA634EE-8E66-43D8-9950-89AB4DF50EEB}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,14 +39,6 @@ Global
 		{BAA634EE-8E66-43D8-9950-89AB4DF50EEB}.Release|x64.Build.0 = Release|x64
 		{BAA634EE-8E66-43D8-9950-89AB4DF50EEB}.Release|x86.ActiveCfg = Release|Win32
 		{BAA634EE-8E66-43D8-9950-89AB4DF50EEB}.Release|x86.Build.0 = Release|Win32
-		{ADB26234-11D6-4B72-A8F0-D9902D30F450}.Debug|x64.ActiveCfg = Debug|x64
-		{ADB26234-11D6-4B72-A8F0-D9902D30F450}.Debug|x64.Build.0 = Debug|x64
-		{ADB26234-11D6-4B72-A8F0-D9902D30F450}.Debug|x86.ActiveCfg = Debug|Win32
-		{ADB26234-11D6-4B72-A8F0-D9902D30F450}.Debug|x86.Build.0 = Debug|Win32
-		{ADB26234-11D6-4B72-A8F0-D9902D30F450}.Release|x64.ActiveCfg = Release|x64
-		{ADB26234-11D6-4B72-A8F0-D9902D30F450}.Release|x64.Build.0 = Release|x64
-		{ADB26234-11D6-4B72-A8F0-D9902D30F450}.Release|x86.ActiveCfg = Release|Win32
-		{ADB26234-11D6-4B72-A8F0-D9902D30F450}.Release|x86.Build.0 = Release|Win32
 		{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}.Debug|x64.ActiveCfg = Debug|x64
 		{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}.Debug|x64.Build.0 = Debug|x64
 		{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}.Debug|x86.ActiveCfg = Debug|Win32

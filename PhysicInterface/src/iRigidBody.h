@@ -1,42 +1,37 @@
 #pragma once
-#include "iCollision.h"
+#include "iCollisionBody.h"
 #include "iShape.h"
+#include <glm/gtx/quaternion.hpp>
 
-class iRigidBody : public iCollision
+class iRigidBody : public iCollisionBody
 {
 public:
 	virtual ~iRigidBody() {}
 
-	virtual Vec3 getPosition() = 0;
-	virtual void setPosition(const Vec3& pos) = 0;
+	virtual void GetPosition(Vec3& position) = 0;
+	virtual void SetPosition(const Vec3& position) = 0;
 
-	virtual Quat getRotation() = 0;
-	virtual void setRotation(const Quat& rotate) = 0;
+	virtual void GetRotation(glm::quat& rotation) = 0;
+	virtual void SetRotation(const glm::quat& rotation) = 0;
 
-	virtual void addForce(const Vec3& force) = 0;
-	virtual void addForceAP(const Vec3& force, const Vec3& at) = 0;
+	virtual void ApplyForce(const Vec3& force) = 0;
+	virtual void ApplyForceAtPoint(const Vec3& force, const Vec3& relativePoint) = 0;
 
-	virtual void addImpulse(const Vec3& impulse) = 0;
-	virtual void addImpulseAP(const Vec3& impulse, const Vec3& at) = 0;
+	virtual void ApplyImpulse(const Vec3& impulse) = 0;
+	virtual void ApplyImpulseAtPoint(const Vec3& impulse, const Vec3& relativePoint) = 0;
 
-	virtual void addTorque(const Vec3& torque) = 0;
-	virtual void addTorqueImpulse(const Vec3& torqueImpulse) = 0;
-	virtual Vec3 getPositionFromPhysX() = 0;
-	virtual Quat getRotationFromPhysX() = 0;
+	virtual void ApplyTorque(const Vec3& torque) = 0;
+	virtual void ApplyTorqueImpulse(const Vec3& torqueImpulse) = 0;
+
+	virtual void GetTransform(glm::mat4& transform) = 0;
+
 protected:
-	iRigidBody() : iCollision(BodyType::RigidBody)
-	{
-	}
+	iRigidBody() : iCollisionBody(BodyType::RigidBody) {}
 
 private:
-	iRigidBody(const iRigidBody&) :iCollision(BodyType::RigidBody)
-	{
-	}
-
-	iRigidBody& operator=(const iRigidBody&)
-	{
+	iRigidBody(const iRigidBody&) : iCollisionBody(BodyType::RigidBody) { }
+	iRigidBody& operator=(const iRigidBody&) {
 		return *this;
 	}
-
 };
 
