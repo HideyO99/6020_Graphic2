@@ -88,7 +88,10 @@ public:
 		m_PreviousAnimation = m_CurrentAnimation;
 		m_CurrentAnimation = animationId;
 		m_CurrentTimeInSeconds = 0;
+		m_IsPlaying = true;
 	}
+	void LoopEnable();
+	void LoopDisable();
 
 	// Render
 	Model* GetModel(int index = 0);
@@ -165,6 +168,7 @@ private:
 	double m_CurrentTimeInSeconds;
 
 	bool m_IsPlaying;
+	bool m_IsLoop;
 	double m_AnimationSpeed;
 
 	// Mesh

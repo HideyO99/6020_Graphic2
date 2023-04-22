@@ -2,12 +2,14 @@
 #include <glm\glm.hpp>
 #include <map>
 #include <vector>
+#include "../Animation/Character.h"
 
 enum StateType
 {
 	Idle,
 	Pursue,
-	Catch
+	Attack,
+	Dead
 };
 
 class State
@@ -19,7 +21,7 @@ public:
 	virtual void OnEnter() = 0;
 	virtual void OnExit() = 0;
 	virtual const char* C_Str() = 0;
-
+	Character* pcharacter;
 private:
 	StateType m_StateType;
 };
@@ -53,15 +55,29 @@ private:
 	unsigned int m_EnemyId;
 };
 
-class CatchState : public State
+class AttackState : public State
 {
 public:
-	CatchState(unsigned int enemyId);
-	virtual ~CatchState();
+	AttackState(unsigned int enemyId);
+	virtual ~AttackState();
 
 	virtual void OnEnter() override;
 	virtual void OnExit() override;
-	virtual const char* C_Str() override { return "CatchState"; }
+	virtual const char* C_Str() override { return "AttackState"; }
+
+private:
+	unsigned int m_EnemyId;
+};
+
+class DeadState : public State
+{
+public:
+	DeadState();
+	virtual ~DeadState();
+
+	virtual void OnEnter() override;
+	virtual void OnExit() override;
+	virtual const char* C_Str() override { return "DeadState"; }
 
 private:
 	unsigned int m_EnemyId;
@@ -73,10 +89,12 @@ public:
 	stateMachine();
 	~stateMachine();
 
+	void initState();
 	void AddTransition(StateType from, StateType to);
 	State* GetCurrentState();
 	void SetState(State* state);
 
+	Character* pcharacter;
 private:
 	std::map<StateType, std::vector<StateType>> m_ValidTransitions;
 

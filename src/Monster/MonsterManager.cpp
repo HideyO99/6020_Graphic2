@@ -15,10 +15,10 @@ MonsterManager::~MonsterManager()
 
 void MonsterManager::init(cVAOManager* vao, cMeshObj* mesh, cShaderManager* shader)
 {
-	const char* ANIMATION1 = "asset/model/MremirehODesbiens@Walk.fbx";
-	const char* ANIMATION2 = "asset/model/MremirehODesbiens@ZombieAttack.fbx";
-	const char* ANIMATION3 = "asset/model/MremirehODesbiens@Dying.fbx";
-	const char* ANIMATION4 = "asset/model/MremirehODesbiens@asciiIdel.fbx";
+	const char* ANIMATION1 = "asset/model/MremirehODesbiens@asciiIdel.fbx";
+	const char* ANIMATION2 = "asset/model/MremirehODesbiens@Walk.fbx";
+	const char* ANIMATION3 = "asset/model/MremirehODesbiens@ZombieAttack.fbx";
+	const char* ANIMATION4 = "asset/model/MremirehODesbiens@Dying.fbx";
 	//std::string charFBX = "asset/model/MremirehODesbiens@ZombieIdle.fbx";
 	std::string charFBX = "asset/model/MremirehODesbiens@asciiIdel.fbx";
 
@@ -89,8 +89,9 @@ void MonsterManager::createMonster(int id)
 	pMonster->meshObj->position = glm::vec3(id*50, 4.f, -5.f);
 	pMonster->meshObj->hasBone = true;
 	pMonster->meshObj->Animation.AnimationType = "mixamo.com";
-
-	pMonster->charAnimate->SetAnimation(0);
+	pMonster->task->pcharacter = pMonster->charAnimate;
+	pMonster->task->SetState(new IdleState(pMonster->meshObj->position, 0));
+	//pMonster->charAnimate->SetAnimation(0);
 	//g_pAnimationManager->animationOBJList.push_back(pMonster->meshObj);
 	this->vecMonster.push_back(pMonster);
 }

@@ -13,6 +13,8 @@ IdleState::~IdleState()
 
 void IdleState::OnEnter()
 {
+	pcharacter->LoopEnable();
+	pcharacter->SetAnimation(0);
 }
 
 void IdleState::OnExit()
@@ -31,38 +33,75 @@ PursueState::~PursueState()
 
 void PursueState::OnEnter()
 {
+	pcharacter->LoopEnable();
+	pcharacter->SetAnimation(1);
 }
 
 void PursueState::OnExit()
 {
 }
 
-CatchState::CatchState(unsigned int enemyId)
-	:State(Catch)
+AttackState::AttackState(unsigned int enemyId)
+	:State(Attack)
 {
 	m_EnemyId = enemyId;
 }
 
-CatchState::~CatchState()
+AttackState::~AttackState()
+{
+	
+}
+
+void AttackState::OnEnter()
+{
+	pcharacter->LoopEnable();
+	pcharacter->SetAnimation(2);
+}
+
+void AttackState::OnExit()
 {
 }
 
-void CatchState::OnEnter()
+DeadState::DeadState()
+	:State(Dead)
+{
+	
+}
+
+DeadState::~DeadState()
 {
 }
 
-void CatchState::OnExit()
+void DeadState::OnEnter()
 {
+	pcharacter->LoopDisable();
+	pcharacter->SetAnimation(3);
 }
 
+void DeadState::OnExit()
+{
+}
 stateMachine::stateMachine()
 {
 	m_CurrentState = nullptr;
-	m_CurrentState = new IdleState(glm::vec3(), 0);
+	pcharacter = nullptr;
+	//m_CurrentState = new IdleState(glm::vec3(), 0);
+	initState();
 }
 
 stateMachine::~stateMachine()
 {
+}
+
+void stateMachine::initState()
+{
+	AddTransition(Idle, Pursue);
+	AddTransition(Pursue, Idle);
+	AddTransition(Pursue, Attack);
+	AddTransition(Attack, Idle);
+	AddTransition(Idle, Dead);
+	AddTransition(Pursue, Dead);
+	AddTransition(Attack, Dead);
 }
 
 void stateMachine::AddTransition(StateType from, StateType to)
@@ -81,22 +120,27 @@ State* stateMachine::GetCurrentState()
 
 void stateMachine::SetState(State* state)
 {
+	state->pcharacter = this->pcharacter;
 	printf("StateMachine::SetState: %s\n", state->C_Str());
-	if (m_CurrentState->GetType() == state->GetType())
+	if (m_CurrentState != nullptr)
 	{
-		printf(" Already the current state!\n");
-		return;
+		if (m_CurrentState->GetType() == state->GetType())
+		{
+			printf(" Already the current state!\n");
+			return;
+		}
+		std::vector<StateType>& stateVec = m_ValidTransitions[m_CurrentState->GetType()];
+		if (std::find(stateVec.begin(), stateVec.end(), state->GetType()) == stateVec.end())
+		{
+			printf("!! Not a valid transition!\n");
+			// No valid transition was added from the curren state to the new state
+			return;
+		}
+		m_CurrentState->OnExit();
+		delete m_CurrentState;
 	}
-	std::vector<StateType>& stateVec = m_ValidTransitions[m_CurrentState->GetType()];
-	if (std::find(stateVec.begin(), stateVec.end(), state->GetType()) == stateVec.end())
-	{
-		printf("!! Not a valid transition!\n");
-		// No valid transition was added from the curren state to the new state
-		return;
-	}
-	m_CurrentState->OnExit();
-	delete m_CurrentState;
-
 	m_CurrentState = state;
+	state->pcharacter = this->pcharacter;
 	m_CurrentState->OnEnter();
 }
+

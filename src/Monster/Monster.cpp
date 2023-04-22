@@ -3,6 +3,8 @@
 Monster::Monster()
 {
 	alive = true;
+	task = new stateMachine();
+	
 }
 
 Monster::~Monster()
@@ -22,6 +24,7 @@ void Monster::calWorldPos()
 
 void Monster::ProcessMove()
 {
+	//task->SetState(new PursueState(0));
 }
 
 void Monster::rotate()
@@ -30,10 +33,10 @@ void Monster::rotate()
 
 void Monster::attack()
 {
-	charAnimate->SetAnimation(1);
+	task->SetState(new AttackState(0));
 }
 
 void Monster::dead()
 {
-	charAnimate->SetAnimation(2);
+	task->SetState(new DeadState());
 }
