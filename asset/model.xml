@@ -30,12 +30,12 @@
 	<model name="boss">asset/model/MremirehODesbiens@asciiIdel.fbx
 		<modelInstance>boss<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
 	</model>
-	<!-- <model name="chassis">asset/model/chassis.fbx
+	<model name="chassis">asset/model/chassis.fbx
 		<modelInstance>chassis<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
 	</model>
 	<model name="wheel">asset/model/wheel.fbx
 		<modelInstance>wheel<posX>0</posX><posZ>0</posZ><rotateY>0</rotateY></modelInstance>
-	</model> -->
+	</model>
 </FBXMODEL>
 <EYE_LOCATION>
 	<x>0</x>

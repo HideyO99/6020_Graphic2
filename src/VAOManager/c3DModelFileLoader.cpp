@@ -194,7 +194,16 @@ bool c3DModelFileLoader::loadFBXFile(std::string filename, std::string meshName,
 		{
 			
 			cModelDrawInfo* modelDrawInfo = new cModelDrawInfo();
-			aiMesh* mesh = scene->mMeshes[1];
+			aiMesh* mesh;
+			//workaround
+			if (scene->mNumMeshes > 1) 
+			{
+				mesh = scene->mMeshes[1];
+			}
+			else
+			{
+				mesh = scene->mMeshes[0];
+			}
 			aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
 			aiString texturePath;
 			loadMesh(mesh, modelDrawInfo, meshObj, animationData);

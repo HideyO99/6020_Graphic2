@@ -2,6 +2,7 @@
 #include "../Animation/Character.h"
 #include "../MeshObj/cMeshObj.h"
 #include "../AI/stateMachine.h"
+#include "../AI/cSteering.h"
 
 class Monster
 {
@@ -17,6 +18,7 @@ public:
 	Character* charAnimate;
 	cMeshObj* meshObj;
 	stateMachine* task;
+	cSteering* steering;
 	//MazeManager* mazeManager;
 	//std::vector<cBeholder*>* pVecBeholder;
 
