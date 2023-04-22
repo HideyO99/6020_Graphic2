@@ -335,7 +335,7 @@ int main(void)
     //light4Setup();
 
     
-    createAnimation(pVAOManager);
+    //createAnimation(pVAOManager);
 
     g_Maze = new MazeManager();
     g_Maze->CreateMaze(pVAOManager);
@@ -345,9 +345,9 @@ int main(void)
     g_Maze->ViewColumnIndex = g_mazeViewColumnIndex;
     g_Maze->ViewSize = g_mazeViewSize;
     g_Maze->startThread();
-    g_BeholderManager = new cBeholderManager();
-    g_BeholderManager->init(g_Maze, pVAOManager, g_MeshBoss, pShaderManager);
-    g_BeholderManager->oneThread();
+    //g_BeholderManager = new cBeholderManager();
+    //g_BeholderManager->init(g_Maze, pVAOManager, g_MeshBoss, pShaderManager);
+    //g_BeholderManager->oneThread();
     
     g_monsterManager = new MonsterManager();
     g_monsterManager->init(g_Maze, pVAOManager, g_MeshBoss, pShaderManager);
@@ -865,7 +865,7 @@ void updateByFrameRate()
     {
         double elapsedTime = g_CurrentTime - g_LastCall;
         g_LastCall = g_CurrentTime;
-        g_BeholderManager->update();
+        //g_BeholderManager->update();
         g_monsterManager->update(elapsedTime);
         //std::map<std::string, cObject*>::iterator obj_it = g_physicSys.mapOBJ.find("Player");
         //obj_it->second->position = ::g_cameraEye;
@@ -876,7 +876,7 @@ void updateByFrameRate()
 
         //obj_it->second->update();
 
-        g_pAnimationManager->AnimationUpdate(g_PlayAnimation, elapsedTime);
+        //g_pAnimationManager->AnimationUpdate(g_PlayAnimation, elapsedTime);
         //g_physicSys.updateSystem(elapsedTime);
     }
     //if (g_CurrentTime >= g_LastCall5s + SEC_UPDATE)

@@ -16,6 +16,16 @@ void Monster::update(double dt)
 	//charAnimate->SetAnimation(0);
 	printf("Character: %d , ", this->id);
 	this->charAnimate->UpdateTransforms(this->meshObj->BoneModelMatrices, this->meshObj->GlobalTransformations, dt);
+	
+	if (task->GetCurrentState()->GetType() == Dead)
+	{
+		return;
+	}
+
+	if (task->GetCurrentState()->GetType() != Pursue)
+	{
+		//task->SetState(new PursueState(0));
+	}
 }
 
 void Monster::calWorldPos()
@@ -36,11 +46,12 @@ void Monster::calWorldPos()
 
 void Monster::ProcessMove()
 {
-	//task->SetState(new PursueState(0));
+	task->SetState(new PursueState(0));
 }
 
 void Monster::rotate()
 {
+	task->SetState(new IdleState(glm::vec3(0),1));
 }
 
 void Monster::attack()
