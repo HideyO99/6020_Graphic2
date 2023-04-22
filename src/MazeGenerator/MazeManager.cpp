@@ -65,6 +65,7 @@ void MazeManager::CreateMaze(cVAOManager* pVAOManager)
 	//maker.GenerateMaze(MAZESIZE,MAZESIZE);
 	//maker.getMemoryUse(memInfoStart);	
 	maker->GenerateMaze(MAZESIZE,MAZESIZE);
+	maker->reduceMaze2();
 	maker->getMemoryUse(memInfoStart);
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
@@ -322,12 +323,12 @@ bool MazeManager::getMazeAtPos(int row, int col)
 		return true;
 	}
 
-	return maker->maze[row][col][0];
+	return maker->maze2[row][col][0];
 }
 
 void MazeManager::setBeholderAtPos(int row, int col, bool available, int id)
 {
-	maker->maze[row][col][1] = available;
+	maker->maze2[row][col][1] = available;
 	if (!available)
 	{
 		beholderMap[row][col] = id;
@@ -346,7 +347,7 @@ bool MazeManager::getPos(int row, int col)
 		return true;
 	}
 
-	return maker->maze[row][col][1];
+	return maker->maze2[row][col][1];
 }
 
 void MazeManager::startThread()

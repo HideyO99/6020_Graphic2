@@ -76,7 +76,7 @@ void MonsterManager::createMonster(int id)
 	pMonster->meshObj->textures[0] = this->meshObj->textures[0];
 	pMonster->meshObj->textureRatios[0] = this->meshObj->textureRatios[0];
 	//pMonster->meshObj->scale = this->meshObj->scale;
-	pMonster->meshObj->scale = glm::vec3(0.2f);
+	pMonster->meshObj->scale = glm::vec3(0.05f);
 	//pMonster->charAnimate = this->prototypeCharacter;
 	pMonster->charAnimate = new Character();
 	*pMonster->charAnimate = *(this->prototypeCharacter);
