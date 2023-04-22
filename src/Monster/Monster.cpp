@@ -20,6 +20,18 @@ void Monster::update(double dt)
 
 void Monster::calWorldPos()
 {
+	const float TILESIZE = 10.0f;  // How big each tile is in the world (each grid is 10 units)
+	const float offset = -5.0f;  // 
+	// Each mesh is 500x500 but that's too big
+	const float MESHTOWORLDSCALE = TILESIZE / 5.f;
+
+	float cellXLocation = ((PosCol * TILESIZE) + offset);
+	float cellYLocation = ((PosRow * TILESIZE) + offset);
+	//todo
+	this->meshObj->position.x = cellXLocation;
+	this->meshObj->position.y = 3.f;
+	this->meshObj->position.z = cellYLocation;
+	//this->meshObj->scale = glm::vec3(MESHTOWORLDSCALE);
 }
 
 void Monster::ProcessMove()

@@ -8,6 +8,7 @@
 #include "../Light/cLightManager.h"
 #include <vector>
 #include "../cBeholder.h"
+#include "../Monster/Monster.h"
 
 class cGUI
 {
@@ -26,6 +27,6 @@ public:
 	cLight* pLight[MAX_LIGHT_SOURCE];
 	glm::vec3* camPos;
 	glm::vec3* camTar;
-	std::vector<cBeholder*>* vecBeholder;
+	std::vector<Monster*>* vecMonster;
 };
 

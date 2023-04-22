@@ -332,10 +332,10 @@ int main(void)
     g_BeholderManager = new cBeholderManager();
     g_BeholderManager->init(g_Maze, pVAOManager, g_MeshBoss, pShaderManager);
     g_BeholderManager->oneThread();
-    gui_->vecBeholder = &g_BeholderManager->vecBeholder;
     
     g_monsterManager = new MonsterManager();
-    g_monsterManager->init(pVAOManager, g_MeshBoss, pShaderManager);
+    g_monsterManager->init(g_Maze, pVAOManager, g_MeshBoss, pShaderManager);
+    gui_->vecMonster = &g_monsterManager->vecMonster;
     //g_monsterManager->createThread();
 
     cTime::update();

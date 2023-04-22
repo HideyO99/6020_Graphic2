@@ -251,9 +251,9 @@ bool cGUI::ImGUI_render2()
                 ImGui::Text("%d", g_mazeViewColumnIndex);
                 ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%d", g_mazeViewSize);
-                for (int row = 0; row < vecBeholder->size(); row++)
+                for (int row = 0; row < vecMonster->size(); row++)
                 {
-                    cBeholder* currentMonster = vecBeholder->at(row);
+                    Monster* currentMonster = vecMonster->at(row);
                     ImGui::TableNextRow();
                     for (int column = 0; column < 4; column++)
                     {
@@ -274,10 +274,10 @@ bool cGUI::ImGUI_render2()
                         }
                         if (column == 3)
                         {
-                            if(currentMonster->alive)
+                            //if(currentMonster->alive)
                                 ImGui::Text("Alive");
-                            else
-                                ImGui::Text("Dead");
+                            //else
+                                //ImGui::Text("Dead");
                         }
                     }
                 }
