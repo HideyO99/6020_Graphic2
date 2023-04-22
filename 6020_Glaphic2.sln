@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysicInterface", "PhysicIn
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysicModule", "PhysicModule\PhysicModule.vcxproj", "{ADB26234-11D6-4B72-A8F0-D9902D30F450}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletModule", "BulletModule\BulletModule.vcxproj", "{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -45,6 +47,14 @@ Global
 		{ADB26234-11D6-4B72-A8F0-D9902D30F450}.Release|x64.Build.0 = Release|x64
 		{ADB26234-11D6-4B72-A8F0-D9902D30F450}.Release|x86.ActiveCfg = Release|Win32
 		{ADB26234-11D6-4B72-A8F0-D9902D30F450}.Release|x86.Build.0 = Release|Win32
+		{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}.Debug|x64.ActiveCfg = Debug|x64
+		{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}.Debug|x64.Build.0 = Debug|x64
+		{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}.Debug|x86.ActiveCfg = Debug|Win32
+		{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}.Debug|x86.Build.0 = Debug|Win32
+		{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}.Release|x64.ActiveCfg = Release|x64
+		{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}.Release|x64.Build.0 = Release|x64
+		{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}.Release|x86.ActiveCfg = Release|Win32
+		{4D929F59-7004-4B9A-8A30-C1DCA8F3AA06}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
