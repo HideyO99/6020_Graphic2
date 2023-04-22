@@ -10,7 +10,10 @@ public:
 
 	virtual iPhysicWorld* createWorld() override;
 	virtual iRigidBody* createRigidBody(const iRigidBodyDesc& desc, iShape* shape) override;
-	virtual iCharacterCTRL* CreateCharacterController(iConvexShape* shape, float stepHeight, const Vec3& up) override;
+	virtual iCharacterCTRL* CreateCharacterController(iShape* shape, Vec3& pos, const Quat& rotate) override;
 
+//private:
+//	iPhysicWorld* phyworld;
+//	iCharacterCTRL* charCTRL;
 };
 

@@ -92,10 +92,33 @@ void PhysicWorld::removeBody(iCollision* body)
 
 void PhysicWorld::AddCharacterController(iCharacterCTRL* characterController)
 {
+	if (characterController == nullptr)
+		return;
+	CharacterCTRL* character = (CharacterCTRL*)characterController;
+	m_CharacterControllers.push_back(character);
 }
 
 void PhysicWorld::RemoveCharacterController(iCharacterCTRL* characterController)
 {
+	std::map<iCharacterCTRL*, physx::PxController*>::iterator controllerIT = m_MapControllers.find(characterController);
+	if (controllerIT != m_MapControllers.end())
+	{
+		physx::PxController* pxController = controllerIT->second;
+
+		pxController->release();
+		m_MapControllers.erase(characterController);
+		for (int i = 0; i < m_CharacterControllers.size(); i++)
+		{
+			if (m_CharacterControllers[i] == characterController)
+			{
+				m_CharacterControllers.erase(m_CharacterControllers.begin() + i);
+				break;
+			}
+		}
+
+	}
+
+
 }
 
 void PhysicWorld::timeStep(float dt)
@@ -124,6 +147,21 @@ void PhysicWorld::resetWorld()
 		}
 		m_actor[i]->pActor->setGlobalPose(transform);
 	}
+}
+
+//physx::PxMaterial PhysicWorld::getMaterail()
+//{
+//	return m_Material;
+//}
+//
+//physx::PxControllerManager PhysicWorld::getControllerManager()
+//{
+//	return m_ControllerManager;
+//}
+
+void PhysicWorld::addControllerToMap(iCharacterCTRL* charCon, physx::PxController* phyCon)
+{
+	m_MapControllers.emplace(charCon, phyCon);
 }
 
 void PhysicWorld::addRigid(iCollision* body)

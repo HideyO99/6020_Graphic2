@@ -11,6 +11,7 @@ PhysicFactory::~PhysicFactory()
 
 iPhysicWorld* PhysicFactory::createWorld()
 {
+	/*phyworld = new PhysicWorld();*/
 	return new PhysicWorld();
 }
 
@@ -19,7 +20,9 @@ iRigidBody* PhysicFactory::createRigidBody(const iRigidBodyDesc& desc, iShape* s
 	return new RigidBody(desc, shape);
 }
 
-iCharacterCTRL* PhysicFactory::CreateCharacterController(iConvexShape* shape, float stepHeight, const Vec3& up)
+iCharacterCTRL* PhysicFactory::CreateCharacterController(iShape* shape, Vec3& pos, const Quat& rotate)
 {
-	return nullptr;
+	//charCTRL = new CharacterCTRL(shape, pos, rotate);
+	//charCTRL = this->phyworld;
+	return new CharacterCTRL(shape, pos, rotate);
 }

@@ -7,6 +7,7 @@
 #include "RigidBody.h"
 #include "CollisionHandler.h"
 #include <map>
+#include "CharacterCTRL.h"
 
 class PhysicWorld : public iPhysicWorld
 {
@@ -25,6 +26,13 @@ public:
 	virtual void addToCollisionListener(iCollisionListener* listener) override;
 	virtual void resetWorld() override;
 
+	//static physx::PxMaterial getMaterail();
+	//static physx::PxControllerManager getControllerManager();
+	static void addControllerToMap(iCharacterCTRL* charCon, physx::PxController* phyCon);
+
+	static physx::PxMaterial* m_Material;
+	static physx::PxControllerManager* m_ControllerManager;
+
 private:
 	//PhysX
 	physx::PxDefaultAllocator m_DefaultAllocatorCallback;
@@ -34,11 +42,13 @@ private:
 	physx::PxFoundation* m_Foundation = nullptr;
 	physx::PxPhysics* m_Physics = nullptr;
 	physx::PxScene* m_Scene = nullptr;
-	physx::PxMaterial* m_Material = nullptr;
+	//physx::PxMaterial* m_Material = nullptr;
 	physx::PxPvd* m_Pvd = nullptr;
 	physx::PxPvdSceneClient* m_PVDClient = nullptr;
+	static std::map<iCharacterCTRL*, physx::PxController*> m_MapControllers;
 
 	std::vector<RigidBody*> m_actor;
+	std::vector<CharacterCTRL*> m_CharacterControllers;
 	std::map<physx::PxRigidActor*, physx::PxTransform> m_mapTransform;
 
 	CollisionHandler* m_collisionHandler;

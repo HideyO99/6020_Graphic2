@@ -15,6 +15,7 @@ public:
 	virtual void GetRotation(Quat& rotation) const = 0;
 
 	virtual void SetGravity(const Vec3& gravity) = 0;
+
 protected:
 	iCharacterCTRL() {}
 

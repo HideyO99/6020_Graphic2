@@ -3,6 +3,7 @@
 #include <iShape.h>
 #include <global.h>
 #include <Physx/PxPhysicsAPI.h>
+//#include "PhysicWorld.h"
 
 
 class CharacterCTRL : public iCharacterCTRL
@@ -20,6 +21,7 @@ public:
 
     virtual void SetGravity(const Vec3& gravity) override;
 
+    //PhysicWorld* phyworld;
 private:
     physx::PxController* m_Controller;
     Vec3* m_Gravity;

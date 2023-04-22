@@ -11,7 +11,7 @@ public:
 
 	virtual iPhysicWorld* createWorld() = 0;
 	virtual iRigidBody* createRigidBody(const iRigidBodyDesc& desc, iShape* shape) = 0;
-	virtual iCharacterCTRL* CreateCharacterController(iConvexShape* shape, float stepHeight, const Vec3& up) = 0;
+	virtual iCharacterCTRL* CreateCharacterController(iShape* shape, Vec3& pos, const Quat& rotate) = 0;
 
 private:
 	iPhysicFactory(const iPhysicFactory&) {}
