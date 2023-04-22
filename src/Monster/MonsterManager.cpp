@@ -106,7 +106,10 @@ void MonsterManager::update(float elapsed)
 	//startThread();
 	for (int i = 0; i < vecMonster.size(); i++)
 	{
-		vecMonster[i]->update(elapsed);
+		if (isInSight(this->vecMonster[i]->PosRow, this->vecMonster[i]->PosCol))
+		{
+			vecMonster[i]->update(elapsed);
+		}
 	}
 	render();
 }

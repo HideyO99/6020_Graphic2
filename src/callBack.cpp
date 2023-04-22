@@ -126,6 +126,21 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         //toggleblur = false;
         g_monsterManager->vecMonster.at(0)->dead();
     }
+
+    if (key == GLFW_KEY_5 && action == GLFW_RELEASE)
+    {
+        //toggleRipple = !toggleRipple;
+        //toggleblur = false;
+        g_monsterManager->vecMonster.at(0)->rotate();
+    }
+
+    if (key == GLFW_KEY_6 && action == GLFW_RELEASE)
+    {
+        //toggleRipple = !toggleRipple;
+        //toggleblur = false;
+        g_monsterManager->vecMonster.at(0)->ProcessMove();
+    }
+
     if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
     {
         //::g_cameraEye = glm::vec3(-5.5f, -3.4f, 15.0f);
