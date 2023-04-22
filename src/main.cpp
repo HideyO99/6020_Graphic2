@@ -71,6 +71,8 @@ cFBO* g_FBO_02 = NULL;
 cFBO* g_FBO_03 = NULL;
 cFBO* g_FBO_04 = NULL;
 cMeshObj* g_MeshBoss = NULL;
+cMeshObj* g_MeshChassis = NULL;
+cMeshObj* g_MeshWheel = NULL;
 MazeManager* g_Maze = NULL;
 cBeholderManager* g_BeholderManager = NULL;
 MonsterManager* g_monsterManager = NULL;
@@ -311,6 +313,20 @@ int main(void)
     //result = pVAOManager->set("boss", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
     g_MeshBoss = pVAOManager->findMeshObjAddr("boss");
     result = pVAOManager->setInstanceObjLighting("boss", false);
+
+    result = pVAOManager->setTexture("chassis", "mremireh_body__diffuse.png", 0);
+    result = pVAOManager->setInstanceObjVisible("chassis", false);
+    result = pVAOManager->setInstanceObjPosition("chassis", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
+    result = pVAOManager->setInstanceObjScale("chassis", 0.2f);
+    g_MeshChassis = pVAOManager->findMeshObjAddr("chassis");
+    result = pVAOManager->setInstanceObjLighting("chassis", false);
+
+    result = pVAOManager->setTexture("wheel", "mremireh_body__diffuse.png", 0);
+    result = pVAOManager->setInstanceObjVisible("wheel", false);
+    result = pVAOManager->setInstanceObjPosition("wheel", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
+    result = pVAOManager->setInstanceObjScale("wheel", 0.2f);
+    g_MeshWheel = pVAOManager->findMeshObjAddr("wheel");
+    result = pVAOManager->setInstanceObjLighting("wheel", false);
 
     light0Setup(); // Dir light
     light1Setup(pVAOManager);// torch
