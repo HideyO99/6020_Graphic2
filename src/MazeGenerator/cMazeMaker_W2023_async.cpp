@@ -42,7 +42,7 @@ void cMazeMaker_W2023::GetMazeAreaSquare(unsigned int widthIndexCentre,
                 if ( ( actualColumnIndex > 0 ) && (actualColumnIndex < this->maze[actualRowIndex].size() ) )
                 {
                     // Column index is OK
-                    mazeRegion[rowIndex][columnIndex] = this->maze[actualRowIndex][actualColumnIndex][0];
+                    mazeRegion[rowIndex][columnIndex] = this->maze2[actualRowIndex][actualColumnIndex][0];
                 }
                 else
                 {
@@ -92,7 +92,6 @@ bool cMazeMaker_W2023::getMemoryUse(std::string& sMemoryInfo)
 
     return true;
 }
-
 
 
 bool cMazeMaker_W2023::getMemoryUse(sProcessMemoryCounters& memoryInfo)

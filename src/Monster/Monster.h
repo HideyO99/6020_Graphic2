@@ -1,6 +1,7 @@
 #pragma once
 #include "../Animation/Character.h"
 #include "../MeshObj/cMeshObj.h"
+#include "../AI/stateMachine.h"
 
 class Monster
 {
@@ -15,6 +16,7 @@ public:
 	bool alive;
 	Character* charAnimate;
 	cMeshObj* meshObj;
+	stateMachine* task;
 	//MazeManager* mazeManager;
 	//std::vector<cBeholder*>* pVecBeholder;
 

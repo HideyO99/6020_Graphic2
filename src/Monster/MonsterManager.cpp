@@ -13,17 +13,18 @@ MonsterManager::~MonsterManager()
 {
 }
 
-void MonsterManager::init(cVAOManager* vao, cMeshObj* mesh, cShaderManager* shader)
+void MonsterManager::init(MazeManager* maze, cVAOManager* vao, cMeshObj* mesh, cShaderManager* shader)
 {
-	const char* ANIMATION1 = "asset/model/MremirehODesbiens@Walk.fbx";
-	const char* ANIMATION2 = "asset/model/MremirehODesbiens@ZombieAttack.fbx";
-	const char* ANIMATION3 = "asset/model/MremirehODesbiens@Dying.fbx";
-	const char* ANIMATION4 = "asset/model/MremirehODesbiens@asciiIdel.fbx";
+	const char* ANIMATION1 = "asset/model/MremirehODesbiens@asciiIdel.fbx";
+	const char* ANIMATION2 = "asset/model/MremirehODesbiens@Walk.fbx";
+	const char* ANIMATION3 = "asset/model/MremirehODesbiens@ZombieAttack.fbx";
+	const char* ANIMATION4 = "asset/model/MremirehODesbiens@Dying.fbx";
 	//std::string charFBX = "asset/model/MremirehODesbiens@ZombieIdle.fbx";
 	std::string charFBX = "asset/model/MremirehODesbiens@asciiIdel.fbx";
 
 
 	vecMonster.clear();
+	this->m_mazeManager = maze;
 	this->pVAOManager = vao;
 	this->meshObj = mesh;
 	this->pShaderManager = shader;
@@ -58,15 +59,18 @@ void MonsterManager::init(cVAOManager* vao, cMeshObj* mesh, cShaderManager* shad
 
 void MonsterManager::createMonster(int id)
 {
-	//int row, col;
-	//do
-	//{
-	//	row = rand() % (MAZESIZE - 1);
-	//	col = rand() % (MAZESIZE - 1);
+	int row, col;
+	do
+	{
+		row = rand() % (MAZESIZE - 1);
+		col = rand() % (MAZESIZE - 1);
 
-	//} while (!isAvailable(row, col));
+	} while (!isAvailable(row, col));
+
 	Monster* pMonster = new Monster();
 	pMonster->id = id;
+	pMonster->PosRow = row;
+	pMonster->PosCol = col;
 	pMonster->meshObj = new cMeshObj();
 	pMonster->meshObj->bDoNotLight = true;
 	pMonster->meshObj->bUse_RGBA_colour = false;
@@ -76,7 +80,7 @@ void MonsterManager::createMonster(int id)
 	pMonster->meshObj->textures[0] = this->meshObj->textures[0];
 	pMonster->meshObj->textureRatios[0] = this->meshObj->textureRatios[0];
 	//pMonster->meshObj->scale = this->meshObj->scale;
-	pMonster->meshObj->scale = glm::vec3(0.2f);
+	pMonster->meshObj->scale = glm::vec3(0.05f);
 	//pMonster->charAnimate = this->prototypeCharacter;
 	pMonster->charAnimate = new Character();
 	*pMonster->charAnimate = *(this->prototypeCharacter);
@@ -86,11 +90,13 @@ void MonsterManager::createMonster(int id)
 	pMonster->meshObj->Animation.IsLooping = true;
 	pMonster->meshObj->Animation.IsPlaying = true;
 	pMonster->meshObj->Animation.Speed = 1.f;
-	pMonster->meshObj->position = glm::vec3(id*50, 4.f, -5.f);
+	//pMonster->meshObj->position = glm::vec3(id*50, 4.f, -5.f);
+	pMonster->calWorldPos();
 	pMonster->meshObj->hasBone = true;
 	pMonster->meshObj->Animation.AnimationType = "mixamo.com";
-
-	pMonster->charAnimate->SetAnimation(0);
+	pMonster->task->pcharacter = pMonster->charAnimate;
+	pMonster->task->SetState(new IdleState(pMonster->meshObj->position, 0));
+	//pMonster->charAnimate->SetAnimation(0);
 	//g_pAnimationManager->animationOBJList.push_back(pMonster->meshObj);
 	this->vecMonster.push_back(pMonster);
 }
@@ -110,11 +116,39 @@ void MonsterManager::render()
 	glm::mat4 matIdentity = glm::mat4(1.0f);
 	for (int i = 0; i < vecMonster.size(); i++)
 	{
-		drawObj(this->vecMonster[i]->meshObj, matIdentity, pShaderManager, pVAOManager);
+		if (isInSight(this->vecMonster[i]->PosRow, this->vecMonster[i]->PosCol))
+		{
+			const float TILESIZE = 10.0f;
+			const float offset = -5.0f;
+
+			float cellXLocation = ((this->vecMonster[i]->PosCol - int(m_mazeManager->ViewColumnIndex)) * TILESIZE);
+			float cellYLocation = ((this->vecMonster[i]->PosRow - int(m_mazeManager->ViewRowIndex)) * TILESIZE);
+
+			this->vecMonster[i]->meshObj->position.x = cellXLocation + offset;
+			this->vecMonster[i]->meshObj->position.y = 4;
+			this->vecMonster[i]->meshObj->position.z = cellYLocation + offset;
+			drawObj(this->vecMonster[i]->meshObj, matIdentity, pShaderManager, pVAOManager);
+		}
 	}
 }
 
+bool MonsterManager::isAvailable(int row, int col)
+{
+	if (m_mazeManager->getMazeAtPos(row, col))
+	{
+		return false;
+	}
 
+	for (int i = 0; i < vecMonster.size(); i++)
+	{
+		if (vecMonster[i]->PosCol == col && vecMonster[i]->PosRow == row)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
 
 void MonsterManager::startThread()
 {
@@ -123,7 +157,13 @@ void MonsterManager::startThread()
 
 bool MonsterManager::isInSight(int inputRow, int inputCol)
 {
-	return false;
+	int minRow = m_mazeManager->ViewRowIndex - m_mazeManager->ViewSize;
+	int maxRow = m_mazeManager->ViewRowIndex + m_mazeManager->ViewSize;
+	int minCol = m_mazeManager->ViewColumnIndex - m_mazeManager->ViewSize;
+	int maxCol = m_mazeManager->ViewColumnIndex + m_mazeManager->ViewSize;
+	bool result = (minRow <= inputRow) && (inputRow < maxRow) && (minCol <= inputCol) && (inputCol < maxCol);
+
+	return result;
 }
 
 struct sMonsterThreadData

@@ -157,7 +157,8 @@ bool cMazeMaker_W2023::GenerateMaze(unsigned int width, unsigned int height)
 			}
 		}
 	}
-
+	//int s = sizeof(maze);
+	//memcpy(&(this->maze), &(this->maze2), sizeof(maze) * this->maze.size());
 	return true;
 }
 
@@ -187,10 +188,12 @@ void cMazeMaker_W2023::m_initializeMaze(void)
 				std::vector< std::vector< bool > > new_row = { new_cell };
 
 				this->maze.push_back(new_row);
+				this->maze2.push_back(new_row);
 			}
 			else 
 			{
 				this->maze[a].push_back(new_cell);
+				this->maze2[a].push_back(new_cell);
 			}
 		}
 	}
@@ -278,5 +281,33 @@ void cMazeMaker_W2023::m_randomPoint(bool part)
 	this->maze[location[1]][location[0]][0] = false;
 	this->maze[location[1]][location[0]][1] = true;
 
+	this->maze2[location[1]][location[0]][0] = false;
+	this->maze2[location[1]][location[0]][1] = true;
 	return;
+}
+
+void cMazeMaker_W2023::reduceMaze2()
+{
+	for (unsigned int a = 0; a < this->maze2.size(); a++)
+	{
+		for (unsigned int b = 0; b < this->maze2[a].size(); b++)
+		{
+			if (a==1||a== this->maze2.size()-1 || b==1||b== this->maze2[a].size()-1)
+			{
+				this->maze2[a][b][0] = true;
+			}
+			else
+			{
+				if (rand() % 10 == 0)
+				{
+					this->maze2[a][b][0] = true;
+				}
+				else
+				{
+					this->maze2[a][b][0] = false;
+				}
+			}
+
+		}	
+	}
 }

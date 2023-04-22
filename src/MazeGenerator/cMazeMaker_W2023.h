@@ -38,7 +38,7 @@ public:
 	//		this->maze[a][b][0] = true ---> a wall
 	// 		this->maze[a][b][0] = false --> not a wall (a hallway or whatever)
 	std::vector< std::vector< std::vector< bool > > > maze;
-
+	std::vector< std::vector< std::vector< bool > > > maze2; // reduce version
 
 	// This is bascially a duplicate of _PROCESS_MEMORY_COUNTERS
 	struct sProcessMemoryCounters
@@ -58,6 +58,8 @@ public:
 	// returns a summary of the memory used by process
 	bool getMemoryUse(sProcessMemoryCounters &memoryInfo);
 	bool getMemoryUse(std::string &sMemoryInfo);
+
+	void reduceMaze2();
 
 private:
 	int m_maze_size[2];

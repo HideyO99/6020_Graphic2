@@ -25,6 +25,7 @@ AssimpScene::~AssimpScene()
 Character::Character()
 {
 	m_IsPlaying = true;
+	m_IsLoop = true;
 	m_AnimationSpeed = 1.f;
 	m_CurrentTimeInSeconds = 0.f;
 	m_CurrentAnimation = 0;
@@ -89,6 +90,11 @@ void Character::UpdateTransforms(std::vector<glm::mat4>& transforms, std::vector
 	if (m_IsPlaying && m_AnimationSpeed != 0.0f)
 	{
 		m_CurrentTimeInSeconds += dt * m_AnimationSpeed;
+		if (m_CurrentTimeInSeconds > m_DurationInSeconds[m_CurrentAnimation] && !m_IsLoop)
+		{
+			m_IsPlaying = false;
+			return;
+		}
 		m_CurrentTimeInSeconds = fmod(m_CurrentTimeInSeconds, m_DurationInSeconds[m_CurrentAnimation]);
 
 		int keyFrameTime = (int)((m_CurrentTimeInSeconds / m_DurationInSeconds[m_CurrentAnimation]) *
@@ -107,6 +113,7 @@ void Character::UpdateTransforms(std::vector<glm::mat4>& transforms, std::vector
 
 		//printf("--------------------\n");
 		printf("Time: %.4f %d/%d\n", m_CurrentTimeInSeconds, keyFrameTime, (int)m_DurationInTicks[m_CurrentAnimation]);
+
 
 		if (m_UpdateMode == Kinematic)
 		{
@@ -134,7 +141,19 @@ void Character::UpdateTransforms(std::vector<glm::mat4>& transforms, std::vector
 			//	transforms[i] = bodyPartTransform; // * NodeTransform
 			//}
 		}
+
+
 	}
+}
+
+void Character::LoopEnable()
+{
+	m_IsLoop = true;
+}
+
+void Character::LoopDisable()
+{
+	m_IsLoop = false;
 }
 
 Model* Character::GetModel(int index)
