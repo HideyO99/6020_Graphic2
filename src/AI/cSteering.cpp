@@ -18,6 +18,7 @@ cSteering::cSteering(glm::vec3* pos, glm::vec3* dir, glm::vec3* v)
 void cSteering::Seek(glm::vec3 Target_Pos)
 {
 	*this->faceDir = Target_Pos - *this->position;
+	this->faceDir->y = this->position->y;
 	*this->faceDir = glm::normalize(*this->faceDir);
 	
 	//return *this->faceDir;

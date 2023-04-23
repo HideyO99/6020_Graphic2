@@ -92,6 +92,9 @@ void MonsterManager::createMonster(int id)
 	pMonster->meshObj->Animation.Speed = 1.f;
 	//pMonster->meshObj->position = glm::vec3(id*50, 4.f, -5.f);
 	pMonster->calWorldPos();
+	pMonster->steering = new cSteering(&(pMonster->meshObj->position), &(pMonster->dir),&(pMonster->velocity));
+	//pMonster->steering->position = &(pMonster->meshObj->position);
+
 	pMonster->meshObj->hasBone = true;
 	pMonster->meshObj->Animation.AnimationType = "mixamo.com";
 	pMonster->task->pcharacter = pMonster->charAnimate;
