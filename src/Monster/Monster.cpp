@@ -4,7 +4,9 @@ Monster::Monster()
 {
 	alive = true;
 	task = new stateMachine();
-	
+	velocity = glm::vec3(1, 0, 1);
+	dir = glm::vec3(0, 0, 1);
+	targetPos = glm::vec3(0);
 }
 
 Monster::~Monster()
@@ -22,9 +24,9 @@ void Monster::update(double dt)
 		return;
 	}
 
-	if (task->GetCurrentState()->GetType() != Pursue)
+	if (task->GetCurrentState()->GetType() == Pursue)
 	{
-		//task->SetState(new PursueState(0));
+		ProcessMove();
 	}
 }
 
@@ -33,7 +35,7 @@ void Monster::calWorldPos()
 	const float TILESIZE = 10.0f;  // How big each tile is in the world (each grid is 10 units)
 	const float offset = -5.0f;  // 
 	// Each mesh is 500x500 but that's too big
-	const float MESHTOWORLDSCALE = TILESIZE / 5.f;
+	//const float MESHTOWORLDSCALE = TILESIZE / 5.f;
 
 	float cellXLocation = ((PosCol * TILESIZE) + offset);
 	float cellYLocation = ((PosRow * TILESIZE) + offset);
@@ -44,9 +46,29 @@ void Monster::calWorldPos()
 	//this->meshObj->scale = glm::vec3(MESHTOWORLDSCALE);
 }
 
+void Monster::calRLPos()
+{
+	const float TILESIZE = 10.0f;  // How big each tile is in the world (each grid is 10 units)
+	const float offset = -5.0f;  // 
+	// Each mesh is 500x500 but that's too big
+	//const float MESHTOWORLDSCALE = TILESIZE / 5.f;
+
+	float cellXLocation = this->meshObj->position.x;
+	float cellYLocation = this->meshObj->position.z;
+
+	this->PosCol = (cellXLocation - offset) / TILESIZE;
+	this->PosRow = (cellYLocation - offset) / TILESIZE;
+
+}
+
 void Monster::ProcessMove()
 {
+	//float step = 0.1f;
 	task->SetState(new PursueState(0));
+	//steering->Seek(targetPos);
+	//meshObj->position += dir * step;
+	//meshObj->rotation.y = asin(dir.x);
+	//calRLPos();
 }
 
 void Monster::rotate()

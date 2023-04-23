@@ -15,6 +15,9 @@ public:
 	int PosRow;
 	int PosCol;
 	bool alive;
+	glm::vec3 dir;
+	glm::vec3 velocity;
+	glm::vec3 targetPos;
 	Character* charAnimate;
 	cMeshObj* meshObj;
 	stateMachine* task;
@@ -23,6 +26,7 @@ public:
 	//std::vector<cBeholder*>* pVecBeholder;
 
 	void calWorldPos();
+	void calRLPos();
 	void ProcessMove();
 	void rotate();
 	//void startThread();
