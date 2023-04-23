@@ -52,6 +52,9 @@
     <Filter Include="Monster">
       <UniqueIdentifier>{79fc23a5-1029-4c50-8e4a-d47ba8d6e72d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vehicle">
+      <UniqueIdentifier>{e292af94-abf2-4885-8419-3a9832c72c11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GUI\cGUI.cpp">
@@ -183,6 +186,15 @@
     <ClCompile Include="src\Monster\MonsterManager.cpp">
       <Filter>Monster</Filter>
     </ClCompile>
+    <ClCompile Include="src\AI\cSteering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AI\stateMachine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VehicleManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GUI\cGUI.h">
@@ -304,6 +316,18 @@
     </ClInclude>
     <ClInclude Include="src\Monster\MonsterManager.h">
       <Filter>Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AI\cSteering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AI\stateMachine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VehicleManager.h">
+      <Filter>Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vehicle.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iPhysicFactory.h>
+#include <iPhysicsFactory.h>
 #include <bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include <iPhysicsWorld.h>
 

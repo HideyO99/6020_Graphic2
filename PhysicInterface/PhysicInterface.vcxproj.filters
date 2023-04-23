@@ -24,7 +24,7 @@
     <ClInclude Include="src\CylinderShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\iPhysicFactory.h">
+    <ClInclude Include="src\iPhysicsFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\iPhysicsWorld.h">

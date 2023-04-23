@@ -142,7 +142,7 @@
     <ClInclude Include="src\iCollision.h" />
     <ClInclude Include="src\iConstraint.h" />
     <ClInclude Include="src\CylinderShape.h" />
-    <ClInclude Include="src\iPhysicFactory.h" />
+    <ClInclude Include="src\iPhysicsFactory.h" />
     <ClInclude Include="src\iPhysicsWorld.h" />
     <ClInclude Include="src\PlaneShape.h" />
     <ClInclude Include="src\iRigidBody.h" />

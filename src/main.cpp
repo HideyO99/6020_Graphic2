@@ -55,6 +55,7 @@ double g_LastCall;
 double g_LastCall5s;
 double g_CurrentTime;
 
+
 bool g_PlayAnimation = false;
 unsigned int g_AnimationSeq = 0;
 
@@ -314,14 +315,14 @@ int main(void)
     g_MeshBoss = pVAOManager->findMeshObjAddr("boss");
     result = pVAOManager->setInstanceObjLighting("boss", false);
 
-    result = pVAOManager->setTexture("chassis", "mremireh_body__diffuse.png", 0);
+    result = pVAOManager->setTexture("chassis", "pngwing.com.png", 0);
     result = pVAOManager->setInstanceObjVisible("chassis", false);
     result = pVAOManager->setInstanceObjPosition("chassis", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
     result = pVAOManager->setInstanceObjScale("chassis", 0.2f);
     g_MeshChassis = pVAOManager->findMeshObjAddr("chassis");
     result = pVAOManager->setInstanceObjLighting("chassis", false);
 
-    result = pVAOManager->setTexture("wheel", "mremireh_body__diffuse.png", 0);
+    result = pVAOManager->setTexture("wheel", "pngwing.com.png", 0);
     result = pVAOManager->setInstanceObjVisible("wheel", false);
     result = pVAOManager->setInstanceObjPosition("wheel", glm::vec4(-2.3f, 1.f, 0.f, 1.f));
     result = pVAOManager->setInstanceObjScale("wheel", 0.2f);
