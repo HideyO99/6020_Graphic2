@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)dev\inc;$(ProjectDir)dev\inc\bullet;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)dev\inc;$(ProjectDir)dev\inc\bullet;$(SolutionDir)PhysicInterface\src;$(SolutionDir)BulletModule;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)dev\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -169,6 +169,7 @@
     <ClCompile Include="src\MeshObj\Model.cpp" />
     <ClCompile Include="src\Monster\Monster.cpp" />
     <ClCompile Include="src\Monster\MonsterManager.cpp" />
+    <ClCompile Include="src\Physic\CollisionListener.cpp" />
     <ClCompile Include="src\Ragdoll.cpp" />
     <ClCompile Include="src\Shader\cShader.cpp" />
     <ClCompile Include="src\Shader\cShaderManager.cpp" />
@@ -216,6 +217,8 @@
     <ClInclude Include="src\MeshObj\vertex_type.h" />
     <ClInclude Include="src\Monster\Monster.h" />
     <ClInclude Include="src\Monster\MonsterManager.h" />
+    <ClInclude Include="src\Physic\CollisionListener.h" />
+    <ClInclude Include="src\Physic\Physic.h" />
     <ClInclude Include="src\Ragdoll.h" />
     <ClInclude Include="src\Shader\cShaderManager.h" />
     <ClInclude Include="src\Texture\C24BitBMPpixel.h" />
